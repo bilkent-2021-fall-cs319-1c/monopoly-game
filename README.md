@@ -4,3 +4,6 @@ We will implement the “_Monopoly Classic_” game. Game rules will be taken fr
 
 # Documents
 [Detailed Feature List & Implementation Plans](docs/Implementation%20Plans.pdf)
+
+## Iteration 1
+[Analysis Report](docs/Iteration1_AnalysisReport.pdf)
