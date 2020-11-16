@@ -6,9 +6,15 @@ import java.util.Map;
 import java.util.Scanner;
 
 import javax.sound.sampled.LineUnavailableException;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.github.sarxos.webcam.Webcam;
 
 import tr.com.bilkent.monopoly.network.SerializationUtil;
 import tr.com.bilkent.monopoly.network.client.Client;
@@ -31,7 +37,7 @@ public class ClientDemo {
 
 		String serverIp = "localhost";
 		try (Scanner scanner = new Scanner(System.in)) {
-			System.out.println("Server ip: ");
+			System.out.print("Server ip: ");
 			serverIp = scanner.next();
 			logger.info("Entered ip: {}", serverIp);
 
@@ -76,7 +82,18 @@ public class ClientDemo {
 			MicSender micSender = new MicSender(client);
 			micSender.start();
 
-			WebcamSender webcamSender = new WebcamSender(client);
+			try {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+					| UnsupportedLookAndFeelException e) {
+				// Default Look And Feel
+			}
+			JFrame webcamSelectorFrame = new JFrame();
+			webcamSelectorFrame.setVisible(true);
+			Webcam webcam = (Webcam) JOptionPane.showInputDialog(webcamSelectorFrame, "Select your webcam device:", "Webcam Selector", JOptionPane.PLAIN_MESSAGE, null, Webcam.getWebcams().toArray(), null);
+			webcamSelectorFrame.setVisible(false);
+			
+			WebcamSender webcamSender = new WebcamSender(client, webcam);
 			webcamSender.start();
 
 			while (scanner.hasNext()) {

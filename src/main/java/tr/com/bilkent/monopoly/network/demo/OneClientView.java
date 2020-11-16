@@ -21,7 +21,7 @@ public class OneClientView {
 	/**
 	 * Custom delay to be added to the webcam view for audio - video synchronization
 	 */
-	public static final int WEBCAM_DELAY_MS = 1000;
+	public static final int WEBCAM_DELAY_MS = 500;
 
 	private JFrame frm;
 	private JPanel pnl;

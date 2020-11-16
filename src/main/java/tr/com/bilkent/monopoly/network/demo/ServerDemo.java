@@ -3,6 +3,7 @@ package tr.com.bilkent.monopoly.network.demo;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.Socket;
+import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ public class ServerDemo {
 
 	public static void main(String[] args) throws IOException {
 
-		new Server() {
+		Server server = new Server() {
 
 			@Override
 			public void messageReceived(String msg, Socket socket) {
@@ -50,13 +51,21 @@ public class ServerDemo {
 					logger.error("Invalid Object Data Received", e);
 					return;
 				}
-				
+
 				if (obj instanceof BufferedImagePacket) {
+					logger.info("Received image from {}    Size: {}", packet.getAddress(), data.length);
 					sendByteArrayToAll(data);
 				} else if (obj instanceof MicSoundPacket) {
+					logger.info("Received sound from {}    Size: {}", packet.getAddress(), data.length);
 					sendByteArrayToAllExcept(data, packet.getAddress());
 				}
 			}
 		};
+
+		try (Scanner scanner = new Scanner(System.in)) {
+			while (scanner.hasNext()) {
+				server.sendMessageToAll(scanner.nextLine());
+			}
+		}
 	}
 }

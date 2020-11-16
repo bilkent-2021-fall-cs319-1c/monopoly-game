@@ -21,7 +21,7 @@ public class WebcamSender {
 	/**
 	 * The FPS limit of webcam screenshots
 	 */
-	public static final int FPS = 10;
+	public static final int FPS = 20;
 
 	/**
 	 * The resolution of webcam captures
@@ -36,8 +36,8 @@ public class WebcamSender {
 	 * 
 	 * @param client The client through which to send the images
 	 */
-	public WebcamSender(Client client) {
-		webcam = Webcam.getDefault();
+	public WebcamSender(Client client, Webcam webcam) {
+		this.webcam = webcam;
 		webcam.setCustomViewSizes(DEFAULT_RESOLUTION.getSize());
 		webcam.setViewSize(DEFAULT_RESOLUTION.getSize());
 		stop();
