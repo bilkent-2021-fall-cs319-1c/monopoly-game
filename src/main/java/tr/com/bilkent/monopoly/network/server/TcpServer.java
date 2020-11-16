@@ -7,7 +7,12 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple TCP Server for sending and receiving String messages
@@ -16,10 +21,15 @@ import java.util.List;
  * @version Nov 14, 2020
  */
 public abstract class TcpServer {
+	private static Logger logger = LoggerFactory.getLogger(TcpServer.class);
+
 	private ServerSocket server;
 	private List<Socket> sockets;
+	private Map<Socket, Boolean> keepAlive;
+
 	private List<Thread> msgListenerThreads;
 	private Thread connectionListenerThread;
+	private Thread deadConnectionKillerThread;
 	private volatile boolean open;
 
 	/**
@@ -31,12 +41,17 @@ public abstract class TcpServer {
 	public TcpServer(int port) throws IOException {
 		open = true;
 		sockets = Collections.synchronizedList(new ArrayList<Socket>());
+		keepAlive = Collections.synchronizedMap(new HashMap<Socket, Boolean>());
 		msgListenerThreads = Collections.synchronizedList(new ArrayList<Thread>());
 		server = new ServerSocket(port);
 
 		// Listens for connections
 		connectionListenerThread = new Thread(this::listenForConnections);
 		connectionListenerThread.start();
+
+		// Kill connections that did not send keep alive signals
+		deadConnectionKillerThread = new Thread(this::killDeadConnections);
+		deadConnectionKillerThread.start();
 	}
 
 	/**
@@ -53,6 +68,12 @@ public abstract class TcpServer {
 	 */
 	public abstract void connectionTerminated(Socket socket);
 
+	private void connectionTerminatedHelper(Socket socket) {
+		connectionTerminated(socket);
+		sockets.remove(socket);
+		keepAlive.remove(socket);
+	}
+
 	/**
 	 * Processes the incoming message
 	 * 
@@ -60,6 +81,32 @@ public abstract class TcpServer {
 	 * @param socket  The socket that the message received from
 	 */
 	public abstract void received(String message, Socket socket);
+
+	/**
+	 * Kills all connections that did not send anything in the last 61 seconds.
+	 */
+	private void killDeadConnections() {
+		while (open) {
+			try {
+				Thread.sleep(61000);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				return;
+			}
+
+			keepAlive.entrySet().parallelStream().forEach(entry -> {
+				Socket socket = entry.getKey();
+				Boolean alive = entry.getValue();
+				
+				if (Boolean.FALSE.equals(alive)) {
+					logger.info("No communication received from {} during last 61 seconds. Closing the connection.",
+							socket.getInetAddress());
+					connectionTerminatedHelper(socket);
+				}
+				keepAlive.put(socket, false);
+			});
+		}
+	}
 
 	/**
 	 * Listens for connections and creates a new socket for them
@@ -77,6 +124,7 @@ public abstract class TcpServer {
 				return;
 
 			sockets.add(socket);
+			keepAlive.put(socket, true);
 			connectionEstablished(socket);
 
 			// Listens for messages
@@ -101,14 +149,17 @@ public abstract class TcpServer {
 				isAlive = false;
 			}
 
-			if (message.indexOf(Server.TERMINATION) != -1) {
+			if (message.toString().equals(Server.TERMINATION)) {
+				// Keep Alive Message
+				keepAlive.put(socket, true);
+				message.setLength(0);
+			} else if (message.indexOf(Server.TERMINATION) != -1) {
 				received(message.substring(0, message.length() - 3), socket);
 				message.setLength(0);
 			}
 		}
 
-		connectionTerminated(socket);
-		sockets.remove(socket);
+		connectionTerminatedHelper(socket);
 	}
 
 	/**
@@ -117,19 +168,14 @@ public abstract class TcpServer {
 	 * @param msg The message to send
 	 */
 	public void sendMessageToAll(String msg) {
-		ArrayList<Socket> erase = new ArrayList<>();
-
 		byte[] data = msg.getBytes();
 		for (Socket socket : sockets) {
 			try {
 				socket.getOutputStream().write(data);
 			} catch (IOException e) {
-				connectionTerminated(socket);
-				erase.add(socket);
+				connectionTerminatedHelper(socket);
 			}
 		}
-
-		sockets.removeAll(erase);
 	}
 
 	/**
@@ -139,8 +185,6 @@ public abstract class TcpServer {
 	 * @param address The address of the intended receiver
 	 */
 	public void sendMessage(String msg, InetAddress address) {
-		ArrayList<Socket> erase = new ArrayList<>();
-
 		byte[] data = msg.getBytes();
 		for (Socket socket : sockets) {
 			if (address.equals(socket.getInetAddress())) {
@@ -148,13 +192,10 @@ public abstract class TcpServer {
 					socket.getOutputStream().write(data);
 				} catch (IOException e) {
 					e.printStackTrace();
-					connectionTerminated(socket);
-					erase.add(socket);
+					connectionTerminatedHelper(socket);
 				}
 			}
 		}
-
-		sockets.removeAll(erase);
 	}
 
 	/**
@@ -179,6 +220,7 @@ public abstract class TcpServer {
 			msgListenerThread.interrupt();
 		}
 		connectionListenerThread.interrupt();
+		deadConnectionKillerThread.interrupt();
 
 		// Closing connections
 		for (Socket socket : sockets) {

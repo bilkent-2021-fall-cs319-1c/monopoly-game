@@ -24,6 +24,7 @@ public abstract class TcpClient {
 
 	private Socket socket;
 	private Thread msgListenerThread;
+	private Thread keepAliveThread;
 	private volatile boolean open;
 
 	/**
@@ -45,6 +46,19 @@ public abstract class TcpClient {
 		msgListenerThread = new Thread(this::listenForMessages);
 		msgListenerThread.start();
 
+		keepAliveThread = new Thread(() -> {
+			while (true) {
+				try {
+					Thread.sleep(30000);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+					return;
+				}
+
+				sendKeepAlive();
+			}
+		});
+		keepAliveThread.start();
 	}
 
 	/**
@@ -61,6 +75,21 @@ public abstract class TcpClient {
 	 */
 	public synchronized void sendMessage(String msg) {
 		msg += Server.TERMINATION;
+		byte[] data = msg.getBytes();
+		try {
+			socket.getOutputStream().write(data);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Sends a message to the server
+	 * 
+	 * @param msg The message to be sent
+	 */
+	private synchronized void sendKeepAlive() {
+		String msg = Server.TERMINATION;
 		byte[] data = msg.getBytes();
 		try {
 			socket.getOutputStream().write(data);
@@ -109,6 +138,7 @@ public abstract class TcpClient {
 	public void close() {
 		open = false;
 		msgListenerThread.interrupt();
+		keepAliveThread.interrupt();
 		try {
 			socket.close();
 		} catch (IOException e) {
