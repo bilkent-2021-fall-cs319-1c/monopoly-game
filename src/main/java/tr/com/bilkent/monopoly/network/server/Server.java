@@ -20,9 +20,7 @@ import tr.com.bilkent.monopoly.network.client.Client;
  */
 public abstract class Server {
 	public static final String TERMINATION = "###";
-	public static final int UDP_INCOMING_PORT = 4454;
-	public static final int UDP_OUTGOING_PORT = 4455;
-	public static final int TCP_PORT = 4456;
+	public static final int PORT = 4455;
 
 	private TcpServer tcp;
 	private UdpEndpoint udp;
@@ -38,7 +36,7 @@ public abstract class Server {
 	public Server() throws IOException {
 		connections = Collections.synchronizedList(new ArrayList<InetAddress>());
 
-		tcp = new TcpServer(TCP_PORT) {
+		tcp = new TcpServer(PORT) {
 			@Override
 			public void connectionEstablished(Socket socket) {
 				connections.add(socket.getInetAddress());
@@ -57,7 +55,7 @@ public abstract class Server {
 			}
 		};
 
-		udp = new UdpEndpoint(UDP_INCOMING_PORT, UDP_OUTGOING_PORT) {
+		udp = new UdpEndpoint(PORT) {
 			@Override
 			public void byteArrayReceivedUdp(byte[] data, DatagramPacket packet) {
 				Server.this.byteArrayReceivedUdp(data, packet);
@@ -180,11 +178,7 @@ public abstract class Server {
 	 * @param address The address to send the data to
 	 */
 	public void sendByteArray(byte[] data, InetAddress address) throws IOException {
-		udp.sendByteArray(data, address, Client.UDP_INCOMING_PORT);
-	}
-
-	public void sendByteArray(byte[] data, String address) throws IOException {
-		udp.sendByteArray(data, address, Client.UDP_INCOMING_PORT);
+		udp.sendByteArray(data, address, Client.PORT);
 	}
 
 	/**

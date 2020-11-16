@@ -14,8 +14,7 @@ import tr.com.bilkent.monopoly.network.server.Server;
  * @version Nov 14, 2020
  */
 public abstract class Client {
-	public static final int UDP_INCOMING_PORT = 3354;
-	public static final int UDP_OUTGOING_PORT = 3355;
+	public static final int PORT = 3455;
 
 	private String serverAddress;
 	private TcpClient tcp;
@@ -33,13 +32,13 @@ public abstract class Client {
 	public Client(String serverAddress) throws IOException {
 		this.serverAddress = serverAddress;
 
-		tcp = new TcpClient(serverAddress, Server.TCP_PORT) {
+		tcp = new TcpClient(serverAddress, Server.PORT) {
 			public void received(String msg) {
 				messageReceived(msg);
 			}
 		};
 
-		udp = new UdpEndpoint(UDP_INCOMING_PORT, UDP_OUTGOING_PORT) {
+		udp = new UdpEndpoint(PORT) {
 			@Override
 			public void byteArrayReceivedUdp(byte[] data, DatagramPacket packet) {
 				Client.this.byteArrayReceivedUdp(data);
@@ -77,7 +76,7 @@ public abstract class Client {
 	 * @throws IOException
 	 */
 	public void sendByteArrayUdp(byte[] data) throws IOException {
-		udp.sendByteArray(data, serverAddress, Server.UDP_INCOMING_PORT);
+		udp.sendByteArray(data, serverAddress, Server.PORT);
 	}
 
 	/**

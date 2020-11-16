@@ -15,25 +15,21 @@ import java.util.Arrays;
  */
 public abstract class UdpEndpoint {
 
-	// TODO Maybe merge these to 1 socket?
-	private DatagramSocket outgoingSocket;
-	private DatagramSocket incomingSocket;
+	private DatagramSocket socket;
 
 	private Thread listenerThread;
 	private volatile boolean open;
 
 	/**
-	 * Creates a new UDP endpoint in the specified ports.
+	 * Creates a new UDP endpoint in the specified port.
 	 * 
-	 * @param incomingPort The port where to receive packets
-	 * @param outgoingPort The port from where to send packets
-	 * @throws SocketException if the socket could not be opened,or the socket could
-	 *                         not bind to the specified local port.
+	 * @param port The local port to bind this endpoint
+	 * @throws SocketException if the socket could not be opened, or the socket
+	 *                         could not bind to the specified local port.
 	 */
-	public UdpEndpoint(int incomingPort, int outgoingPort) throws SocketException {
+	public UdpEndpoint(int port) throws SocketException {
 		open = true;
-		incomingSocket = new DatagramSocket(incomingPort);
-		outgoingSocket = new DatagramSocket(outgoingPort);
+		socket = new DatagramSocket(port);
 
 		listenerThread = new Thread(this::readByteArray);
 		listenerThread.start();
@@ -43,7 +39,7 @@ public abstract class UdpEndpoint {
 	 * Sends the given byte array to the given address
 	 * 
 	 * @param data    The byte array to send
-	 * @param address The destination ip address
+	 * @param address The destination IP address
 	 * @param port    The destination port
 	 * @throws IOException if an I/O error occurs.
 	 */
@@ -61,7 +57,7 @@ public abstract class UdpEndpoint {
 	 */
 	public void sendByteArray(byte[] data, InetAddress address, int port) throws IOException {
 		DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
-		outgoingSocket.send(packet);
+		socket.send(packet);
 	}
 
 	/**
@@ -80,7 +76,7 @@ public abstract class UdpEndpoint {
 			byte[] buf = new byte[65000];
 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
 			try {
-				incomingSocket.receive(packet);
+				socket.receive(packet);
 			} catch (IOException e) {
 				e.printStackTrace();
 				break;
@@ -95,7 +91,6 @@ public abstract class UdpEndpoint {
 	 */
 	public void close() {
 		open = false;
-		incomingSocket.close();
-		outgoingSocket.close();
+		socket.close();
 	}
 }
