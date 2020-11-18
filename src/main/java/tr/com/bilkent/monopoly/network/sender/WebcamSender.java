@@ -1,21 +1,18 @@
 package tr.com.bilkent.monopoly.network.sender;
 
-import java.io.IOException;
-
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamEvent;
 import com.github.sarxos.webcam.WebcamListener;
 import com.github.sarxos.webcam.WebcamResolution;
 
-import tr.com.bilkent.monopoly.network.SerializationUtil;
-import tr.com.bilkent.monopoly.network.client.Client;
+import tr.com.bilkent.monopoly.network.Client;
 import tr.com.bilkent.monopoly.network.packet.BufferedImagePacket;
 
 /**
  * Can continuously send the webcam screenshots over the network.
  * 
  * @author Ziya Mukhtarov
- * @version Nov 14, 2020
+ * @version Nov 18, 2020
  */
 public class WebcamSender {
 	/**
@@ -51,13 +48,7 @@ public class WebcamSender {
 
 			@Override
 			public void webcamImageObtained(WebcamEvent we) {
-				byte[] data = SerializationUtil
-						.serialize(new BufferedImagePacket(we.getImage(), client.getLocalAddress()));
-				try {
-					client.sendByteArrayUdp(data);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				client.sendPacket(new BufferedImagePacket(we.getImage(), client.getConnectionID()));
 			}
 
 			@Override

@@ -15,7 +15,7 @@ import tr.com.bilkent.monopoly.network.packet.MicSoundPacket;
  * video FPS in the title
  * 
  * @author Ziya Mukhtarov
- * @version Nov 14, 2020
+ * @version Nov 18, 2020
  */
 public class OneClientView {
 	/**
@@ -29,7 +29,7 @@ public class OneClientView {
 	private double fps;
 	private long lastFpsUpdate;
 	private long previousFrameTime;
-	private String ip;
+	private int connectionID;
 
 	private AudioChannel audioChannel;
 
@@ -38,14 +38,14 @@ public class OneClientView {
 	 * 
 	 * @param ip - The IP of the client. Will be the window's title
 	 */
-	public OneClientView(String ip) {
-		this.ip = ip;
+	public OneClientView(int connectionID) {
+		this.connectionID = connectionID;
 		lbl = new JLabel();
 
 		pnl = new JPanel();
 		pnl.add(lbl);
 
-		frm = new JFrame(ip);
+		frm = new JFrame("" + connectionID);
 		frm.add(pnl);
 		frm.setResizable(true);
 		frm.pack();
@@ -95,7 +95,7 @@ public class OneClientView {
 		long time = System.currentTimeMillis();
 		fps = 1000.0 / (time - previousFrameTime);
 		if ((time - lastFpsUpdate) >= 1000) {
-			frm.setTitle(ip + " --- FPS: " + fps);
+			frm.setTitle(connectionID + " --- FPS: " + fps);
 			lastFpsUpdate = time;
 		}
 		previousFrameTime = time;

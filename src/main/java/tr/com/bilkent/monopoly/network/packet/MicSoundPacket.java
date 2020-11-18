@@ -10,7 +10,7 @@ import lombok.Getter;
  * A network packet that contains microphone audio
  * 
  * @author Ziya Mukhtarov
- * @version Nov 14, 2020
+ * @version Nov 18, 2020
  */
 @Getter
 public class MicSoundPacket extends NetworkPacket implements Serializable {
@@ -20,8 +20,16 @@ public class MicSoundPacket extends NetworkPacket implements Serializable {
 
 	private byte[] data;
 
-	public MicSoundPacket(byte[] data, String ipAddress) {
-		super(ipAddress);
+	/**
+	 * Only used for deserialization. Should not be used anywhere else.
+	 */
+	private MicSoundPacket() {
+		super(-10); // Random negative number
+		data = new byte[0];
+	}
+
+	public MicSoundPacket(byte[] data, int sourceConnectionID) {
+		super(sourceConnectionID);
 		this.data = data;
 	}
 }

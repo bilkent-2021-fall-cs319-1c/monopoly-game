@@ -16,10 +16,10 @@ import org.slf4j.LoggerFactory;
 
 import com.github.sarxos.webcam.Webcam;
 
-import tr.com.bilkent.monopoly.network.SerializationUtil;
-import tr.com.bilkent.monopoly.network.client.Client;
+import tr.com.bilkent.monopoly.network.Client;
 import tr.com.bilkent.monopoly.network.packet.BufferedImagePacket;
 import tr.com.bilkent.monopoly.network.packet.MicSoundPacket;
+import tr.com.bilkent.monopoly.network.packet.NetworkPacket;
 import tr.com.bilkent.monopoly.network.sender.MicSender;
 import tr.com.bilkent.monopoly.network.sender.WebcamSender;
 
@@ -27,80 +27,96 @@ import tr.com.bilkent.monopoly.network.sender.WebcamSender;
  * Simple demo of the video/voice chat client
  * 
  * @author Ziya Mukhtarov
- * @version Nov 14, 2020
+ * @version Nov 18, 2020
  */
 public class ClientDemo {
 	private static Logger logger = LoggerFactory.getLogger(ClientDemo.class);
+	private static Map<Integer, OneClientView> clientViews = new HashMap<>();
 
-	public static void main(String[] args) throws IOException, LineUnavailableException {
-		Map<String, OneClientView> clientViews = new HashMap<>();
+	private static OneClientView getClientView(int connectionID) {
+		if (!clientViews.containsKey(connectionID)) {
+			clientViews.put(connectionID, new OneClientView(connectionID));
+		}
+		return clientViews.get(connectionID);
+	}
 
+	private static void startSending(Client client, Scanner scanner) {
+		MicSender micSender;
+		try {
+			micSender = new MicSender(client);
+			micSender.start();
+		} catch (LineUnavailableException e1) {
+			logger.error("Unable to access a microphone. Will not send microphone input");
+		}
+
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			// Default Look And Feel
+		}
+		JFrame webcamSelectorFrame = new JFrame();
+		webcamSelectorFrame.setVisible(true);
+		Webcam webcam = (Webcam) JOptionPane.showInputDialog(webcamSelectorFrame, "Select your webcam device:",
+				"Webcam Selector", JOptionPane.PLAIN_MESSAGE, null, Webcam.getWebcams().toArray(), null);
+		webcamSelectorFrame.setVisible(false);
+
+		WebcamSender webcamSender = new WebcamSender(client, webcam);
+		webcamSender.start();
+
+		while (scanner.hasNext()) {
+			client.sendString(scanner.nextLine());
+		}
+
+		webcamSender.stop();
+	}
+
+	public static void main(String[] args) throws IOException {
 		String serverIp = "localhost";
 		try (Scanner scanner = new Scanner(System.in)) {
 			System.out.print("Server ip: ");
 			serverIp = scanner.next();
 			logger.info("Entered ip: {}", serverIp);
 
-			Client client = new Client(serverIp) {
+			new Client(serverIp) {
 				@Override
-				public void messageReceived(String msg) {
-					logger.info("Incoming message: {}", msg);
+				public void connected(int connectionID) {
+					logger.info("Connected to Server with id: {}", connectionID);
+					new Thread(() -> startSending(this, scanner)).start();
 				}
 
 				@Override
-				public void byteArrayReceivedUdp(byte[] data) {
-					Object obj;
-					try {
-						obj = SerializationUtil.deserialize(data);
-					} catch (ClassNotFoundException e) {
-						logger.error("Invalid Object Data Received", e);
-						return;
+				public void disconnected(int connectionID) {
+					logger.info("Disconnected from Server with id: {}", connectionID);
+				}
+
+				@Override
+				public void receivedPacket(int connectionID, NetworkPacket packet) {
+					if (packet instanceof BufferedImagePacket) {
+						BufferedImagePacket screenshot = (BufferedImagePacket) packet;
+						logger.debug("Image Received from id: {}", packet.getSourceConnectionID());
+						getClientView(packet.getSourceConnectionID()).queueImage(screenshot);
+
+					} else if (packet instanceof MicSoundPacket) {
+						MicSoundPacket micSoundPacket = (MicSoundPacket) packet;
+						logger.debug("Mic Received from id: {}", packet.getSourceConnectionID());
+						getClientView(packet.getSourceConnectionID()).queueAudio(micSoundPacket);
 					}
-					if (obj instanceof BufferedImagePacket) {
-						BufferedImagePacket screenshot = (BufferedImagePacket) obj;
-						String ip = screenshot.getSourceAddress();
-						logger.debug("Webcam Received from {};\t Size is {}", ip, data.length);
+				}
 
-						if (!clientViews.containsKey(ip)) {
-							clientViews.put(ip, new OneClientView(ip));
-						}
-						clientViews.get(ip).queueImage(screenshot);
-
-					} else if (obj instanceof MicSoundPacket) {
-						MicSoundPacket micSoundPacket = (MicSoundPacket) obj;
-						String ip = micSoundPacket.getSourceAddress();
-						logger.debug("Mic Received from {};\t Size is {}", ip, micSoundPacket.getData().length);
-
-						if (!clientViews.containsKey(ip)) {
-							clientViews.put(ip, new OneClientView(ip));
-						}
-						clientViews.get(ip).queueAudio(micSoundPacket);
-					}
+				@Override
+				public void receivedNotPacket(int connectionID, Object object) {
+					logger.warn("Received unknown object {} from id {}", object, connectionID);
 				}
 			};
 
-			MicSender micSender = new MicSender(client);
-			micSender.start();
-
-			try {
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-					| UnsupportedLookAndFeelException e) {
-				// Default Look And Feel
+			while (!Thread.interrupted()) {
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
 			}
-			JFrame webcamSelectorFrame = new JFrame();
-			webcamSelectorFrame.setVisible(true);
-			Webcam webcam = (Webcam) JOptionPane.showInputDialog(webcamSelectorFrame, "Select your webcam device:", "Webcam Selector", JOptionPane.PLAIN_MESSAGE, null, Webcam.getWebcams().toArray(), null);
-			webcamSelectorFrame.setVisible(false);
-			
-			WebcamSender webcamSender = new WebcamSender(client, webcam);
-			webcamSender.start();
-
-			while (scanner.hasNext()) {
-				client.sendMessage(scanner.nextLine());
-			}
-
-			webcamSender.stop();
 		}
 	}
 

@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 import javax.imageio.ImageIO;
 
@@ -16,16 +15,24 @@ import lombok.Getter;
  * A network packet that contains a BufferedImage
  * 
  * @author Ziya Mukhtarov
- * @version Nov 14, 2020
+ * @version Nov 18, 2020
  */
 @Getter
-public class BufferedImagePacket extends NetworkPacket implements Serializable {
+public class BufferedImagePacket extends NetworkPacket {
 	private static final long serialVersionUID = 650861908884172142L;
 
 	private transient BufferedImage img;
 
-	public BufferedImagePacket(BufferedImage img, String ipAddress) {
-		super(ipAddress);
+	/**
+	 * Only used for deserialization. Should not be used anywhere else.
+	 */
+	private BufferedImagePacket() {
+		super(-10); // Random negative number
+		img = null;
+	}
+
+	public BufferedImagePacket(BufferedImage img, int sourceConnectionID) {
+		super(sourceConnectionID);
 		this.img = img;
 	}
 

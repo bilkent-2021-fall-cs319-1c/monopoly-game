@@ -1,15 +1,12 @@
 package tr.com.bilkent.monopoly.network.sender;
 
-import java.io.IOException;
-
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Port;
 import javax.sound.sampled.TargetDataLine;
 
-import tr.com.bilkent.monopoly.network.SerializationUtil;
-import tr.com.bilkent.monopoly.network.client.Client;
+import tr.com.bilkent.monopoly.network.Client;
 import tr.com.bilkent.monopoly.network.packet.MicSoundPacket;
 
 /**
@@ -17,9 +14,11 @@ import tr.com.bilkent.monopoly.network.packet.MicSoundPacket;
  * paused/resumed.
  * 
  * @author Ziya Mukhtarov
- * @version Nov 14, 2020
+ * @version Nov 18, 2020
  */
 public class MicSender {
+
+	private int sourceConnectionID;
 
 	private TargetDataLine microphone;
 	private volatile boolean open;
@@ -31,6 +30,8 @@ public class MicSender {
 	 * @throws LineUnavailableException If a microphone could not be opened
 	 */
 	public MicSender(Client client) throws LineUnavailableException {
+		sourceConnectionID = client.getConnectionID();
+
 		if (AudioSystem.isLineSupported(Port.Info.MICROPHONE)) {
 			DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, MicSoundPacket.AUDIO_FORMAT);
 			microphone = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
@@ -74,13 +75,7 @@ public class MicSender {
 				byte[] micData = new byte[MicSoundPacket.DATA_LENGTH];
 				microphone.read(micData, 0, MicSoundPacket.DATA_LENGTH);
 
-				byte[] packetToSend = SerializationUtil
-						.serialize(new MicSoundPacket(micData, client.getLocalAddress()));
-				try {
-					client.sendByteArrayUdp(packetToSend);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				client.sendPacket(new MicSoundPacket(micData, sourceConnectionID));
 			}
 		}
 	}
