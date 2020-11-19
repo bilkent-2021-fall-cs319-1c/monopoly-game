@@ -1,4 +1,4 @@
-package tr.com.bilkent.monopoly.network;
+package monopoly.network;
 
 import java.io.IOException;
 
@@ -7,9 +7,10 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
 import lombok.Getter;
-import tr.com.bilkent.monopoly.network.packet.BufferedImagePacket;
-import tr.com.bilkent.monopoly.network.packet.MicSoundPacket;
-import tr.com.bilkent.monopoly.network.packet.NetworkPacket;
+import monopoly.common.network.ServerPort;
+import monopoly.common.network.packet.BufferedImagePacket;
+import monopoly.common.network.packet.MicSoundPacket;
+import monopoly.common.network.packet.NetworkPacket;
 
 /**
  * A client for TCP and UDP connection
@@ -61,7 +62,7 @@ public abstract class Client {
 		});
 
 		kryoClient.start();
-		kryoClient.connect(5000, serverAddress, Server.PORT, Server.PORT);
+		kryoClient.connect(5000, serverAddress, ServerPort.PORT, ServerPort.PORT);
 	}
 
 	/**

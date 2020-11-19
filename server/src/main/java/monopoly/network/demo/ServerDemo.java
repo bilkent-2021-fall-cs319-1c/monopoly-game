@@ -1,4 +1,4 @@
-package tr.com.bilkent.monopoly.network.demo;
+package monopoly.network.demo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,10 +9,10 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import tr.com.bilkent.monopoly.network.Server;
-import tr.com.bilkent.monopoly.network.packet.BufferedImagePacket;
-import tr.com.bilkent.monopoly.network.packet.MicSoundPacket;
-import tr.com.bilkent.monopoly.network.packet.NetworkPacket;
+import monopoly.common.network.packet.BufferedImagePacket;
+import monopoly.common.network.packet.MicSoundPacket;
+import monopoly.common.network.packet.NetworkPacket;
+import monopoly.network.Server;
 
 /**
  * A demo server for video/audio chat.

@@ -1,4 +1,4 @@
-package tr.com.bilkent.monopoly.network.packet;
+package monopoly.common.network.packet;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package tr.com.bilkent.monopoly.network;
+package monopoly.network;
 
 import java.io.IOException;
 
@@ -6,9 +6,10 @@ import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-import tr.com.bilkent.monopoly.network.packet.BufferedImagePacket;
-import tr.com.bilkent.monopoly.network.packet.MicSoundPacket;
-import tr.com.bilkent.monopoly.network.packet.NetworkPacket;
+import monopoly.common.network.ServerPort;
+import monopoly.common.network.packet.BufferedImagePacket;
+import monopoly.common.network.packet.MicSoundPacket;
+import monopoly.common.network.packet.NetworkPacket;
 
 /**
  * A TCP and UDP server
@@ -17,7 +18,6 @@ import tr.com.bilkent.monopoly.network.packet.NetworkPacket;
  * @version Nov 18, 2020
  */
 public abstract class Server {
-	public static final int PORT = 54555;
 	private static final int WRITE_BUFFER_SIZE = 32768;
 	private static final int OBJECT_BUFFER_SIZE = 32768;
 
@@ -57,7 +57,7 @@ public abstract class Server {
 		});
 
 		kryoServer.start();
-		kryoServer.bind(PORT, PORT);
+		kryoServer.bind(ServerPort.PORT, ServerPort.PORT);
 	}
 
 	/**

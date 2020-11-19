@@ -1,4 +1,4 @@
-package tr.com.bilkent.monopoly.network.packet;
+package monopoly.common.network.packet;
 
 import java.awt.Graphics2D;
 import java.awt.Image;

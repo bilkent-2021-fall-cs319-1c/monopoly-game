@@ -1,4 +1,4 @@
-package tr.com.bilkent.monopoly.network.sender;
+package monopoly.network.sender;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -6,8 +6,8 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Port;
 import javax.sound.sampled.TargetDataLine;
 
-import tr.com.bilkent.monopoly.network.Client;
-import tr.com.bilkent.monopoly.network.packet.MicSoundPacket;
+import monopoly.common.network.packet.MicSoundPacket;
+import monopoly.network.Client;
 
 /**
  * Can send the default microphone input over the network. Can be

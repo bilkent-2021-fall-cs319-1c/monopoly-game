@@ -1,4 +1,4 @@
-package tr.com.bilkent.monopoly.network.demo;
+package monopoly.network.demo;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,12 +16,12 @@ import org.slf4j.LoggerFactory;
 
 import com.github.sarxos.webcam.Webcam;
 
-import tr.com.bilkent.monopoly.network.Client;
-import tr.com.bilkent.monopoly.network.packet.BufferedImagePacket;
-import tr.com.bilkent.monopoly.network.packet.MicSoundPacket;
-import tr.com.bilkent.monopoly.network.packet.NetworkPacket;
-import tr.com.bilkent.monopoly.network.sender.MicSender;
-import tr.com.bilkent.monopoly.network.sender.WebcamSender;
+import monopoly.common.network.packet.BufferedImagePacket;
+import monopoly.common.network.packet.MicSoundPacket;
+import monopoly.common.network.packet.NetworkPacket;
+import monopoly.network.Client;
+import monopoly.network.sender.MicSender;
+import monopoly.network.sender.WebcamSender;
 
 /**
  * Simple demo of the video/voice chat client

@@ -1,4 +1,4 @@
-package tr.com.bilkent.monopoly.network.demo;
+package monopoly.network.demo;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.swing.ImageIcon;
@@ -7,8 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import tr.com.bilkent.monopoly.network.packet.BufferedImagePacket;
-import tr.com.bilkent.monopoly.network.packet.MicSoundPacket;
+import monopoly.common.network.packet.BufferedImagePacket;
+import monopoly.common.network.packet.MicSoundPacket;
 
 /**
  * A demo Swing GUI for a single client. Can play its audio as well. Displays

@@ -1,12 +1,12 @@
-package tr.com.bilkent.monopoly.network.sender;
+package monopoly.network.sender;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamEvent;
 import com.github.sarxos.webcam.WebcamListener;
 import com.github.sarxos.webcam.WebcamResolution;
 
-import tr.com.bilkent.monopoly.network.Client;
-import tr.com.bilkent.monopoly.network.packet.BufferedImagePacket;
+import monopoly.common.network.packet.BufferedImagePacket;
+import monopoly.network.Client;
 
 /**
  * Can continuously send the webcam screenshots over the network.

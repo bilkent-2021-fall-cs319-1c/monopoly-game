@@ -1,4 +1,4 @@
-package tr.com.bilkent.monopoly.network.demo;
+package monopoly.network.demo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +9,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-import tr.com.bilkent.monopoly.network.packet.MicSoundPacket;
+import monopoly.common.network.packet.MicSoundPacket;
 
 /**
  * An audio channel to play microphone sound packet to the default speaker.
