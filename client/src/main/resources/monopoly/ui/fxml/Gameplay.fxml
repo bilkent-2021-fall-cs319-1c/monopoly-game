@@ -5,28 +5,36 @@
 <?import javafx.scene.layout.*?>
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 
-<StackPane xmlns="http://javafx.com/javafx/11.0.1"
-	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="monopoly.ui.GameplayController">
+<?import monopoly.ui.PlayerPane?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+	fx:controller="monopoly.ui.GameplayController" fx:id="stackPane">
 
 	<!-- Main Gameplay View -->
-	<MigPane fx:id="rootMigPane"
-		cols="2% [fill, grow] 2% [center] 2% [fill, grow] []" layout="fill"
-		rows="2% [30%, fill] 5% [30%, fill] 5% [30%, fill] []">
+	<MigPane fx:id="rootMigPane" layout="fill"
+		cols="[:24%:24%, fill, grow] [center] [:24%:24%, fill, grow]"
+		rows="0[grow, fill] [:5%:5%]">
 
-		<Button />
+		<!-- Players on the left side -->
+		<MigPane layout="fill, flowy" cols="0[fill]0"
+			MigPane.cc="grow">
+			<PlayerPane MigPane.cc="grow, height ::33%" />
+			<PlayerPane MigPane.cc="grow, height ::33%" />
+			<PlayerPane MigPane.cc="grow, height ::33%" />
+		</MigPane>
 
-		<ImageView fx:id="board" fitHeight="10" fitWidth="10"
-			MigPane.cc="spany 3" />
+		<!-- Board -->
+		<ImageView fx:id="board" fitHeight="10" fitWidth="10" />
 
-		<Button MigPane.cc="wrap" />
-		<Button />
-		<Button MigPane.cc="wrap" />
-		<Button />
-		<Button MigPane.cc="wrap" />
+		<!-- Players on the right side -->
+		<MigPane layout="fill, flowy" cols="0[fill]0"
+			MigPane.cc="grow, wrap">
+			<PlayerPane side="right" MigPane.cc="grow, height ::33%" />
+			<PlayerPane side="right" MigPane.cc="grow, height ::33%" />
+		</MigPane>
 
 		<!-- Rotation Icons -->
-		<MigPane MigPane.cc="skip 1, grow" cols="[]push[]">
+		<MigPane MigPane.cc="skip 1, grow" cols="[]push[]" rows="0[]0">
 			<ImageView fx:id="rotateCWIcon"
 				onMouseClicked="#rotateBoardCW" />
 			<ImageView fx:id="rotateCCWIcon"
@@ -34,7 +42,7 @@
 		</MigPane>
 
 		<ImageView fx:id="chatIcon" onMouseClicked="#toggleChatPane"
-			MigPane.cc="skip 1" />
+			MigPane.cc="right" />
 	</MigPane>
 
 	<!-- Chat Window -->
