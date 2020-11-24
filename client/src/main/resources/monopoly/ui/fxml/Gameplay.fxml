@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/11.0.1"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="monopoly.ui.GameplayController">
+
+	<!-- Main Gameplay View -->
+	<MigPane fx:id="rootMigPane"
+		cols="2% [fill, grow] 2% [center] 2% [fill, grow] []" layout="fill"
+		rows="2% [30%, fill] 5% [30%, fill] 5% [30%, fill] []">
+
+		<Button />
+
+		<ImageView fx:id="board" fitHeight="10" fitWidth="10"
+			MigPane.cc="spany 3" />
+
+		<Button MigPane.cc="wrap" />
+		<Button />
+		<Button MigPane.cc="wrap" />
+		<Button />
+		<Button MigPane.cc="wrap" />
+
+		<!-- Rotation Icons -->
+		<MigPane MigPane.cc="skip 1, grow" cols="[]push[]">
+			<ImageView fx:id="rotateCWIcon"
+				onMouseClicked="#rotateBoardCW" />
+			<ImageView fx:id="rotateCCWIcon"
+				onMouseClicked="#rotateBoardCCW" />
+		</MigPane>
+
+		<ImageView fx:id="chatIcon" onMouseClicked="#toggleChatPane"
+			MigPane.cc="skip 1" />
+	</MigPane>
+
+	<!-- Chat Window -->
+	<MigPane style="-fx-background-color: #FFF" layout="flowy"
+		cols="[center, grow]" StackPane.alignment="CENTER_RIGHT"
+		visible="true" fx:id="chatPane">
+
+		<Label text="Chat Window" style="-fx-font: 30px Arial"
+			MigPane.cc="split" onMouseClicked="#toggleChatPane" />
+		<Separator prefWidth="1000" />
+
+	</MigPane>
+</StackPane>

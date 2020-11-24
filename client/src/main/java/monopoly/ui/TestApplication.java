@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 public class TestApplication extends Application {
 	@Override
 	public void start(Stage stage) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("Test.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("fxml/Gameplay.fxml"));
 		Scene scene = new Scene(root);
 
 		stage.setTitle("Test JavaFX UI");
