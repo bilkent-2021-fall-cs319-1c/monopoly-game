@@ -12,7 +12,7 @@
 	style="-fx-border-color: gray; 
 		-fx-border-width: 5;
 		-fx-border-radius: 10 10 10 10;
-		-fx-background-color: lightgreen ">
+		-fx-background-color: lightblue ">
 
 	<!-- Player's Name -->
 	<Group MigPane.cc="spany 2" fx:id="playerNameLabelWrapper">

@@ -3,8 +3,10 @@ package monopoly.ui;
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.animation.ParallelTransition;
+import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -51,7 +53,7 @@ public class GameplayController {
 
 	currentBoardAngle = 0;
 	chatOpen = false;
-	boardRotating = false;
+	boardRotating = true;
 
 	openChatPane = new TranslateTransition(Duration.millis(500));
 	openChatPane.setToX(0);
@@ -88,6 +90,8 @@ public class GameplayController {
 
 	Image boardImage = new Image(GameplayController.class.getResourceAsStream("images/Board.png"));
 	board.setImage(boardImage);
+	board.setScaleX(0);
+	board.setScaleY(0);
 
 	Image chatIconImg = new Image(GameplayController.class.getResourceAsStream("images/ChatIcon.png"));
 	chatIcon.setImage(chatIconImg);
@@ -104,6 +108,32 @@ public class GameplayController {
 	closeChatPane.setNode(chatPane);
 
 	boardRoateAndScaleTransition.setNode(board);
+	new Thread(this::boardRotateAndEnter).start();
+    }
+    
+    private void boardRotateAndEnter() {
+	try {
+	    Thread.sleep(1000);
+	} catch (InterruptedException e) {
+	    Thread.currentThread().interrupt();
+	    e.printStackTrace();
+	}
+	RotateTransition rotate = new RotateTransition(Duration.seconds(1), board);
+	ScaleTransition scale = new ScaleTransition(Duration.seconds(1), board);
+	scale.setToX(0.8);
+	scale.setToY(0.8);
+	rotate.setFromAngle(-720);
+	rotate.setToAngle(0);
+	
+	ScaleTransition scaleToDefault = new ScaleTransition(Duration.millis(500), board);
+	scaleToDefault.setToX(1);
+	scaleToDefault.setToY(1);
+	
+	ParallelTransition rotateAndScale = new ParallelTransition(rotate, scale);
+	PauseTransition pause = new PauseTransition(Duration.millis(500));
+	SequentialTransition boardEntranceEffect = new SequentialTransition(rotateAndScale, pause, scaleToDefault);
+	boardEntranceEffect.setOnFinished(e -> boardRotating = false);
+	boardEntranceEffect.play();
     }
 
     private void windowHeightChanged() {
