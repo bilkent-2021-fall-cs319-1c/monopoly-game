@@ -6,6 +6,7 @@
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 
 <?import monopoly.ui.PlayerPane?>
+<?import monopoly.ui.UIUtil?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
 	fx:controller="monopoly.ui.GameplayController" fx:id="stackPane">
@@ -18,31 +19,53 @@
 		<!-- Players on the left side -->
 		<MigPane layout="fill, flowy" cols="0[fill]0"
 			MigPane.cc="grow">
-			<PlayerPane MigPane.cc="grow, height ::33%" />
-			<PlayerPane MigPane.cc="grow, height ::33%" />
-			<PlayerPane MigPane.cc="grow, height ::33%" />
+			<PlayerPane MigPane.cc="grow, hmax 30%, wmax 100%"
+				player="self" />
+			<PlayerPane MigPane.cc="grow, hmax 30%, wmax 100%" />
+			<PlayerPane MigPane.cc="grow, hmax 30%, wmax 100%" />
 		</MigPane>
 
 		<!-- Board -->
-		<ImageView fx:id="board" fitHeight="10" fitWidth="10" />
+		<ImageView fx:id="board" scaleX="0" scaleY="0"
+			fitHeight="10" fitWidth="10">
+			<image>
+				<UIUtil fx:constant="BOARD" />
+			</image>
+		</ImageView>
 
 		<!-- Players on the right side -->
 		<MigPane layout="fill, flowy" cols="0[fill]0"
 			MigPane.cc="grow, wrap">
-			<PlayerPane side="right" MigPane.cc="grow, height ::33%" />
-			<PlayerPane side="right" MigPane.cc="grow, height ::33%" />
+			<PlayerPane MigPane.cc="grow, hmax 30%, wmax 100%"
+				side="right" />
+			<PlayerPane MigPane.cc="grow, hmax 30%, wmax 100%"
+				side="right" />
 		</MigPane>
 
 		<!-- Rotation Icons -->
 		<MigPane MigPane.cc="skip 1, grow" cols="[]push[]" rows="0[]0">
-			<ImageView fx:id="rotateCWIcon"
-				onMouseClicked="#rotateBoardCW" />
-			<ImageView fx:id="rotateCCWIcon"
-				onMouseClicked="#rotateBoardCCW" />
+			<ImageView pickOnBounds="true"
+				onMouseClicked="#rotateBoardCW" fx:id="rotateCWIcon">
+				<image>
+					<UIUtil fx:constant="CURVED_ARROW_CW" />
+				</image>
+			</ImageView>
+
+			<ImageView pickOnBounds="true"
+				onMouseClicked="#rotateBoardCCW" fx:id="rotateCCWIcon">
+				<image>
+					<UIUtil fx:constant="CURVED_ARROW_CCW" />
+				</image>
+			</ImageView>
 		</MigPane>
 
 		<ImageView fx:id="chatIcon" onMouseClicked="#toggleChatPane"
-			MigPane.cc="right" />
+			MigPane.cc="right">
+
+			<image>
+				<UIUtil fx:constant="CHAT_ICON" />
+			</image>
+		</ImageView>
 	</MigPane>
 
 	<!-- Chat Window -->
