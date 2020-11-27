@@ -16,12 +16,12 @@ import org.slf4j.LoggerFactory;
 
 import com.github.sarxos.webcam.Webcam;
 
-import monopoly.common.network.ServerInfo;
-import monopoly.common.network.packet.important.ImportantNetworkPacket;
-import monopoly.common.network.packet.realtime.BufferedImagePacket;
-import monopoly.common.network.packet.realtime.MicSoundPacket;
-import monopoly.common.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.network.Client;
+import monopoly.network.ServerInfo;
+import monopoly.network.packet.important.ImportantNetworkPacket;
+import monopoly.network.packet.realtime.BufferedImagePacket;
+import monopoly.network.packet.realtime.MicSoundPacket;
+import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.network.sender.MicSender;
 import monopoly.network.sender.WebcamSender;
 

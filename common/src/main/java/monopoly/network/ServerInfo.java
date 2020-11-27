@@ -1,4 +1,4 @@
-package monopoly.common.network;
+package monopoly.network;
 
 public class ServerInfo {
 	public static final String IP = "localhost"; // "3.131.85.191"

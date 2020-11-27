@@ -6,8 +6,8 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Port;
 import javax.sound.sampled.TargetDataLine;
 
-import monopoly.common.network.packet.realtime.MicSoundPacket;
 import monopoly.network.Client;
+import monopoly.network.packet.realtime.MicSoundPacket;
 
 /**
  * Can send the default microphone input over the network. Can be

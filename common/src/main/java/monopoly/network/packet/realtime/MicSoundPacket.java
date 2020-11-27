@@ -1,4 +1,4 @@
-package monopoly.common.network.packet.realtime;
+package monopoly.network.packet.realtime;
 
 import javax.sound.sampled.AudioFormat;
 

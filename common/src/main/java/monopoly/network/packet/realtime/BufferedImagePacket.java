@@ -1,4 +1,4 @@
-package monopoly.common.network.packet.realtime;
+package monopoly.network.packet.realtime;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -37,7 +37,7 @@ public class BufferedImagePacket extends RealTimeNetworkPacket {
 	public BufferedImagePacket(BufferedImage img, int sourceConnectionID) {
 		super(sourceConnectionID);
 		this.img = img;
-		
+
 		if (img.getHeight() != IMAGE_HEIGHT || img.getWidth() != IMAGE_WIDTH) {
 			this.img = getScaledImage(IMAGE_WIDTH, IMAGE_HEIGHT);
 		}

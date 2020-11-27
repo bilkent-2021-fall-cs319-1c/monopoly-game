@@ -6,8 +6,8 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamEvent;
 import com.github.sarxos.webcam.WebcamListener;
 
-import monopoly.common.network.packet.realtime.BufferedImagePacket;
 import monopoly.network.Client;
+import monopoly.network.packet.realtime.BufferedImagePacket;
 
 /**
  * Can continuously send the webcam screenshots over the network.

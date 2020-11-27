@@ -9,7 +9,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-import monopoly.common.network.packet.realtime.MicSoundPacket;
+import monopoly.network.packet.realtime.MicSoundPacket;
 
 /**
  * An audio channel to play microphone sound packet to the default speaker.

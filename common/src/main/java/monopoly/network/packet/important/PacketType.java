@@ -1,4 +1,4 @@
-package monopoly.common.network.packet.important;
+package monopoly.network.packet.important;
 
 /**
  * Contains all the types of important packets required for monopoly
@@ -29,5 +29,5 @@ public enum PacketType {
 
 //	Error Types
 	ERR_UPDATE_REQUIRED, ERR_USERNAME_IN_USE, ERR_LOBBY_FULL, ERR_ALREADY_IN_LOBBY, ERR_NOT_IN_LOBYY,
-	ERR_INVALID_LOBBY_LIMIT, ERR_UNKNOWN
+	ERR_INVALID_LOBBY_LIMIT, ERR_WRONG_FORMAT, ERR_UNKNOWN
 }

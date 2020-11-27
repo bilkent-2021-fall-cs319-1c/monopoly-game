@@ -11,11 +11,11 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import monopoly.common.network.packet.important.ImportantNetworkPacket;
-import monopoly.common.network.packet.realtime.BufferedImagePacket;
-import monopoly.common.network.packet.realtime.MicSoundPacket;
-import monopoly.common.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.network.Server;
+import monopoly.network.packet.important.ImportantNetworkPacket;
+import monopoly.network.packet.realtime.BufferedImagePacket;
+import monopoly.network.packet.realtime.MicSoundPacket;
+import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 
 /**
  * A demo server for video/audio chat.

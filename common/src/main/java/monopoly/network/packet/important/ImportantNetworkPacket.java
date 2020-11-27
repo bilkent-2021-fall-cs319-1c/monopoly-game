@@ -1,4 +1,4 @@
-package monopoly.common.network.packet.important;
+package monopoly.network.packet.important;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import monopoly.network.packet.important.packet_data.PacketData;
 
 /**
  * A generic network packet to be sent over the network for important

@@ -7,8 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import monopoly.common.network.packet.realtime.BufferedImagePacket;
-import monopoly.common.network.packet.realtime.MicSoundPacket;
+import monopoly.network.packet.realtime.BufferedImagePacket;
+import monopoly.network.packet.realtime.MicSoundPacket;
 
 /**
  * A demo Swing GUI for a single client. Can play its audio as well. Displays

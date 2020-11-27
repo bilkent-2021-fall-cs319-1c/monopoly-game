@@ -1,4 +1,4 @@
-package monopoly.common.network.packet.important;
+package monopoly.network.packet.important.packet_data;
 
 import java.io.Serializable;
 
