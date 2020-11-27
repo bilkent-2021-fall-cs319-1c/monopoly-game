@@ -2,14 +2,12 @@ package monopoly.network;
 
 import java.io.IOException;
 
-import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
 import lombok.Getter;
+import monopoly.network.packet.PacketUtil;
 import monopoly.network.packet.important.ImportantNetworkPacket;
-import monopoly.network.packet.realtime.BufferedImagePacket;
-import monopoly.network.packet.realtime.MicSoundPacket;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 
 /**
@@ -35,9 +33,7 @@ public abstract class Client {
 
 		kryoClient = new com.esotericsoftware.kryonet.Client(32768, 32768);
 
-		kryoClient.getKryo().register(BufferedImagePacket.class, new JavaSerializer());
-		kryoClient.getKryo().register(byte[].class);
-		kryoClient.getKryo().register(MicSoundPacket.class);
+		PacketUtil.registerPackets(kryoClient.getKryo());
 
 		kryoClient.addListener(new Listener() {
 			@Override
@@ -93,7 +89,7 @@ public abstract class Client {
 	 * @param connectionID the server assigned unique ID
 	 * @param object       the received object
 	 */
-	public abstract void receivedImportantPacket(int connectionID, ImportantNetworkPacket object);
+	public abstract void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet);
 
 	/**
 	 * Sends a {@link RealTimeNetworkPacket} to the server
