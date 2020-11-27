@@ -1,0 +1,19 @@
+@font-face {
+    font-family: 'Kabel-Heavy';
+    src:url('../fonts/kabel/Kabel-Heavy.ttf.woff') format('woff'),
+    url('../fonts/kabel/Kabel-Heavy.ttf.svg#Kabel-Heavy') format('svg'),
+    url('../fonts/kabel/Kabel-Heavy.ttf.eot'),
+    url('../fonts/kabel/Kabel-Heavy.ttf.eot?#iefix') format('embedded-opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.heroMonopolyText {
+    -fx-font-size: 100px;
+    -fx-font-family: 'Kabel-Heavy';
+    -fx-background-color: red;
+}
+
+.textPane {
+    -fx-background-color: red;
+}
