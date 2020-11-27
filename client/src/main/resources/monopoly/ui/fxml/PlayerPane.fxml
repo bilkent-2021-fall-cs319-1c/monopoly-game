@@ -22,15 +22,16 @@
 	</Group>
 
 	<!-- Player's Image or Webcam -->
-	<ImageView preserveRatio="true" MigPane.cc="wrap, top, left" fx:id="playerImage" />
+	<ImageView preserveRatio="true" MigPane.cc="wrap, top, left"
+		fx:id="playerImage" />
 
 	<!-- Player's Status Bar -->
 	<MigPane layout="hidemode 3" cols="[::50%]push[::25%][::25%]"
-		rows="0[]0" MigPane.cc="grow">
+		rows="0[center]0" MigPane.cc="grow">
 		<Label text="1500M" fx:id="moneyLabel" />
 
 		<!-- Trade or Webcam/Mic Icons -->
-		<Label text="Trade" fx:id="tradeLabel" MigPane.cc="span 2"/>
+		<Button text="Trade" fx:id="tradeButton" MigPane.cc="span 2" />
 
 		<ImageView fx:id="webcamIcon" visible="false"
 			pickOnBounds="true" onMouseClicked="#toggleWebcam">

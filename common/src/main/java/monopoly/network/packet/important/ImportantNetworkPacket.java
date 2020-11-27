@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import monopoly.network.packet.important.packet_data.PacketData;
 
@@ -20,6 +21,7 @@ import monopoly.network.packet.important.packet_data.PacketData;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class ImportantNetworkPacket implements Serializable {
 	private static final long serialVersionUID = -287461067569225738L;
 
@@ -31,5 +33,9 @@ public class ImportantNetworkPacket implements Serializable {
 
 		this.data = new ArrayList<>();
 		this.data.addAll(Arrays.asList(data));
+	}
+
+	public boolean isErrorPacket() {
+		return type.name().indexOf("ERR_") == 0;
 	}
 }

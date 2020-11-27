@@ -2,13 +2,11 @@ package monopoly.network;
 
 import java.io.IOException;
 
-import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
+import monopoly.network.packet.PacketUtil;
 import monopoly.network.packet.important.ImportantNetworkPacket;
-import monopoly.network.packet.realtime.BufferedImagePacket;
-import monopoly.network.packet.realtime.MicSoundPacket;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 
 /**
@@ -31,9 +29,7 @@ public abstract class Server {
 	public Server() throws IOException {
 		kryoServer = new com.esotericsoftware.kryonet.Server(WRITE_BUFFER_SIZE, OBJECT_BUFFER_SIZE);
 
-		kryoServer.getKryo().register(BufferedImagePacket.class, new JavaSerializer());
-		kryoServer.getKryo().register(byte[].class);
-		kryoServer.getKryo().register(MicSoundPacket.class);
+		PacketUtil.registerPackets(kryoServer.getKryo());
 
 		kryoServer.addListener(new Listener() {
 			@Override

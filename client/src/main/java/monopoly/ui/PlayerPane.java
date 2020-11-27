@@ -9,6 +9,7 @@ import javafx.beans.NamedArg;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,7 +21,7 @@ public class PlayerPane extends MigPane {
 	@FXML
 	private Label moneyLabel;
 	@FXML
-	private Label tradeLabel;
+	private Button tradeButton;
 	@FXML
 	private ImageView playerImage;
 	@FXML
@@ -42,31 +43,34 @@ public class PlayerPane extends MigPane {
 		loader.setRoot(this);
 		loader.load();
 
-		Stream.of(widthProperty(), heightProperty()).forEach(p -> p.addListener((observable, oldVal, newVal) -> {
-			double width = getWidth();
-			double height = getHeight();
+		Stream.of(widthProperty(), heightProperty())
+				.forEach(p -> p.addListener((observable, oldVal, newVal) -> adjustSize()));
+	}
 
-			playerNameLabel.setFont(
-					new Font(UIUtil.calculateFittingFontSize(height, width * 0.09, playerNameLabel.getText())));
+	private void adjustSize() {
+		double width = getWidth();
+		double height = getHeight();
 
-			moneyLabel.setFont(new Font(
-					UIUtil.calculateFittingFontSize(width * 0.84 * 0.49, height * 0.14, moneyLabel.getText())));
-			tradeLabel.setFont(new Font(
-					UIUtil.calculateFittingFontSize(width * 0.84 * 0.49, height * 0.14, tradeLabel.getText())));
+		playerNameLabel
+				.setFont(new Font(UIUtil.calculateFittingFontSize(height, width * 0.09, playerNameLabel.getText())));
 
-			playerImage.setFitHeight(height * 0.84);
-			playerImage.setFitWidth(width * 0.89);
+		moneyLabel.setFont(
+				new Font(UIUtil.calculateFittingFontSize(width * 0.84 * 0.49, height * 0.14, moneyLabel.getText())));
+		tradeButton.setFont(new Font(
+				UIUtil.calculateFittingFontSize(width * 0.84 * 0.49 - 10, height * 0.14 - 10, tradeButton.getText())));
 
-			double webcamMicIconSize = Math.min(height * 0.14, width * 0.88 * 0.49 / 2);
-			webcamIcon.setFitHeight(webcamMicIconSize);
-			webcamIcon.setFitWidth(webcamMicIconSize);
-			micIcon.setFitHeight(webcamMicIconSize);
-			micIcon.setFitWidth(webcamMicIconSize);
+		playerImage.setFitHeight(height * 0.84);
+		playerImage.setFitWidth(width * 0.89);
 
-			Image playerIconImg = ("right".equals(side) ? UIUtil.DEFAULT_PLAYER_IMAGE_LOOKING_LEFT
-					: UIUtil.DEFAULT_PLAYER_IMAGE);
-			playerImage.setImage(playerIconImg);
-		}));
+		double webcamMicIconSize = Math.min(height * 0.14, width * 0.88 * 0.49 / 2);
+		webcamIcon.setFitHeight(webcamMicIconSize);
+		webcamIcon.setFitWidth(webcamMicIconSize);
+		micIcon.setFitHeight(webcamMicIconSize);
+		micIcon.setFitWidth(webcamMicIconSize);
+
+		Image playerIconImg = ("right".equals(side) ? UIUtil.DEFAULT_PLAYER_IMAGE_LOOKING_LEFT
+				: UIUtil.DEFAULT_PLAYER_IMAGE);
+		playerImage.setImage(playerIconImg);
 	}
 
 	@FXML
@@ -81,7 +85,7 @@ public class PlayerPane extends MigPane {
 			setCols("0[10%:10%:10%]1%:1%:1%[grow]0");
 
 		if ("self".equals(player)) {
-			tradeLabel.setVisible(false);
+			tradeButton.setVisible(false);
 			webcamIcon.setVisible(true);
 			micIcon.setVisible(true);
 		}
