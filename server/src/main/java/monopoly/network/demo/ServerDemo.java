@@ -1,6 +1,8 @@
 package monopoly.network.demo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,9 +11,10 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import monopoly.common.network.packet.BufferedImagePacket;
-import monopoly.common.network.packet.MicSoundPacket;
-import monopoly.common.network.packet.NetworkPacket;
+import monopoly.common.network.packet.important.ImportantNetworkPacket;
+import monopoly.common.network.packet.realtime.BufferedImagePacket;
+import monopoly.common.network.packet.realtime.MicSoundPacket;
+import monopoly.common.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.network.Server;
 
 /**
@@ -23,10 +26,22 @@ import monopoly.network.Server;
 public class ServerDemo {
 	private static Logger logger = LoggerFactory.getLogger(ServerDemo.class);
 
+	public static int getPacketSize(RealTimeNetworkPacket packet) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+			oos.writeObject(packet);
+			oos.flush();
+			return baos.toByteArray().length;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
+
 	public static void main(String[] args) throws IOException {
 		List<Integer> connections = Collections.synchronizedList(new ArrayList<Integer>());
 
-		Server server = new Server() {
+		new Server() {
 			@Override
 			public void connected(int connectionID) {
 				connections.add(connectionID);
@@ -40,29 +55,28 @@ public class ServerDemo {
 			}
 
 			@Override
-			public void receivedPacket(int connectionID, NetworkPacket packet) {
+			public void receivedRealTimePacket(int connectionID, RealTimeNetworkPacket packet) {
 				if (packet instanceof BufferedImagePacket) {
 					logger.info("Received image from {}", connectionID);
-					connections.parallelStream().forEach(id -> sendPacket(packet, id));
+					connections.parallelStream().forEach(id -> sendRealTimePacket(packet, id));
 				} else if (packet instanceof MicSoundPacket) {
 					logger.info("Received sound from {}", connectionID);
 					connections.parallelStream().forEach(id -> {
 						if (id != connectionID)
-							sendPacket(packet, id);
+							sendRealTimePacket(packet, id);
 					});
 				}
 			}
 
 			@Override
-			public void receivedNotPacket(int connectionID, Object object) {
-				logger.warn("Received unknown object {} from id {}", object, connectionID);
+			public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
+				logger.warn("Received important packet {} from id {}", packet, connectionID);
 			}
 		};
 
 		try (Scanner scanner = new Scanner(System.in)) {
 			while (scanner.hasNext()) {
-				String msg = scanner.nextLine();
-				connections.parallelStream().forEach(id -> server.sendString(msg, id));
+				scanner.nextLine();
 			}
 		}
 	}

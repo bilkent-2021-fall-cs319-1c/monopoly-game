@@ -1,11 +1,12 @@
 package monopoly.network.sender;
 
+import java.awt.Dimension;
+
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamEvent;
 import com.github.sarxos.webcam.WebcamListener;
-import com.github.sarxos.webcam.WebcamResolution;
 
-import monopoly.common.network.packet.BufferedImagePacket;
+import monopoly.common.network.packet.realtime.BufferedImagePacket;
 import monopoly.network.Client;
 
 /**
@@ -23,7 +24,8 @@ public class WebcamSender {
 	/**
 	 * The resolution of webcam captures
 	 */
-	public static final WebcamResolution DEFAULT_RESOLUTION = WebcamResolution.QVGA;
+	public static final Dimension DEFAULT_RESOLUTION = new Dimension(BufferedImagePacket.IMAGE_WIDTH,
+			BufferedImagePacket.IMAGE_HEIGHT);
 
 	private Webcam webcam;
 
@@ -35,8 +37,8 @@ public class WebcamSender {
 	 */
 	public WebcamSender(Client client, Webcam webcam) {
 		this.webcam = webcam;
-		webcam.setCustomViewSizes(DEFAULT_RESOLUTION.getSize());
-		webcam.setViewSize(DEFAULT_RESOLUTION.getSize());
+		webcam.setCustomViewSizes(DEFAULT_RESOLUTION);
+		webcam.setViewSize(DEFAULT_RESOLUTION);
 		stop();
 
 		webcam.addWebcamListener(new WebcamListener() {
@@ -48,7 +50,7 @@ public class WebcamSender {
 
 			@Override
 			public void webcamImageObtained(WebcamEvent we) {
-				client.sendPacket(new BufferedImagePacket(we.getImage(), client.getConnectionID()));
+				client.sendRealTimePacket(new BufferedImagePacket(we.getImage(), client.getConnectionID()));
 			}
 
 			@Override
