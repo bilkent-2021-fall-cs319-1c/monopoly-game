@@ -8,7 +8,7 @@
 <?import monopoly.ui.UIUtil?>
 
 <fx:root xmlns:fx="http://javafx.com/fxml" type="MigPane"
-	layout="fill" rows="0[:84%:84%]:1%:1%[:14%:14%]:1%:1%"
+	layout="fill" rows="0[]:1%:1%[]:1%:1%"
 	style="-fx-border-color: gray; 
 		-fx-border-width: 5;
 		-fx-border-insets: -5;
@@ -22,30 +22,28 @@
 	</Group>
 
 	<!-- Player's Image or Webcam -->
-	<ImageView MigPane.cc="wrap" fx:id="playerImage" />
+	<ImageView preserveRatio="true" MigPane.cc="wrap, top, left" fx:id="playerImage" />
 
 	<!-- Player's Status Bar -->
-	<MigPane layout="" cols="[::50%]push[::50%]" rows="0[]0"
-		MigPane.cc="grow">
+	<MigPane layout="hidemode 3" cols="[::50%]push[::25%][::25%]"
+		rows="0[]0" MigPane.cc="grow">
 		<Label text="1500M" fx:id="moneyLabel" />
 
 		<!-- Trade or Webcam/Mic Icons -->
-		<MigPane layout="hidemode 3" rows="0[]0">
-			<Label text="Trade" fx:id="tradeLabel" />
+		<Label text="Trade" fx:id="tradeLabel" MigPane.cc="span 2"/>
 
-			<ImageView fx:id="webcamIcon" visible="false"
-				pickOnBounds="true" onMouseClicked="#toggleWebcam">
-				<image>
-					<UIUtil fx:constant="WEBCAM_CROSSED_ICON" />
-				</image>
-			</ImageView>
+		<ImageView fx:id="webcamIcon" visible="false"
+			pickOnBounds="true" onMouseClicked="#toggleWebcam">
+			<image>
+				<UIUtil fx:constant="WEBCAM_CROSSED_ICON" />
+			</image>
+		</ImageView>
 
-			<ImageView fx:id="micIcon" visible="false"
-				pickOnBounds="true" onMouseClicked="#toggleMicrophone">
-				<image>
-					<UIUtil fx:constant="MICROPHONE_CROSSED_ICON" />
-				</image>
-			</ImageView>
-		</MigPane>
+		<ImageView fx:id="micIcon" visible="false"
+			pickOnBounds="true" onMouseClicked="#toggleMicrophone">
+			<image>
+				<UIUtil fx:constant="MICROPHONE_CROSSED_ICON" />
+			</image>
+		</ImageView>
 	</MigPane>
 </fx:root>

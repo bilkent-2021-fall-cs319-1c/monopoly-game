@@ -57,14 +57,14 @@ public class PlayerPane extends MigPane {
 			playerImage.setFitHeight(height * 0.84);
 			playerImage.setFitWidth(width * 0.89);
 
-			double webcamMicIconSize = Math.min(height * 0.14, height * 0.14);
+			double webcamMicIconSize = Math.min(height * 0.14, width * 0.88 * 0.49 / 2);
 			webcamIcon.setFitHeight(webcamMicIconSize);
 			webcamIcon.setFitWidth(webcamMicIconSize);
 			micIcon.setFitHeight(webcamMicIconSize);
 			micIcon.setFitWidth(webcamMicIconSize);
 
-			Image playerIconImg = new Image(GameplayController.class.getResourceAsStream(
-					"images/" + ("right".equals(side) ? "PlayerIconLookingLeft.png" : "PlayerIcon.png")));
+			Image playerIconImg = ("right".equals(side) ? UIUtil.DEFAULT_PLAYER_IMAGE_LOOKING_LEFT
+					: UIUtil.DEFAULT_PLAYER_IMAGE);
 			playerImage.setImage(playerIconImg);
 		}));
 	}

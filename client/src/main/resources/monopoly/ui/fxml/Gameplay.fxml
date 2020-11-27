@@ -12,9 +12,19 @@
 	fx:controller="monopoly.ui.GameplayController" fx:id="stackPane">
 
 	<!-- Main Gameplay View -->
-	<MigPane fx:id="rootMigPane" layout="fill"
-		cols="[:24%:24%, fill, grow]1%[center]1%[:24%:24%, fill, grow]"
-		rows="0[grow, fill] [:5%:5%]">
+	<MigPane layout="fill" rows="0[grow, fill] [:5%:5%]"
+		cols="[:24%:24%, fill, grow]1%[center]1%[:24%:24%, fill, grow]">
+		<background>
+			<Background>
+				<images>
+					<BackgroundImage>
+						<image>
+							<UIUtil fx:constant="GAMEPLAY_BACKGROUND_IMAGE" />
+						</image>
+					</BackgroundImage>
+				</images>
+			</Background>
+		</background>
 
 		<!-- Players on the left side -->
 		<MigPane layout="fill, flowy" cols="0[fill]0"
@@ -61,7 +71,6 @@
 
 		<ImageView fx:id="chatIcon" onMouseClicked="#toggleChatPane"
 			MigPane.cc="right">
-
 			<image>
 				<UIUtil fx:constant="CHAT_ICON" />
 			</image>

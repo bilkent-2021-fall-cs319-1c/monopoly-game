@@ -11,16 +11,12 @@ import javafx.animation.TranslateTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
 public class GameplayController {
 	@FXML
 	private StackPane stackPane;
-	@FXML
-	private MigPane rootMigPane;
 	@FXML
 	private ImageView board;
 	@FXML
@@ -39,8 +35,8 @@ public class GameplayController {
 	private ScaleTransition boardScaleTransition;
 	private ParallelTransition boardRoateAndScaleTransition;
 
-	private volatile boolean chatOpen;
-	private volatile boolean boardRotating;
+	private boolean chatOpen;
+	private boolean boardRotating;
 	private int currentBoardAngle;
 
 	private ChangeListener<Number> widthListener;
@@ -88,21 +84,12 @@ public class GameplayController {
 			}
 		});
 
-		rootMigPane.setBackground(
-				new Background(new BackgroundImage(UIUtil.GAMEPLAY_BACKGROUND_IMAGE, null, null, null, null)));
-
 		openChatPane.setNode(chatPane);
 		closeChatPane.setNode(chatPane);
 		boardRoateAndScaleTransition.setNode(board);
 	}
 
 	private void boardRotateAndEnter() {
-//		try {
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//			Thread.currentThread().interrupt();
-//			e.printStackTrace();
-//		}
 		RotateTransition rotate = new RotateTransition(Duration.seconds(1), board);
 		ScaleTransition scale = new ScaleTransition(Duration.seconds(1), board);
 		scale.setToX(0.8);
