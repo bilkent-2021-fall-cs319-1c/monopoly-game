@@ -7,8 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import monopoly.common.network.packet.BufferedImagePacket;
-import monopoly.common.network.packet.MicSoundPacket;
+import monopoly.network.packet.realtime.BufferedImagePacket;
+import monopoly.network.packet.realtime.MicSoundPacket;
 
 /**
  * A demo Swing GUI for a single client. Can play its audio as well. Displays
@@ -49,7 +49,7 @@ public class OneClientView {
 		frm.add(pnl);
 		frm.setResizable(true);
 		frm.pack();
-		frm.setSize(640, 480);
+		frm.setSize(640, 360);
 		frm.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frm.setVisible(true);
 
