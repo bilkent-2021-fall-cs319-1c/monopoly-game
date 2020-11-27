@@ -95,6 +95,7 @@ public class User {
     public void leaveLobby()
     {
 	lobby.removePlayer( this);
+	
 	setLobby(null);
 	setReady(false);
 	setMicOpen(false);

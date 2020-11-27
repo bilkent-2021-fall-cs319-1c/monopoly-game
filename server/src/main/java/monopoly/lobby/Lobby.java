@@ -17,11 +17,17 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Lobby {
+    
+    private static long lastUsedId = 0;
+    private long id;
+    
     private String name;
     private int playerLimit;
-    private boolean isPublic;
     private String password;
+    private boolean isPublic;
+    
     private boolean started;
+    
     private List<User> players;
     private List<User> bannedPlayers;
     private LobbyOwner host;
@@ -38,6 +44,8 @@ public class Lobby {
     public Lobby(String title, int limit, boolean isPublic, String password) {
 	players = Collections.synchronizedList(new ArrayList<User>());
 	bannedPlayers = Collections.synchronizedList(new ArrayList<User>());
+	
+	id = ++lastUsedId;
 	
 	setName(title);
 	setPlayerLimit(playerLimit);
@@ -85,5 +93,10 @@ public class Lobby {
     {
 	bannedPlayers.add( player);
 	player.leaveLobby();
+    }
+    
+    @Override
+    public int hashCode() {
+        return Long.valueOf(id).hashCode();
     }
 }
