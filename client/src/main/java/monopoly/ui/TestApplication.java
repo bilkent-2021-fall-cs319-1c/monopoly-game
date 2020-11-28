@@ -15,9 +15,6 @@ public class TestApplication extends Application {
 		Parent root = FXMLLoader.load(getClass().getResource("fxml/MainScreen.fxml"));
 		Scene scene = new Scene(root);
 
-		scene.getStylesheets().add(TestApplication.class.getResource("css/common.css").toExternalForm());
-		scene.getStylesheets().add(TestApplication.class.getResource("css/mainScreen.css").toExternalForm());
-
 		stage.setTitle("Test JavaFX UI");
 		stage.setScene(scene);
 

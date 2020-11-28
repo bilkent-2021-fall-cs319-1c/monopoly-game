@@ -4,14 +4,16 @@ import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -20,14 +22,21 @@ import java.util.logging.Logger;
 public class MainScreenController {
 
     @FXML
-    private StackPane stackPane;
+    private MigPane mainMigPane;
+    @FXML
+    private Text heroMonopolyText;
     @FXML
     private Button createGameButton;
     @FXML
     private Button joinGameButton;
+    @FXML
+    private Button helpButton;
+    @FXML
+    private Button exitButton;
 
     private ChangeListener<Number> widthListener;
     private ChangeListener<Number> heightListener;
+
 
     Logger logger = Logger.getLogger(MainScreenController.class.getName());
 
@@ -37,20 +46,22 @@ public class MainScreenController {
     }
 
     private void windowHeightChanged() {
-        double windowHeight = stackPane.getScene().getHeight();
-        double windowWidth = stackPane.getScene().getWidth();
-        stackPane.setMaxHeight(windowHeight);
+        double windowHeight = mainMigPane.getScene().getHeight();
+        double windowWidth = mainMigPane.getScene().getWidth();
+        //Font heroTextFont = new Font(UIUtil.calculateFittingFontSize(windowHeight, windowWidth * 0.05, heroMonopolyText.getText()));
+        //Font.font("Avenir Next");
+        //heroMonopolyText.setFont(heroTextFont);
     }
 
     private void windowWidthChanged() {
-        double windowHeight = stackPane.getScene().getHeight();
-        double windowWidth = stackPane.getScene().getWidth();
-        stackPane.setMaxWidth(windowWidth);
+        double windowHeight = mainMigPane.getScene().getHeight();
+        double windowWidth = mainMigPane.getScene().getWidth();
+        mainMigPane.setMaxWidth(windowWidth);
     }
 
     @FXML
     public void initialize() {
-        stackPane.sceneProperty().addListener((observable, oldValue, newValue) -> {
+        mainMigPane.sceneProperty().addListener((observable, oldValue, newValue) -> {
             if (oldValue != null) {
                 oldValue.widthProperty().removeListener(widthListener);
                 oldValue.heightProperty().removeListener(heightListener);
@@ -59,38 +70,40 @@ public class MainScreenController {
                 newValue.widthProperty().addListener(widthListener);
                 newValue.heightProperty().addListener(heightListener);
             }
+
+            // Add necessary CSS classes
+            heroMonopolyText.getStyleClass().add("heroMonopolyText");
+            createGameButton.getStyleClass().add("buttonRegular");
+            joinGameButton.getStyleClass().add("buttonRegular");
+            helpButton.getStyleClass().add("buttonRegular");
+            exitButton.getStyleClass().add("buttonDanger");
+
         });
 
-        Image backgroundImage = new Image(MainScreenController.class.getResourceAsStream("images/Background.jpg"));
-        stackPane.setBackground(new Background(new BackgroundImage(backgroundImage, null, null, null, null)));
+        //Image backgroundImage = new Image(MainScreenController.class.getResourceAsStream("images/Background.png"));
+        //mainMigPane.setBackground(new Background(new BackgroundImage(backgroundImage, null, null, BackgroundPosition.CENTER, null)));
     }
 
 
-    public void switchToCreateGameScreen(ActionEvent actionEvent) {
-        logger.log(Level.INFO,"Create Game Button Pressed!");
-        FXMLLoader createGameScreen = new FXMLLoader(getClass().getResource("fxml/Gameplay.fxml"));
-        Stage stage = (Stage) createGameButton.getScene().getWindow();
-        Scene scene = null;
-        try {
-            scene = new Scene(createGameScreen.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        stage.setScene(scene);
-        stage.setFullScreen(true);
+    // These functions will be filled in once the main controller is up and running
+    @FXML
+    public void switchToCreateGameScreen () throws IOException {
+        logger.info("Crate Game Button Clicked!");
     }
 
-    public void switchToJoinGameScreen(ActionEvent actionEvent) {
-        logger.log(Level.INFO,"Join Game Button Pressed");
-        FXMLLoader joinGameScreen = new FXMLLoader(getClass().getResource("fxml/Gameplay.fxml"));
-        Stage stage = (Stage) joinGameButton.getScene().getWindow();
-        Scene scene = null;
-        try {
-            scene = new Scene(joinGameScreen.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        stage.setScene(scene);
-        stage.setFullScreen(true);
+    @FXML
+    public void switchToLobbyScreen() throws IOException {
+        logger.info("Join Game Button Clicked!");
     }
+
+    @FXML
+    public void switchToHelpScreen () throws IOException {
+        logger.info("Help Button Clicked!");
+    }
+
+    @FXML
+    public void exitApp() throws IOException {
+        logger.info("Exit Button Clicked!");
+    }
+
 }

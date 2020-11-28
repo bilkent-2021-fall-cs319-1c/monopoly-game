@@ -4,39 +4,31 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import org.tbee.javafx.scene.layout.fxml.*?>
+<?import monopoly.ui.UIUtil?>
 
+<MigPane xmlns:fx="http://javafx.com/fxml/1"
+         xmlns="http://javafx.com/javafx/11.0.1"
+         fx:id="mainMigPane"
+         layout="fill"
+         cols="33.3%[center]33.3%"
+         rows="0[grow]0"
+         fx:controller="monopoly.ui.MainScreenController">
 
-<StackPane fx:id="stackPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="monopoly.ui.MainUIController">
+    <stylesheets>
+        <UIUtil fx:constant="MAIN_SCREEN_CSS"/>
+        <UIUtil fx:constant="MAIN_CSS"/>
+    </stylesheets>
+    <MigPane layout="fill, flowy" cols="0[fill]0" rows="0[]20%[]5%[]5%[]0">
 
-    <MigPane fx:id="mainMigPane" layout="fill"
-             cols="33.3%[center]33.3%"
-             rows="0[grow]0">
+        <Text fx:id="heroMonopolyText" text="MONOPOLY"/>
 
-
-        <MigPane layout="fill, flowy" cols="0[fill]0" rows="0[]20%[]5%[]5%[]0">
-
-            <Text fx:id="heroMonopolyText" text="MONOPOLY"/>
-
-            <!--<Pane fx:id="textPane" style="-fx-background-color: red;" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
-                <Text fx:id="heroMonopolyText" text="MONOPOLY" style="-fx-fill: white;" layoutY="70.0"/>
-            </Pane>-->
-
-            <!--<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="88.0" prefWidth="442.0" style="-fx-background-color: red;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-                <children>
-                    <Text fx:id="heroMonopolyText" fill="WHITE" layoutX="1.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MONOPOLY" textAlignment="CENTER" wrappingWidth="439.6708984375">
-                        <font>
-                            <Font size="75.0" />
-                        </font>
-                    </Text>
-                </children>
-            </Pane>-->
-
-            <Button fx:id="createGameButton" onAction="#switchToGameplayScreen">Create Game</Button>
-            <Button fx:id="joinGameButton" onAction="#switchToGameplayScreen">Join Game</Button>
-            <Button>Help</Button>
-
-        </MigPane>
+        <Button fx:id="createGameButton" onAction="#switchToCreateGameScreen">Create Game</Button>
+        <Button fx:id="joinGameButton" onAction="#switchToLobbyScreen">Join Game</Button>
+        <Button fx:id="helpButton" onAction="#switchToHelpScreen">Help</Button>
+        <Button fx:id="exitButton" onAction="#exitApp">Exit</Button>
 
     </MigPane>
 
-</StackPane>
+</MigPane>
+
+

@@ -8,6 +8,10 @@
     font-style: normal;
 }
 
+.stackPane {
+    -fx-background-color: red;
+}
+
 .heroMonopolyText {
     -fx-font-size: 100px;
     -fx-font-family: 'Kabel-Heavy';

@@ -1,5 +1,6 @@
 package monopoly.ui;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -45,6 +46,10 @@ public class MainUIController {
     Text heroMonopolyText;
     @FXML
     Button joinGameButton;
+    @FXML
+    Button helpButton;
+    @FXML
+    Button exitButton;
 
     private MainScreenController mainScreenController;
     //private LobbyScreenController lobbyScreenController;
@@ -70,6 +75,8 @@ public class MainUIController {
         //stackPane.setBackground(new Background(new BackgroundImage(backgroundImage, null, null, null, null)));
         heroMonopolyText.getStyleClass().add("heroMonopolyText");
         //initMainScreen();
+
+        // Add classes to buttons
         currentScreen = Screens.MAIN_SCREEN;
     }
 
@@ -99,21 +106,10 @@ public class MainUIController {
         }
 
 
-        /*if (currentScreen != Screens.GAME_SCREEN) {
-            if (gameScreen == null) {
-                initGameScreen();
-            }
+    }
 
-            currentScreen = Screens.GAME_SCREEN;
-
-            Stage stage = (Stage) joinGameButton.getScene().getWindow();
-            Scene scene = new Scene((Parent) gameScreen);
-
-            stage.setScene(scene);
-            stage.setFullScreen(true);
-
-        }*/
-
+    public void exitApp() {
+        logger.info("exit");
     }
 
 }
