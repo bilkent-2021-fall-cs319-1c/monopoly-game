@@ -8,7 +8,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Singleton JavaFX Application class for Monopoly.
@@ -18,13 +20,17 @@ import lombok.Getter;
  */
 @Getter
 public class ClientApplication extends Application {
-	private ClientApplication instance;
+	@Getter
+	@Setter(AccessLevel.PRIVATE)
+	private static ClientApplication instance;
 	private Scene scene;
+	private Object controller;
 
 	@Override
 	public void init() {
-		instance = this;
+		setInstance(this);
 		scene = null;
+		controller = null;
 	}
 
 	@Override
@@ -46,7 +52,10 @@ public class ClientApplication extends Application {
 	 * @throws IOException If the resource cannot be found
 	 */
 	public void switchToView(String resourcePath) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource(resourcePath));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
+		Parent root = loader.load();
+		controller = loader.getController();
+
 		if (scene == null) {
 			scene = new Scene(root);
 		} else {

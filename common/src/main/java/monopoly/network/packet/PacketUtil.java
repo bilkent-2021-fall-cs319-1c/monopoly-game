@@ -7,9 +7,11 @@ import com.esotericsoftware.kryo.serializers.JavaSerializer;
 
 import monopoly.network.packet.important.ImportantNetworkPacket;
 import monopoly.network.packet.important.PacketType;
+import monopoly.network.packet.important.packet_data.BooleanPacketData;
 import monopoly.network.packet.important.packet_data.IntegerPacketData;
 import monopoly.network.packet.important.packet_data.LobbyListPacketData;
 import monopoly.network.packet.important.packet_data.LobbyPacketData;
+import monopoly.network.packet.important.packet_data.PlayerPacketData;
 import monopoly.network.packet.important.packet_data.StringPacketData;
 import monopoly.network.packet.realtime.BufferedImagePacket;
 import monopoly.network.packet.realtime.MicSoundPacket;
@@ -29,6 +31,8 @@ public class PacketUtil {
 		kryo.register(LobbyPacketData.class);
 		kryo.register(LobbyListPacketData.class);
 		kryo.register(StringPacketData.class);
+		kryo.register(BooleanPacketData.class);
+		kryo.register(PlayerPacketData.class);
 		kryo.register(ImportantNetworkPacket.class);
 	}
 }

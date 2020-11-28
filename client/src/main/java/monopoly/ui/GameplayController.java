@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 
 public class GameplayController {
 	@FXML
@@ -65,6 +66,10 @@ public class GameplayController {
 		boardScaleTransition.setToY(0.65);
 		boardRoateAndScaleTransition = new ParallelTransition(boardRotateTransition, boardScaleTransition);
 		boardRoateAndScaleTransition.setOnFinished(e -> boardRotating = false);
+	}
+
+	public void realTimePacketReceived(RealTimeNetworkPacket packet) {
+		// TODO If audio, play it. If webcam, show it
 	}
 
 	@FXML
