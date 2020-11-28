@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+<?import javafx.scene.control.*?>
+
+
+<StackPane fx:id="rootPane" xmlns:fx="http://javafx.com/fxml" fx:controller="monopoly.ui.JoinLobbyController">
+	<MigPane fx:id="mainPane" layout=" fill, center"
+		rows="[fill]" cols="[::39%, fill, grow]2%[::59%, fill, grow]">
+		<MigPane fx:id="leftPane" layout="debug,wrap"
+			rows="13%[15%]5%[10%]0[10%]2%[10%]5%[10%, top]5%" cols="5%[left]2%[left]"
+			MigPane.cc="grow">
+			<Text fx:id="mainTitle" MigPane.cc="span 2">Join Lobby</Text>
+
+			<Text fx:id="promptText" MigPane.cc="span 2, split 2,left, wrap, bottom">Choose a room to join</Text>
+			<Text fx:id="infoText" MigPane.cc="span 2, left">You can also search for a room by entering its name or by the player. </Text>
+			<Text fx:id="roomTitle">Room Name:</Text>
+			<TextField fx:id="roomName" text="" />
+
+			<Text fx:id="passwordTitle">Password:</Text>
+			<TextField fx:id="passwordValue" text="" />
+
+			<Button fx:id="joinButton" mnemonicParsing="false"
+				text="Join" MigPane.cc="span 2, center" />
+		</MigPane>
+		<MigPane fx:id="rightPane" layout="fill, flowy"
+			cols="5%[fill]5%" rows="5%[fill]10%" MigPane.cc="grow, wrap">
+			<TableView fx:id="roomList" MigPane.cc="span 2, center">
+			</TableView>
+		</MigPane>
+
+	</MigPane>
+</StackPane>
