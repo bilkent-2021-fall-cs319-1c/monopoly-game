@@ -6,29 +6,43 @@
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 <?import monopoly.ui.UIUtil?>
 
-<MigPane xmlns:fx="http://javafx.com/fxml/1"
-         xmlns="http://javafx.com/javafx/11.0.1"
-         fx:id="mainMigPane"
-         layout="fill"
-         cols="33.3%[center]33.3%"
-         rows="0[grow]0"
-         fx:controller="monopoly.ui.MainScreenController">
+<MigPane xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" fx:id="mainMigPane" layout="fill"
+	cols="33.3%[center]33.3%" rows="0[grow]0"
+	fx:controller="monopoly.ui.MainScreenController">
+	<background>
+		<Background>
+			<images>
+				<BackgroundImage>
+					<image>
+						<UIUtil fx:constant="BACKGROUND_IMAGE1" />
+					</image>
+				</BackgroundImage>
+			</images>
+		</Background>
+	</background>
 
-    <stylesheets>
-        <UIUtil fx:constant="MAIN_SCREEN_CSS"/>
-        <UIUtil fx:constant="MAIN_CSS"/>
-    </stylesheets>
-    <MigPane layout="fill, flowy" cols="0[fill]0" rows="0[]20%[]5%[]5%[]0">
+	<stylesheets>
+		<UIUtil fx:constant="MAIN_SCREEN_CSS" />
+		<UIUtil fx:constant="MAIN_CSS" />
+	</stylesheets>
 
-        <Text fx:id="heroMonopolyText" text="MONOPOLY"/>
+	<MigPane layout="fill, flowy" cols="0[fill]0"
+		rows="0[]20%[]5%[]5%[]0">
 
-        <Button fx:id="createGameButton" onAction="#switchToCreateGameScreen">Create Game</Button>
-        <Button fx:id="joinGameButton" onAction="#switchToLobbyScreen">Join Game</Button>
-        <Button fx:id="helpButton" onAction="#switchToHelpScreen">Help</Button>
-        <Button fx:id="exitButton" onAction="#exitApp">Exit</Button>
+		<Text fx:id="heroMonopolyText" text="MONOPOLY"
+			styleClass="heroMonopolyText" />
 
-    </MigPane>
-
+		<Button fx:id="createGameButton"
+			onAction="#switchToCreateGameScreen" styleClass="buttonRegular"
+			text="Create Game" />
+		<Button fx:id="joinGameButton" onAction="#switchToJoinLobbyScreen"
+			styleClass="buttonRegular" text="Join Game" />
+		<Button fx:id="helpButton" onAction="#switchToHelpScreen"
+			styleClass="buttonRegular" text="Help" />
+		<Button fx:id="exitButton" onAction="#exitApp"
+			styleClass="buttonDanger" text="Exit" />
+	</MigPane>
 </MigPane>
 
 

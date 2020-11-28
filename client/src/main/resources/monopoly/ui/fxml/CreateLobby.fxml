@@ -6,21 +6,23 @@
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 <?import javafx.scene.control.*?>
 
-
-<StackPane fx:id ="stackPane" xmlns:fx="http://javafx.com/fxml"
+<StackPane xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
 	fx:controller="monopoly.ui.CreateLobbyController">
 
 	<MigPane fx:id="migPanel" layout=" wrap, center"
-		rows="13%[15%]5%[10%]2%[10%]2%[10%]5%[10%, top]5%" cols="[right]2%[left]">
+		rows="13%[15%]5%[10%]2%[10%]2%[10%]5%[10%, top]5%"
+		cols="[right]2%[left]">
 
 		<Text fx:id="mainTitle" MigPane.cc="span 2, center">Create Lobby</Text>
 
 		<Text fx:id="limitTitle">Player Limit:</Text>
-		<Spinner fx:id="limitValue" >
-	      <valueFactory>
-	        <SpinnerValueFactory.IntegerSpinnerValueFactory min="2" max="6"/>
-	      </valueFactory>
-	    </Spinner>
+		<Spinner fx:id="limitValue">
+			<valueFactory>
+				<SpinnerValueFactory.IntegerSpinnerValueFactory
+					min="2" max="6" />
+			</valueFactory>
+		</Spinner>
 
 		<Text fx:id="roomTitle">Room Name:</Text>
 		<TextField fx:id="roomName" text="" />

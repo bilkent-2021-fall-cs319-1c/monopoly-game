@@ -1,16 +1,9 @@
-@font-face {
-    font-family: 'Kabel';
-    src:url('../fonts/kabel/Kabel-Bold.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
 .stackPane {
     -fx-background-color: red;
 }
 
 .heroMonopolyText {
-    -fx-font-size: 90px;
+    -fx-font-size: 90.0px;
     -fx-font-family: 'Kabel';
     -fx-background-color: red;
 }

@@ -1,12 +1,14 @@
 package monopoly.ui;
 
-import javafx.css.Stylesheet;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class UIUtil {
-	public static final Image GAMEPLAY_BACKGROUND_IMAGE = loadImage("images/Background.jpg");
+	public static final Image BACKGROUND_IMAGE1 = loadImage("images/Background1.jpg");
+	public static final Image BACKGROUND_IMAGE2 = loadImage("images/Background2.jpg");
+	public static final Image BACKGROUND_IMAGE3 = loadImage("images/Background3.jpg");
+
 	public static final Image DEFAULT_PLAYER_IMAGE = loadImage("images/PlayerIcon.png");
 	public static final Image DEFAULT_PLAYER_IMAGE_LOOKING_LEFT = loadImage("images/PlayerIconLookingLeft.png");
 
@@ -23,12 +25,25 @@ public class UIUtil {
 	public static final String MAIN_CSS = loadStylesheet("css/common.css");
 	public static final String MAIN_SCREEN_CSS = loadStylesheet("css/mainScreen.css");
 
+	static {
+		loadFont("fonts/kabel/Kabel-Bold.ttf");
+	}
+
 	private UIUtil() {
 	}
 
-	public static double calculateFittingFontSize(double width, double height, String text) {
+	/**
+	 * Calculates the font size that fits in the given area
+	 * 
+	 * @param width      The width of the area
+	 * @param height     The height of the area
+	 * @param fontFamily The name of the font family to use for the calculation
+	 * @param text       The text to fit
+	 * @return The maximum font size that fits in the given rectangular area
+	 */
+	public static double calculateFittingFontSize(double width, double height, String fontFamily, String text) {
 		final int defaultFontSize = 20;
-		Font font = Font.font(defaultFontSize);
+		Font font = Font.font(fontFamily, defaultFontSize);
 		Text tempText = new Text(text);
 		tempText.setFont(font);
 
@@ -38,10 +53,29 @@ public class UIUtil {
 		return Math.min(defaultFontSize * width / textWidth, defaultFontSize * height / textHeight);
 	}
 
+	/**
+	 * Calculates the default font size that fits in the given area
+	 * 
+	 * @param width  The width of the area
+	 * @param height The height of the area
+	 * @param text   The text to fit
+	 * @return The maximum font size that fits in the given rectangular area using
+	 *         the default font
+	 */
+	public static double calculateFittingFontSize(double width, double height, String text) {
+		String defaultFontFamily = Font.getDefault().getFamily();
+		return calculateFittingFontSize(width, height, defaultFontFamily, text);
+	}
+
 	private static Image loadImage(String path) {
 		return new Image(GameplayController.class.getResourceAsStream(path));
 	}
+
 	private static String loadStylesheet(String path) {
 		return GameplayController.class.getResource(path).toExternalForm();
+	}
+
+	private static void loadFont(String path) {
+		Font.loadFont(GameplayController.class.getResourceAsStream(path), 20);
 	}
 }

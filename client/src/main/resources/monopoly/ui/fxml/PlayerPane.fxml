@@ -7,8 +7,9 @@
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 <?import monopoly.ui.UIUtil?>
 
-<fx:root xmlns:fx="http://javafx.com/fxml" type="MigPane"
-	layout="fill" rows="0[]:1%:1%[]:1%:1%"
+<fx:root xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill"
+	rows="0[]:1%:1%[]:1%:1%"
 	style="-fx-border-color: gray; 
 		-fx-border-width: 5;
 		-fx-border-insets: -5;
