@@ -1,5 +1,6 @@
 package monopoly.ui;
 
+import javafx.css.Stylesheet;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -19,6 +20,9 @@ public class UIUtil {
 	public static final Image MICROPHONE_ICON = loadImage("images/Microphone.png");
 	public static final Image MICROPHONE_CROSSED_ICON = loadImage("images/MicrophoneCross.png");
 
+	public static final String MAIN_CSS = loadStylesheet("css/common.css");
+	public static final String MAIN_SCREEN_CSS = loadStylesheet("css/mainScreen.css");
+
 	private UIUtil() {
 	}
 
@@ -36,5 +40,8 @@ public class UIUtil {
 
 	private static Image loadImage(String path) {
 		return new Image(GameplayController.class.getResourceAsStream(path));
+	}
+	private static String loadStylesheet(String path) {
+		return GameplayController.class.getResource(path).toExternalForm();
 	}
 }

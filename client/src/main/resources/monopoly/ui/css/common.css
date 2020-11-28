@@ -1,0 +1,41 @@
+
+.button {
+    -fx-padding: 15px;
+    -fx-font-size: 20px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 13px;
+    -fx-font-family: 'Avenir Next';
+    -fx-font-weight: bold;
+}
+
+.buttonRegular {
+    -fx-border-color: rgb(10, 104, 255);
+    -fx-border-width: 4px;
+    -fx-background-color: white;
+    -fx-text-fill: rgb(10, 104, 255);
+}
+
+.buttonDanger {
+    -fx-border-color: rgb(240, 42, 31);
+    -fx-border-width: 4px;
+    -fx-background-color: white;
+    -fx-text-fill: rgb(240, 42, 31);
+}
+
+.buttonRegular:hover {
+    -fx-border-color: transparent;
+    -fx-background-color: rgb(10, 104, 255);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0, 0.6), 13, 0, 0, 0);
+
+}
+
+.buttonDanger:hover {
+    -fx-border-color: transparent;
+    -fx-background-color: rgb(240, 42, 31);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0, 0.6), 13, 0, 0, 0);
+
+}
+
+
