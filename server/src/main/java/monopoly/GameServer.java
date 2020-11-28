@@ -1,7 +1,9 @@
-import monopoly.common.network.packet.NetworkPacket;
-import monopoly.network.Server;
-
+package monopoly;
 import java.io.IOException;
+
+import monopoly.network.Server;
+import monopoly.network.packet.important.ImportantNetworkPacket;
+import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 
 /**
  * Game Server class for server-side operations, extends abstract.
@@ -11,9 +13,6 @@ import java.io.IOException;
  */
 
 public class GameServer extends Server {
-
-    public int TCP_PORT;
-    public int UDP_PORT;
 
     private static GameServer instance = null;
 
@@ -43,15 +42,13 @@ public class GameServer extends Server {
 
     }
 
-    @Override
-    public void receivedPacket(int connectionID, NetworkPacket packet) {
+	@Override
+	public void receivedRealTimePacket(int connectionID, RealTimeNetworkPacket packet) {
+		
+	}
 
-    }
-
-    @Override
-    public void receivedNotPacket(int connectionID, Object object) {
-
-    }
-
-
+	@Override
+	public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
+		
+	}
 }

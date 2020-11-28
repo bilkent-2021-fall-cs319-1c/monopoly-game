@@ -1,4 +1,4 @@
-package monopoly.common.network.packet;
+package monopoly.network.packet.realtime;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -18,8 +18,11 @@ import lombok.Getter;
  * @version Nov 18, 2020
  */
 @Getter
-public class BufferedImagePacket extends NetworkPacket {
+public class BufferedImagePacket extends RealTimeNetworkPacket {
 	private static final long serialVersionUID = 650861908884172142L;
+
+	public static final int IMAGE_WIDTH = 640;
+	public static final int IMAGE_HEIGHT = 360;
 
 	private transient BufferedImage img;
 
@@ -34,6 +37,10 @@ public class BufferedImagePacket extends NetworkPacket {
 	public BufferedImagePacket(BufferedImage img, int sourceConnectionID) {
 		super(sourceConnectionID);
 		this.img = img;
+
+		if (img.getHeight() != IMAGE_HEIGHT || img.getWidth() != IMAGE_WIDTH) {
+			this.img = getScaledImage(IMAGE_WIDTH, IMAGE_HEIGHT);
+		}
 	}
 
 	/**

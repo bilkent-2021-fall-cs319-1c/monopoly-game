@@ -2,14 +2,12 @@ package monopoly.network;
 
 import java.io.IOException;
 
-import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-import monopoly.common.network.ServerPort;
-import monopoly.common.network.packet.BufferedImagePacket;
-import monopoly.common.network.packet.MicSoundPacket;
-import monopoly.common.network.packet.NetworkPacket;
+import monopoly.network.packet.PacketUtil;
+import monopoly.network.packet.important.ImportantNetworkPacket;
+import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 
 /**
  * A TCP and UDP server
@@ -31,9 +29,7 @@ public abstract class Server {
 	public Server() throws IOException {
 		kryoServer = new com.esotericsoftware.kryonet.Server(WRITE_BUFFER_SIZE, OBJECT_BUFFER_SIZE);
 
-		kryoServer.getKryo().register(BufferedImagePacket.class, new JavaSerializer());
-		kryoServer.getKryo().register(byte[].class);
-		kryoServer.getKryo().register(MicSoundPacket.class);
+		PacketUtil.registerPackets(kryoServer.getKryo());
 
 		kryoServer.addListener(new Listener() {
 			@Override
@@ -48,16 +44,16 @@ public abstract class Server {
 
 			@Override
 			public void received(Connection connection, Object object) {
-				if (object instanceof NetworkPacket) {
-					receivedPacket(connection.getID(), (NetworkPacket) object);
-				} else {
-					receivedNotPacket(connection.getID(), object);
+				if (object instanceof RealTimeNetworkPacket) {
+					receivedRealTimePacket(connection.getID(), (RealTimeNetworkPacket) object);
+				} else if (object instanceof ImportantNetworkPacket) {
+					receivedImportantPacket(connection.getID(), (ImportantNetworkPacket) object);
 				}
 			}
 		});
 
 		kryoServer.start();
-		kryoServer.bind(ServerPort.PORT, ServerPort.PORT);
+		kryoServer.bind(ServerInfo.PORT, ServerInfo.PORT);
 	}
 
 	/**
@@ -75,41 +71,41 @@ public abstract class Server {
 	public abstract void disconnected(int connectionID);
 
 	/**
-	 * Called when the server receives a {@link NetworkPacket} from a client
+	 * Called when the server receives a {@link RealTimeNetworkPacket} from a client
 	 * 
 	 * @param connectionID the server assigned unique connection ID
 	 * @param packet       the received packet
 	 */
-	public abstract void receivedPacket(int connectionID, NetworkPacket packet);
+	public abstract void receivedRealTimePacket(int connectionID, RealTimeNetworkPacket packet);
 
 	/**
-	 * Called when the server receives anything other than a {@link NetworkPacket}
-	 * from a client
+	 * Called when the server receives an {@link ImportantNetworkPacket} from a
+	 * client
 	 * 
 	 * @param connectionID the server assigned unique connection ID
 	 * @param object       the received object
 	 */
-	public abstract void receivedNotPacket(int connectionID, Object object);
+	public abstract void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet);
 
 	/**
-	 * Sends a {@link NetworkPacket} to the specified client
+	 * Sends a {@link RealTimeNetworkPacket} to the specified client
 	 * 
 	 * @param packet       Packet to send
 	 * @param connectionID The ID of the connection with the client to which the
 	 *                     packet should be sent
 	 */
-	public void sendPacket(NetworkPacket packet, int connectionID) {
+	public void sendRealTimePacket(RealTimeNetworkPacket packet, int connectionID) {
 		kryoServer.sendToUDP(connectionID, packet);
 	}
 
 	/**
-	 * Sends a String to the specified client
+	 * Sends an {@link ImportantNetworkPacket} to the specified client
 	 * 
-	 * @param string       String to send
+	 * @param packet       Packet to send
 	 * @param connectionID The ID of the connection with the client to which the
 	 *                     string should be sent
 	 */
-	public void sendString(String string, int connectionID) {
-		kryoServer.sendToTCP(connectionID, string);
+	public void sendImportantPacket(ImportantNetworkPacket packet, int connectionID) {
+		kryoServer.sendToTCP(connectionID, packet);
 	}
 }

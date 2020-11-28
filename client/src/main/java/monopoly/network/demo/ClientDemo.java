@@ -16,10 +16,12 @@ import org.slf4j.LoggerFactory;
 
 import com.github.sarxos.webcam.Webcam;
 
-import monopoly.common.network.packet.BufferedImagePacket;
-import monopoly.common.network.packet.MicSoundPacket;
-import monopoly.common.network.packet.NetworkPacket;
 import monopoly.network.Client;
+import monopoly.network.ServerInfo;
+import monopoly.network.packet.important.ImportantNetworkPacket;
+import monopoly.network.packet.realtime.BufferedImagePacket;
+import monopoly.network.packet.realtime.MicSoundPacket;
+import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.network.sender.MicSender;
 import monopoly.network.sender.WebcamSender;
 
@@ -65,20 +67,15 @@ public class ClientDemo {
 		webcamSender.start();
 
 		while (scanner.hasNext()) {
-			client.sendString(scanner.nextLine());
+			scanner.nextLine();
 		}
 
 		webcamSender.stop();
 	}
 
 	public static void main(String[] args) throws IOException {
-		String serverIp = "localhost";
 		try (Scanner scanner = new Scanner(System.in)) {
-			System.out.print("Server ip: ");
-			serverIp = scanner.next();
-			logger.info("Entered ip: {}", serverIp);
-
-			new Client(serverIp) {
+			new Client(ServerInfo.IP) {
 				@Override
 				public void connected(int connectionID) {
 					logger.info("Connected to Server with id: {}", connectionID);
@@ -91,7 +88,7 @@ public class ClientDemo {
 				}
 
 				@Override
-				public void receivedPacket(int connectionID, NetworkPacket packet) {
+				public void receivedRealTimePacket(int connectionID, RealTimeNetworkPacket packet) {
 					if (packet instanceof BufferedImagePacket) {
 						BufferedImagePacket screenshot = (BufferedImagePacket) packet;
 						logger.debug("Image Received from id: {}", packet.getSourceConnectionID());
@@ -105,8 +102,8 @@ public class ClientDemo {
 				}
 
 				@Override
-				public void receivedNotPacket(int connectionID, Object object) {
-					logger.warn("Received unknown object {} from id {}", object, connectionID);
+				public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
+					logger.warn("Received important packet {} from id {}", packet, connectionID);
 				}
 			};
 

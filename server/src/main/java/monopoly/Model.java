@@ -1,8 +1,10 @@
-import monopoly.lobby.*;
-import monopoly.network.Server;
+package monopoly;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
+
+import monopoly.lobby.*;
 
 /**
  * Model for server and lobby management
@@ -16,7 +18,6 @@ public class Model {
     private List<Lobby> lobbies;
     private List<User> users;
     private GameServer server;
-
 
     private Model() {
         lobbies = Collections.synchronizedList(new ArrayList<Lobby>());
