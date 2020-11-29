@@ -7,3 +7,4 @@ We will implement the “_Monopoly Classic_” game. Game rules will be taken fr
 
 ## Iteration 1
 [Analysis Report](docs/Iteration1_AnalysisReport.pdf)
+[Design Report](docs/Iteration1_DesignReport.pdf)
