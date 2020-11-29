@@ -28,10 +28,11 @@
 		<TextField fx:id="roomName" text="" />
 
 		<Text fx:id="passwordTitle">Password:</Text>
-		<TextField fx:id="passwordValue" text="" />
+		<TextField fx:id="passwordValue" text="" disable="true" />
 
-		<CheckBox fx:id="checkPriv" MigPane.cc="left" text="Private" />
+		<CheckBox fx:id="checkPriv" MigPane.cc="left" text="Private"
+			onAction="#privateChange" />
 		<Button fx:id="createButton" mnemonicParsing="false"
-			text="Create" MigPane.cc="right" />
+			text="Create" MigPane.cc="right" onAction="#validateAndCreateLobby" />
 	</MigPane>
 </StackPane>

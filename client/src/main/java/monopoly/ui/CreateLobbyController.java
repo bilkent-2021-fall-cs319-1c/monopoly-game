@@ -1,5 +1,7 @@
 package monopoly.ui;
 
+import java.io.IOException;
+
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.beans.value.ChangeListener;
@@ -36,7 +38,6 @@ public class CreateLobbyController {
 	private ChangeListener<Number> heightListener;
 
 	public CreateLobbyController() {
-
 		widthListener = (observable, oldValue, newValue) -> windowWidthChanged();
 		heightListener = (observable, oldValue, newValue) -> windowHeightChanged();
 	}
@@ -55,8 +56,61 @@ public class CreateLobbyController {
 				windowHeightChanged();
 				windowWidthChanged();
 			}
-
 		});
+	}
+
+	@FXML
+	private void privateChange() {
+		boolean isPrivate = checkPriv.isSelected();
+		if (isPrivate) {
+			passwordValue.setDisable(false);
+		} else {
+			passwordValue.setDisable(true);
+			passwordValue.clear();
+		}
+	}
+
+	@FXML
+	private void validateAndCreateLobby() throws IOException {
+		if (!validate()) {
+			// TODO Display error
+			return;
+		}
+
+		String lobbyName = roomName.getText();
+		boolean isPublic = !checkPriv.isSelected();
+		String password = passwordValue.getText();
+		int playerLimit = limitValue.getValue();
+
+		boolean success = ClientApplication.getInstance().getNetworkManager().createLobby(lobbyName, isPublic, password,
+				playerLimit);
+		System.out.println(success);
+		if (success) {
+			ClientApplication.getInstance().switchToView("fxml/Lobby.fxml");
+		}
+	}
+
+	private boolean validate() {
+		// TODO
+		return true;
+	}
+
+	private void windowHeightChanged() {
+		double height = stackPane.getScene().getHeight();
+		double width = stackPane.getScene().getWidth();
+		stackPane.setMaxHeight(height);
+
+		createButton.setPrefHeight(height * 0.04);
+		setFontSizes(height, width);
+	}
+
+	private void windowWidthChanged() {
+		double height = stackPane.getScene().getHeight();
+		double width = stackPane.getScene().getWidth();
+		stackPane.setMaxWidth(width);
+
+		createButton.setPrefWidth(width * 0.08);
+		setFontSizes(height, width);
 	}
 
 	private void setFontSizes(double height, double width) {
@@ -68,31 +122,7 @@ public class CreateLobbyController {
 		passwordValue.setFont(UIUtil.calculateFittingFontSize(height, width * 0.014, passwordValue.getText()));
 
 		checkPriv.setFont(UIUtil.calculateFittingFontSize(height, width * 0.02, checkPriv.getText()));
-		createButton.setFont(UIUtil.calculateFittingFontSize(createButton.getWidth() - 20,
-				createButton.getHeight() - 20, createButton.getText()));
-	}
-
-	private void windowHeightChanged() {
-		double height = stackPane.getScene().getHeight();
-		double width = stackPane.getScene().getWidth();
-		stackPane.setMaxHeight(height);
-
-		createButton.setPrefHeight(height * 0.04);
-		createButton.setMinHeight(height * 0.04);
-		createButton.setMaxHeight(height * 0.04);
-		setFontSizes(height, width);
-
-	}
-
-	private void windowWidthChanged() {
-		double height = stackPane.getScene().getHeight();
-		double width = stackPane.getScene().getWidth();
-		stackPane.setMaxWidth(width);
-
-		createButton.setPrefWidth(width * 0.08);
-		createButton.setMinWidth(width * 0.08);
-		createButton.setMaxWidth(width * 0.08);
-		setFontSizes(height, width);
-
+		createButton.setFont(UIUtil.calculateFittingFontSize(createButton.getPrefWidth() - 20,
+				createButton.getPrefHeight() - 20, createButton.getText()));
 	}
 }

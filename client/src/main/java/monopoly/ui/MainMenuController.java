@@ -10,7 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 
-public class MainScreenController {
+public class MainMenuController {
 	@FXML
 	private MigPane mainMigPane;
 	@FXML
@@ -26,7 +26,7 @@ public class MainScreenController {
 
 	private ChangeListener<Number> widthListener;
 
-	public MainScreenController() {
+	public MainMenuController() {
 		widthListener = (observable, oldValue, newValue) -> windowWidthChanged();
 	}
 
