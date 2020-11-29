@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import monopoly.network.Client;
 import monopoly.network.ServerInfo;
 import monopoly.network.packet.important.ImportantNetworkPacket;
@@ -13,11 +16,15 @@ import monopoly.network.packet.important.packet_data.BooleanPacketData;
 import monopoly.network.packet.important.packet_data.IntegerPacketData;
 import monopoly.network.packet.important.packet_data.LobbyListPacketData;
 import monopoly.network.packet.important.packet_data.LobbyPacketData;
+import monopoly.network.packet.important.packet_data.PlayerPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.GameplayController;
+import monopoly.ui.LobbyController;
 
 public class NetworkManager {
+	private static Logger logger = LoggerFactory.getLogger(NetworkManager.class);
+
 	private Client client;
 
 	private PacketType waitingForResponseType;
@@ -80,7 +87,7 @@ public class NetworkManager {
 	 * method may return before all the listeners have been notified.
 	 * 
 	 * @param from The starting index of the lobbies to request, inclusive
-	 * @param to   The ending index of the lobbies to request, inclusive
+	 * @param to   The ending index of the lobbies to request, exclusive
 	 * @return The list of requested lobbies, or an empty list if an error packet is
 	 *         received. Note that the return value of empty list does not guarantee
 	 *         that an error packet is received
@@ -177,15 +184,17 @@ public class NetworkManager {
 		waitingForResponseType = responseType;
 		responsePacket = null;
 		client.sendImportantPacket(packet);
+		logger.warn("Sending {} Waiting for {}", packet.getType(), responseType);
 
 		while (responsePacket == null) {
 			try {
-				wait();
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 				e.printStackTrace();
 			}
 		}
+		logger.warn("Response: {}", responsePacket.getType());
 
 		if (responsePacket.isErrorPacket()) {
 			new Thread(() -> notifyAllErrorListeners(responsePacket)).start();
@@ -222,13 +231,54 @@ public class NetworkManager {
 
 		@Override
 		public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
-			if (packet.getType() == waitingForResponseType || packet.isErrorPacket()) {
+			PacketType type = packet.getType();
+			logger.error("General received: {}", packet.getType());
+			if ((type == waitingForResponseType && responsePacket == null) || packet.isErrorPacket()) {
 				responsePacket = packet;
-				synchronized (NetworkManager.this) {
-					NetworkManager.this.notifyAll();
-				}
 			} else {
-				// TODO Handle the packet that is not the result to a user request
+				logger.warn("Received: {}", packet.getType());
+				if (type == PacketType.PLAYER_JOIN) {
+					handlePlayerJoin((PlayerPacketData) packet.getData().get(0));
+				} else if (type == PacketType.PLAYER_LEFT) {
+					handlePlayerLeft((PlayerPacketData) packet.getData().get(0));
+				} else if (type == PacketType.PLAYER_READY) {
+					handlePlayerReadyChange((PlayerPacketData) packet.getData().get(0),
+							((BooleanPacketData) packet.getData().get(1)).isData());
+				} else if (type == PacketType.GAME_START) {
+					handleGameStart();
+				}
+			}
+		}
+
+		private void handlePlayerJoin(PlayerPacketData player) {
+			Object uiController = ClientApplication.getInstance().getController();
+			if (uiController instanceof LobbyController) {
+				LobbyController lobbyController = (LobbyController) uiController;
+				lobbyController.playerJoined(player);
+			} else {
+				logger.error("WRONG CONTROLLER!");
+			}
+		}
+
+		private void handlePlayerLeft(PlayerPacketData player) {
+			// TODO
+		}
+
+		private void handlePlayerReadyChange(PlayerPacketData player, boolean ready) {
+			Object uiController = ClientApplication.getInstance().getController();
+			if (uiController instanceof LobbyController) {
+				LobbyController lobbyController = (LobbyController) uiController;
+				lobbyController.playerReady(player);
+			} else {
+				logger.error("WRONG CONTROLLER!");
+			}
+		}
+
+		private void handleGameStart() {
+			try {
+				ClientApplication.getInstance().switchToView("fxml/Gameplay.fxml");
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}

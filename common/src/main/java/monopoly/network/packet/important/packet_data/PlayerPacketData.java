@@ -16,4 +16,5 @@ public class PlayerPacketData extends PacketData {
 
 	private int connectionId;
 	private String username;
+	private boolean admin;
 }

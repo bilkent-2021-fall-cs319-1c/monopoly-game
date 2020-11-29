@@ -32,7 +32,7 @@ public class ClientApplication extends Application {
 	public ClientApplication() throws IOException {
 		// Loading UIUtil class into memory here to call its static initialize block
 		// that loads fonts
-		UIUtil.calculateFittingFontSize(0, 0, "");
+		UIUtil.calculateFittingFont(0, 0, "");
 		setInstance(this);
 		scene = null;
 		controller = null;
@@ -47,7 +47,7 @@ public class ClientApplication extends Application {
 		stage.setTitle("Monopoly");
 		stage.setScene(scene);
 		stage.centerOnScreen();
-		stage.setFullScreen(true);
+//		stage.setFullScreen(true);
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		stage.show();
 	}

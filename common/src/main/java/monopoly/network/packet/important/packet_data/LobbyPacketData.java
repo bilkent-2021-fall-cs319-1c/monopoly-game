@@ -14,7 +14,7 @@ import lombok.ToString;
 public class LobbyPacketData extends PacketData {
 	private static final long serialVersionUID = 1586964682050981428L;
 
-	private int lobbyId;
+	private long lobbyId;
 	private String name;
 	private String password;
 	private boolean isPublic;

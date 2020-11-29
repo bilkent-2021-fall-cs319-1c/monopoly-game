@@ -32,16 +32,10 @@
 			Waiting for players...
 		</Text>
 		<Button styleClass="buttonRegular" text="Make Public" />
-		<Button styleClass="buttonRegular" text="Ready" />
+		<Button styleClass="buttonRegular" text="Ready" onAction="#iAmReady" fx:id="readyButton"/>
 	</MigPane>
 
 	<MigPane layout="fill, wrap" cols="5%[fill]5%"
-		MigPane.cc="grow, wrap">
-		<PlayerLobbyPane userType="admin" name="Mohi" MigPane.cc="grow, hmax 16%, wmax 100%"/>
-		<PlayerLobbyPane userType="regular" name="Ziya" MigPane.cc="grow, hmax 16%, wmax 100%"/>
-		<PlayerLobbyPane userType="regular" name="Cavid" MigPane.cc="grow, hmax 16%, wmax 100%"/>
-		<PlayerLobbyPane userType="regular" name="Ege" MigPane.cc="grow, hmax 16%, wmax 100%"/>
-		<PlayerLobbyPane visible="false" userType="regular" name="Alper" MigPane.cc="grow, hmax 16%, wmax 100%"/>
-		<PlayerLobbyPane visible="false" userType="regular" name="LmaoIdk" MigPane.cc="grow, hmax 16%, wmax 100%"/>
+		MigPane.cc="grow, wrap" fx:id="players">
 	</MigPane>
 </MigPane>

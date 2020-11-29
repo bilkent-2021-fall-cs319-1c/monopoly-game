@@ -52,7 +52,7 @@ public class PlayerLobbyPane extends MigPane {
         double width = getWidth();
         double height = getHeight();
 
-        playerName.setFont(UIUtil.calculateFittingFontSize(width * 0.3, height * 0.3, playerName.getText()));
+        playerName.setFont(UIUtil.calculateFittingFont(width * 0.3, height * 0.3, playerName.getText()));
 
         makeAdminButton.setPrefHeight(height * 0.2);
         makeAdminButton.setPrefWidth(width * 0.2);

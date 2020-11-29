@@ -14,25 +14,25 @@ public class CreateLobbyController {
 	@FXML
 	private StackPane stackPane;
 	@FXML
-	public MigPane migPanel;
+	private MigPane migPanel;
 	@FXML
-	public Text mainTitle;
+	private Text mainTitle;
 	@FXML
-	public Text limitTitle;
+	private Text limitTitle;
 	@FXML
-	public Spinner<Integer> limitValue;
+	private Spinner<Integer> limitValue;
 	@FXML
-	public Text roomTitle;
+	private Text roomTitle;
 	@FXML
-	public TextField roomName;
+	private TextField roomName;
 	@FXML
-	public Text passwordTitle;
+	private Text passwordTitle;
 	@FXML
-	public TextField passwordValue;
+	private TextField passwordValue;
 	@FXML
-	public CheckBox checkPriv;
+	private CheckBox checkPriv;
 	@FXML
-	public Button createButton;
+	private Button createButton;
 
 	private ChangeListener<Number> widthListener;
 	private ChangeListener<Number> heightListener;
@@ -43,7 +43,7 @@ public class CreateLobbyController {
 	}
 
 	@FXML
-	public void initialize() {
+	private void initialize() {
 		stackPane.sceneProperty().addListener((observable, oldValue, newValue) -> {
 			if (oldValue != null) {
 				oldValue.widthProperty().removeListener(widthListener);
@@ -113,15 +113,15 @@ public class CreateLobbyController {
 	}
 
 	private void setFontSizes(double height, double width) {
-		mainTitle.setFont(UIUtil.calculateFittingFontSize(height, width * 0.055, mainTitle.getText()));
-		limitTitle.setFont(UIUtil.calculateFittingFontSize(height, width * 0.03, limitTitle.getText()));
-		roomTitle.setFont(UIUtil.calculateFittingFontSize(height, width * 0.03, roomTitle.getText()));
-		passwordTitle.setFont(UIUtil.calculateFittingFontSize(height, width * 0.03, passwordTitle.getText()));
-		roomName.setFont(UIUtil.calculateFittingFontSize(height, width * 0.014, roomName.getText()));
-		passwordValue.setFont(UIUtil.calculateFittingFontSize(height, width * 0.014, passwordValue.getText()));
+		mainTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.055, mainTitle.getText()));
+		limitTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.03, limitTitle.getText()));
+		roomTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.03, roomTitle.getText()));
+		passwordTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.03, passwordTitle.getText()));
+		roomName.setFont(UIUtil.calculateFittingFont(height, width * 0.014, roomName.getText()));
+		passwordValue.setFont(UIUtil.calculateFittingFont(height, width * 0.014, passwordValue.getText()));
 
-		checkPriv.setFont(UIUtil.calculateFittingFontSize(height, width * 0.02, checkPriv.getText()));
-		createButton.setFont(UIUtil.calculateFittingFontSize(createButton.getPrefWidth() - 20,
+		checkPriv.setFont(UIUtil.calculateFittingFont(height, width * 0.02, checkPriv.getText()));
+		createButton.setFont(UIUtil.calculateFittingFont(createButton.getPrefWidth() - 20,
 				createButton.getPrefHeight() - 20, createButton.getText()));
 	}
 }

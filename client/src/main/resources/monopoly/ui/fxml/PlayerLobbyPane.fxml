@@ -5,36 +5,37 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import org.tbee.javafx.scene.layout.fxml.MigPane?>
-
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.text.Text?>
 <?import monopoly.ui.UIUtil?>
+
 <fx:root xmlns="http://javafx.com/javafx/15.0.1"
-         xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill, wrap"
-         cols="[::19%]1%[::49%]1%[::30%]" rows="0[fill, grow]0"
-         style="-fx-border-color: rgba(0,0,0, 1);
+	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill, wrap"
+	cols="[::19%]1%[::49%]1%[::30%]" rows="0[fill, grow]0"
+	style="-fx-border-color: rgba(0,0,0, 1);
 		        -fx-border-width: 5;
 		        -fx-border-insets: -5;
-		        -fx-background-color: rgba(0, 229, 65, 0.5) ">
-    <stylesheets>
-        <UIUtil fx:constant="COMMON_CSS" />
-        <UIUtil fx:constant="PLAYER_LOBBY_PANEL_SCREEN_CSS" />
-    </stylesheets>
+		        -fx-background-color: indianred ">
+	<stylesheets>
+		<UIUtil fx:constant="COMMON_CSS" />
+		<UIUtil fx:constant="PLAYER_LOBBY_PANEL_SCREEN_CSS" />
+	</stylesheets>
 
-    <ImageView fx:id="playerImage" MigPane.cc="center" fitHeight="70" fitWidth="70">
-        <image>
-            <UIUtil fx:constant="DEFAULT_PLAYER_IMAGE" />
-        </image>
-    </ImageView>
+	<ImageView fx:id="playerImage" MigPane.cc="center"
+		fitHeight="70" fitWidth="70">
+		<image>
+			<UIUtil fx:constant="DEFAULT_PLAYER_IMAGE" />
+		</image>
+	</ImageView>
 
-    <Text fx:id="playerName" MigPane.cc="left"/>
+	<Text fx:id="playerName" MigPane.cc="left" />
 
-    <MigPane fx:id="buttonGroup" layout="center, fill" rows="[fill]2%[fill]" cols="[fill]">
-
-        <Button fx:id="makeAdminButton" text="Make Admin" MigPane.cc="wrap"/>
-        <Button fx:id="removeButton" text="Remove" MigPane.cc="wrap"/>
-    </MigPane>
+	<MigPane fx:id="buttonGroup" layout="center, fill"
+		rows="[fill]2%[fill]" cols="[fill]">
+		<Button fx:id="makeAdminButton" text="Make Admin"
+			MigPane.cc="wrap" />
+		<Button fx:id="removeButton" text="Remove" MigPane.cc="wrap" />
+	</MigPane>
 
 </fx:root>

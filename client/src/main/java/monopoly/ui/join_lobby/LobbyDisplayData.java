@@ -7,9 +7,13 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import lombok.Getter;
 import monopoly.network.packet.important.packet_data.LobbyPacketData;
 
 public class LobbyDisplayData {
+	@Getter
+	private LobbyPacketData packetData;
+
 	private StringProperty owner;
 	private StringProperty name;
 
@@ -20,14 +24,16 @@ public class LobbyDisplayData {
 	private StringProperty fullnessRatio;
 
 	public LobbyDisplayData(LobbyPacketData lobby) {
-		this.owner = new SimpleStringProperty(lobby.getOwnerUsername());
-		this.name = new SimpleStringProperty(lobby.getName());
+		packetData = lobby;
 
-		this.isPrivate = new SimpleBooleanProperty(!lobby.isPublic());
+		owner = new SimpleStringProperty(lobby.getOwnerUsername());
+		name = new SimpleStringProperty(lobby.getName());
+
+		isPrivate = new SimpleBooleanProperty(!lobby.isPublic());
 
 		fullnessRatio = new SimpleStringProperty();
-		this.playerCount = new SimpleIntegerProperty(lobby.getPlayerCount());
-		this.limit = new SimpleIntegerProperty(lobby.getPlayerLimit());
+		playerCount = new SimpleIntegerProperty(lobby.getPlayerCount());
+		limit = new SimpleIntegerProperty(lobby.getPlayerLimit());
 		fullnessRatio.bind(Bindings.concat(this.playerCount, " / ", this.limit));
 	}
 

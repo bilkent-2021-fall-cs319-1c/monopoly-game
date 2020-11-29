@@ -13,7 +13,7 @@
 	fx:controller="monopoly.ui.join_lobby.JoinLobbyController">
 
 	<stylesheets>
-		<UIUtil fx:constant="MAIN_CSS" />
+		<UIUtil fx:constant="COMMON_CSS" />
 	</stylesheets>
 
 	<MigPane fx:id="mainPane" layout="fill, center" rows="[fill]"
@@ -22,7 +22,7 @@
 		<MigPane fx:id="leftPane" layout="wrap"
 			rows="13%[15%]5%[10%]0[10%]2%[10%]5%[10%, top]5%"
 			cols="5%[left]2%[left]" MigPane.cc="grow">
-			
+
 			<Text fx:id="mainTitle" MigPane.cc="span 2">Join Lobby</Text>
 
 			<Text fx:id="promptText"
@@ -32,18 +32,18 @@
 				You can also search for a room
 				by entering its name or by the player.
 			</Text>
-			
+
 			<Text fx:id="roomTitle">Room Name:</Text>
-			<TextField fx:id="roomName" text="" />
+			<TextField fx:id="roomName" text="" disable="true" />
 
 			<Text fx:id="passwordTitle">Password:</Text>
-			<TextField fx:id="passwordValue" text="" />
+			<TextField fx:id="passwordValue" text="" disable="true" />
 
 			<Button fx:id="joinButton" mnemonicParsing="false" text="Join"
-				MigPane.cc="span 2, center" />
+				MigPane.cc="span 2, center" onAction="#joinLobby" />
 		</MigPane>
 
-		<MigPane layout="fill, debug, flowy" rows="0[90%]0[10%]0"
+		<MigPane layout="fill, flowy" rows="0[90%]0[10%]0"
 			fx:id="rightPane" MigPane.cc="grow">
 			<TableView fx:id="lobbyTable" MigPane.cc="grow">
 				<columns>

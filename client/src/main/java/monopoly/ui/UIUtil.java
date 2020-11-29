@@ -43,7 +43,7 @@ public class UIUtil {
 	 * @param text       The text to fit
 	 * @return The font that fits in the given rectangular area
 	 */
-	public static Font calculateFittingFontSize(double width, double height, String fontFamily, String text) {
+	public static Font calculateFittingFont(double width, double height, String fontFamily, String text) {
 		final int defaultFontSize = 20;
 		Font font = Font.font(fontFamily, defaultFontSize);
 		Text tempText = new Text(text);
@@ -65,9 +65,9 @@ public class UIUtil {
 	 * @return The font with the maximum font size that fits in the given
 	 *         rectangular area using the default font
 	 */
-	public static Font calculateFittingFontSize(double width, double height, String text) {
+	public static Font calculateFittingFont(double width, double height, String text) {
 		String defaultFontFamily = Font.getDefault().getFamily();
-		return calculateFittingFontSize(width, height, defaultFontFamily, text);
+		return calculateFittingFont(width, height, defaultFontFamily, text);
 	}
 
 	private static Image loadImage(String path) {

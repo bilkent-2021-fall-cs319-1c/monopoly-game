@@ -1,12 +1,12 @@
 package monopoly.ui.join_lobby;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.io.IOException;
 
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
-import com.sun.javafx.collections.ObservableListWrapper;
-
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,9 +19,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import monopoly.network.packet.important.packet_data.LobbyPacketData;
+import monopoly.ui.ClientApplication;
 import monopoly.ui.UIUtil;
 
 public class JoinLobbyController {
+	private static final int ROWS_PER_PAGE = 10;
+
 	@FXML
 	private StackPane rootPane;
 	@FXML
@@ -54,17 +57,12 @@ public class JoinLobbyController {
 	private ChangeListener<Number> widthListener;
 	private ChangeListener<Number> heightListener;
 
+	private IntegerProperty lobbyCount;
 	private ObservableList<LobbyDisplayData> lobbies;
 
 	public JoinLobbyController() {
-		// Load test data
-		lobbies = new ObservableListWrapper<>(new ArrayList<>());
-		Random rand = new Random();
-		for (int i = 0; i < 34; i++) {
-			int limit = rand.nextInt(5) + 2;
-			lobbies.add(new LobbyDisplayData(new LobbyPacketData(i, "Room " + i, "", rand.nextBoolean(), "Player " + i,
-					rand.nextInt(limit), limit)));
-		}
+		lobbyCount = new SimpleIntegerProperty(0);
+		lobbies = FXCollections.observableArrayList();
 
 		widthListener = (observable, oldValue, newValue) -> windowWidthChanged();
 		heightListener = (observable, oldValue, newValue) -> windowHeightChanged();
@@ -72,7 +70,9 @@ public class JoinLobbyController {
 
 	@FXML
 	public void initialize() {
-		lobbyTablePagination.setPageCount(lobbies.size() / 10 + (lobbies.size() % 10 != 0 ? 1 : 0));
+		lobbyTable.setItems(lobbies);
+		lobbyTablePagination.pageCountProperty()
+				.bind(Bindings.divide(Bindings.add(lobbyCount, ROWS_PER_PAGE - 1), ROWS_PER_PAGE));
 		lobbyTablePagination.setPageFactory(this::createPage);
 
 		rootPane.sceneProperty().addListener((observable, oldValue, newValue) -> {
@@ -88,26 +88,52 @@ public class JoinLobbyController {
 				windowWidthChanged();
 			}
 		});
+
+		updateLobbyCount();
+
+		lobbyTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null && newValue.getIsPrivate()) {
+				passwordValue.setDisable(false);
+			} else {
+				passwordValue.setDisable(true);
+				passwordValue.clear();
+			}
+		});
 	}
 
-	private void setFontSizes(double height, double width) {
-		mainTitle.setFont(UIUtil.calculateFittingFontSize(width * 0.18, height, mainTitle.getText()));
-		promptText.setFont(UIUtil.calculateFittingFontSize(width * 0.12, height, promptText.getText()));
-		infoText.setFont(UIUtil.calculateFittingFontSize(width * 0.35, height, infoText.getText()));
-		roomTitle.setFont(UIUtil.calculateFittingFontSize(width * 0.10, height, roomTitle.getText()));
-		passwordTitle.setFont(UIUtil.calculateFittingFontSize(width * 0.075, height, passwordTitle.getText()));
-		roomName.setFont(UIUtil.calculateFittingFontSize(height, width * 0.011, roomName.getText()));
-		passwordValue.setFont(UIUtil.calculateFittingFontSize(height, width * 0.010, passwordValue.getText()));
-		joinButton.setFont(UIUtil.calculateFittingFontSize(joinButton.getWidth() - 5, joinButton.getHeight() - 5,
-				joinButton.getText()));
+	/**
+	 * Updates the number of available lobbies from the server.
+	 */
+	public void updateLobbyCount() {
+		lobbyCount.set(ClientApplication.getInstance().getNetworkManager().getNumberOfLobbies());
 	}
 
-	public Node createPage(int pageIndex) {
-		int fromIndex = pageIndex * 10;
-		int toIndex = Math.min(fromIndex + 10, lobbies.size());
-		lobbyTable.setItems(FXCollections.observableArrayList(lobbies.subList(fromIndex, toIndex)));
+	private Node createPage(int pageIndex) {
+		updateLobbyCount();
+
+		int fromIndex = pageIndex * ROWS_PER_PAGE;
+		int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, lobbyCount.get());
+		lobbies.clear();
+		ClientApplication.getInstance().getNetworkManager().getLobbies(fromIndex, toIndex)
+				.forEach(lobby -> lobbies.add(new LobbyDisplayData(lobby)));
 
 		return new Text("");
+	}
+
+	@FXML
+	private void joinLobby() throws IOException {
+		LobbyDisplayData lobby = lobbyTable.getSelectionModel().getSelectedItem();
+		if (lobby == null) {
+			// TODO Show error
+			return;
+		}
+
+		LobbyPacketData packetData = lobby.getPacketData();
+		packetData.setPassword(passwordValue.getText());
+		boolean success = ClientApplication.getInstance().getNetworkManager().joinLobby(lobby.getPacketData());
+		if (success) {
+			ClientApplication.getInstance().switchToView("fxml/Lobby.fxml");
+		}
 	}
 
 	private void windowWidthChanged() {
@@ -128,5 +154,17 @@ public class JoinLobbyController {
 		setFontSizes(height, width);
 
 		lobbyTable.setFixedCellSize(height * 0.86 / 10);
+	}
+
+	private void setFontSizes(double height, double width) {
+		mainTitle.setFont(UIUtil.calculateFittingFont(width * 0.18, height, mainTitle.getText()));
+		promptText.setFont(UIUtil.calculateFittingFont(width * 0.12, height, promptText.getText()));
+		infoText.setFont(UIUtil.calculateFittingFont(width * 0.35, height, infoText.getText()));
+		roomTitle.setFont(UIUtil.calculateFittingFont(width * 0.10, height, roomTitle.getText()));
+		passwordTitle.setFont(UIUtil.calculateFittingFont(width * 0.075, height, passwordTitle.getText()));
+		roomName.setFont(UIUtil.calculateFittingFont(height, width * 0.011, roomName.getText()));
+		passwordValue.setFont(UIUtil.calculateFittingFont(height, width * 0.010, passwordValue.getText()));
+		joinButton.setFont(UIUtil.calculateFittingFont(joinButton.getWidth() - 5, joinButton.getHeight() - 5,
+				joinButton.getText()));
 	}
 }
