@@ -6,16 +6,18 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.EqualsAndHashCode;
 
 /**
  * Lobby Setup
  * 
  * @author Javid Baghirov
- * @version Nov 23, 2020
+ * @version Nov 29, 2020
  */
 
 @Getter
 @Setter
+@EqualsAndHashCode
 public class Lobby {
     
     private static long lastUsedId = 0;
@@ -26,7 +28,7 @@ public class Lobby {
     private String password;
     private boolean isPublic;
     
-    private boolean started;
+    private boolean inGame;
     
     private List<User> players;
     private List<User> bannedPlayers;
@@ -42,17 +44,17 @@ public class Lobby {
      * @param password  specified pass code
      */
     public Lobby(String title, int limit, boolean isPublic, String password) {
-	players = Collections.synchronizedList(new ArrayList<User>());
-	bannedPlayers = Collections.synchronizedList(new ArrayList<User>());
-	
-	id = ++lastUsedId;
-	
-	setName(title);
-	setPlayerLimit(playerLimit);
-	setPublic(isPublic);
-	setPassword(password);
-	setStarted(false);
-	setHost(null);
+		players = Collections.synchronizedList(new ArrayList<User>());
+		bannedPlayers = Collections.synchronizedList(new ArrayList<User>());
+		
+		id = ++lastUsedId;
+		
+		setName(title);
+		setPlayerLimit(playerLimit);
+		setPublic(isPublic);
+		setPassword(password);
+		setInGame(false);
+		setHost(null);
     }
     
     /**
@@ -61,9 +63,9 @@ public class Lobby {
      * @param player user to be added
      */
     public void addPlayer(User player) {
-	if (players.size() < playerLimit) {
-	    players.add(player);
-	}
+		if (player != null && players.size() < playerLimit) {
+		    players.add(player);
+		}
     }
 
     /**
@@ -72,16 +74,17 @@ public class Lobby {
      * @param player user to be removed
      */
     public void removePlayer(User player) {
-	players.remove(player);
+    	if (player != null) {
+    		players.remove(player);
+    	}
     }
     
-    /**
-     * Gets the size of the player list
-     * 
-     * @return int value to be returned
-     */
     public int getPlayerCount() {
-	return players.size();
+    	return players.size();
+    }
+    
+    public boolean getPublic() {
+    	return isPublic;
     }
     
     /**
@@ -89,14 +92,15 @@ public class Lobby {
      * 
      * @param player the user to be banned
      */
-    public void ban( User player)
-    {
-	bannedPlayers.add( player);
-	player.leaveLobby();
+    public void ban( User player) {
+		bannedPlayers.add( player);
+		player.leaveLobby();
     }
     
-    @Override
-    public int hashCode() {
-        return Long.valueOf(id).hashCode();
+    public void startGame() {
+    	setInGame( true);
+    	
+    	//To be implemented in later versions
     }
+    
 }
