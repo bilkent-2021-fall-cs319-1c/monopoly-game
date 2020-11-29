@@ -1,16 +1,20 @@
 package monopoly.ui;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.image.Image;
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.text.*;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Pagination;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 public class JoinLobbyController {
 	@FXML
@@ -18,15 +22,15 @@ public class JoinLobbyController {
 	@FXML
 	private MigPane mainPane;
 	@FXML
-	private BorderPane rightPane;
+	private MigPane rightPane;
 	@FXML
 	private MigPane leftPane;
 	@FXML
-    private Text mainTitle;
+	private Text mainTitle;
 	@FXML
-    private Text promptText;
+	private Text promptText;
 	@FXML
-    private Text infoText;
+	private Text infoText;
 	@FXML
 	private Text roomTitle;
 	@FXML
@@ -38,27 +42,19 @@ public class JoinLobbyController {
 	@FXML
 	private Button joinButton;
 	@FXML
-	private TableView<Lobby> lobbyTable;
-	@FXML
-	public TableColumn<Lobby, Image> ownerImageCol;
-	@FXML
-	public TableColumn<Lobby, String> lobbyNameCol;
-	@FXML
-	public TableColumn<Lobby, String> playerNumCol;
+	private TableView<LobbyDisplayData> lobbyTable;
 	@FXML
 	private Pagination lobbyTablePagination;
-
 
 	private ChangeListener<Number> widthListener;
 	private ChangeListener<Number> heightListener;
 
-	final ObservableList<Lobby> lobbies = FXCollections.observableArrayList(
-			new Lobby("My Room 0", "123", UIUtil.DEFAULT_PLAYER_IMAGE, 4, false),
-			new Lobby("My Room 1", "123", UIUtil.DEFAULT_PLAYER_IMAGE, 2, false),
-			new Lobby("My Room 2", "123", UIUtil.DEFAULT_PLAYER_IMAGE, 3, true),
-			new Lobby("My Room 3", "123", UIUtil.DEFAULT_PLAYER_IMAGE, 5, false)
-			);
-
+	final ObservableList<LobbyDisplayData> lobbies = FXCollections.observableArrayList(
+			new LobbyDisplayData("My Room 0", "123", 4, 6, false),
+			new LobbyDisplayData("My Room 1", "123", 2, 6, false),
+			new LobbyDisplayData("My Room 2", "123", 3, 6, true),
+			new LobbyDisplayData("My Room 3", "123", 5, 6, false)
+	);
 
 	public JoinLobbyController() {
 		widthListener = (observable, oldValue, newValue) -> windowWidthChanged();
@@ -67,7 +63,7 @@ public class JoinLobbyController {
 
 	@FXML
 	public void initialize() {
-
+		lobbyTablePagination.setPageCount(lobbies.size() / 2);
 		lobbyTablePagination.setPageFactory(this::createPage);
 
 		rootPane.sceneProperty().addListener((observable, oldValue, newValue) -> {
@@ -88,38 +84,32 @@ public class JoinLobbyController {
 	}
 
 	private void setFontSizes(double height, double width) {
-		mainTitle.setFont(
-				new Font(UIUtil.calculateFittingFontSize( width * 0.18, height, mainTitle.getText())));
-		promptText.setFont(
-				new Font(UIUtil.calculateFittingFontSize( width * 0.12, height, promptText.getText())));
-		infoText.setFont(
-				new Font(UIUtil.calculateFittingFontSize( width * 0.35, height, infoText.getText())));
-		roomTitle.setFont(
-				new Font(UIUtil.calculateFittingFontSize( width * 0.10, height, roomTitle.getText())));
-		passwordTitle.setFont(
-				new Font(UIUtil.calculateFittingFontSize( width * 0.075, height, passwordTitle.getText())));
-		roomName.setFont(
-				new Font(UIUtil.calculateFittingFontSize(height, width * 0.011, roomName.getText())));
-		passwordValue.setFont(
-				new Font(UIUtil.calculateFittingFontSize(height, width * 0.010, passwordValue.getText())));
-		joinButton.setFont(new Font(UIUtil.calculateFittingFontSize(joinButton.getWidth() - 5, joinButton.getHeight() - 5, joinButton.getText())));
+		mainTitle.setFont(new Font(UIUtil.calculateFittingFontSize(width * 0.18, height, mainTitle.getText())));
+		promptText.setFont(new Font(UIUtil.calculateFittingFontSize(width * 0.12, height, promptText.getText())));
+		infoText.setFont(new Font(UIUtil.calculateFittingFontSize(width * 0.35, height, infoText.getText())));
+		roomTitle.setFont(new Font(UIUtil.calculateFittingFontSize(width * 0.10, height, roomTitle.getText())));
+		passwordTitle
+				.setFont(new Font(UIUtil.calculateFittingFontSize(width * 0.075, height, passwordTitle.getText())));
+		roomName.setFont(new Font(UIUtil.calculateFittingFontSize(height, width * 0.011, roomName.getText())));
+		passwordValue
+				.setFont(new Font(UIUtil.calculateFittingFontSize(height, width * 0.010, passwordValue.getText())));
+		joinButton.setFont(new Font(UIUtil.calculateFittingFontSize(joinButton.getWidth() - 5,
+				joinButton.getHeight() - 5, joinButton.getText())));
 	}
+
 	private void windowHeightChanged() {
 		double height = rootPane.getScene().getHeight();
 		double width = rootPane.getScene().getWidth();
 		rootPane.setMaxHeight(height);
 
-
 		joinButton.setPrefHeight(height * 0.04);
-		joinButton.setMinHeight(height * 0.04);
-		//joinButton.setMaxHeight(height * 0.04);
 		setFontSizes(height, width);
 
 	}
-    
+
 	public Node createPage(int pageIndex) {
 		int fromIndex = pageIndex * 2;
-		int toIndex = Math.min(fromIndex + 2, lobbies.size());
+		int toIndex = fromIndex + 2;
 		lobbyTable.setItems(FXCollections.observableArrayList(lobbies.subList(fromIndex, toIndex)));
 
 		return new BorderPane(lobbyTable);
@@ -130,13 +120,9 @@ public class JoinLobbyController {
 		double width = rootPane.getScene().getWidth();
 		rootPane.setMaxWidth(width);
 
-
 		joinButton.setPrefWidth(width * 0.08);
-		joinButton.setMinWidth(width * 0.08);
-		//joinButton.setMaxWidth(width * 0.08);
 		setFontSizes(height, width);
 
 	}
-
 
 }
