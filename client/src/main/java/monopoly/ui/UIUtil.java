@@ -24,6 +24,7 @@ public class UIUtil {
 
 	public static final String COMMON_CSS = loadStylesheet("css/common.css");
 	public static final String MAIN_SCREEN_CSS = loadStylesheet("css/mainScreen.css");
+	public static final String PLAYER_LOBBY_PANEL_SCREEN_CSS = loadStylesheet("css/playerLobbyPanel.css");
 
 	static {
 		loadFont("fonts/kabel/Kabel-Bold.ttf");
@@ -34,7 +35,7 @@ public class UIUtil {
 
 	/**
 	 * Calculates the font that fits in the given area
-	 * 
+	 *
 	 * @param width      The width of the area
 	 * @param height     The height of the area
 	 * @param fontFamily The name of the font family to use for the calculation
@@ -56,7 +57,7 @@ public class UIUtil {
 
 	/**
 	 * Calculates the default font size that fits in the given area
-	 * 
+	 *
 	 * @param width  The width of the area
 	 * @param height The height of the area
 	 * @param text   The text to fit

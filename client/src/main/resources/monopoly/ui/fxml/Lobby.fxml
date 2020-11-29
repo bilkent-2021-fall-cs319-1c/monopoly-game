@@ -10,7 +10,7 @@
 <?import monopoly.ui.PlayerLobbyPane?>
 
 <MigPane xmlns="http://javafx.com/javafx/15.0.1"
-	xmlns:fx="http://javafx.com/fxml" layout="fill, debug"
+	xmlns:fx="http://javafx.com/fxml" layout="fill, wrap"
 	cols="[::39%, grow]2%[::59%, grow]" fx:id="root"
 	fx:controller="monopoly.ui.LobbyController">
 
@@ -18,16 +18,16 @@
 		<UIUtil fx:constant="COMMON_CSS" />
 	</stylesheets>
 
-	<MigPane layout="fill, wrap, debug"
-		rows="[15%][10%][10%][10%][10%][20%][10%][10%]" cols="[]"
+	<MigPane layout="fill, wrap"
+		rows="[15%][10%][10%][10%][10%][20%][10%][10%]" cols="5%[]"
 		MigPane.cc="grow">
 
 		<Text style="-fx-font-family: 'Kabel'" text="Lobby"
 			fx:id="lobbyText" />
 		<Text text="Room Name" fx:id="nameText" />
-		<Text text="Room Name" fx:id="nameField" />
+		<Text text="xxxxx" fx:id="nameField" />
 		<Text text="Room Password" fx:id="passwordText" />
-		<Text text="Room Password" fx:id="passwordField" />
+		<Text text="xxxxx" fx:id="passwordField" />
 		<Text fx:id="waitingText">
 			Waiting for players...
 		</Text>
@@ -35,10 +35,13 @@
 		<Button styleClass="buttonRegular" text="Ready" />
 	</MigPane>
 
-	<MigPane layout="fill" cols="5%[fill]5%" rows="5%[]15%[]15%[]15%[]15%[]15%[]5%"
+	<MigPane layout="fill, wrap" cols="5%[fill]5%"
 		MigPane.cc="grow, wrap">
-		<PlayerLobbyPane userType="admin"/>
-		<PlayerLobbyPane></PlayerLobbyPane>
-		<PlayerLobbyPane></PlayerLobbyPane>
+		<PlayerLobbyPane userType="admin" name="Mohi" MigPane.cc="grow, hmax 16%, wmax 100%"/>
+		<PlayerLobbyPane userType="regular" name="Ziya" MigPane.cc="grow, hmax 16%, wmax 100%"/>
+		<PlayerLobbyPane userType="regular" name="Cavid" MigPane.cc="grow, hmax 16%, wmax 100%"/>
+		<PlayerLobbyPane userType="regular" name="Ege" MigPane.cc="grow, hmax 16%, wmax 100%"/>
+		<PlayerLobbyPane visible="false" userType="regular" name="Alper" MigPane.cc="grow, hmax 16%, wmax 100%"/>
+		<PlayerLobbyPane visible="false" userType="regular" name="LmaoIdk" MigPane.cc="grow, hmax 16%, wmax 100%"/>
 	</MigPane>
 </MigPane>

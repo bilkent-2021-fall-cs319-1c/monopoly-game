@@ -56,20 +56,27 @@ public class PlayerLobbyPane extends MigPane {
 
         playerName.setFont(UIUtil.calculateFittingFontSize(width * 0.3, height * 0.3, playerName.getText()));
 
-        playerImage.setFitHeight(height * 0.84);
-        playerImage.setFitWidth(width * 0.84);
+
+        //makeAdminButton.setFont(UIUtil.calculateFittingFontSize(width * 0.3, height * 0.3, makeAdminButton.getText()));
+        makeAdminButton.setPrefHeight(height * 0.2);
+        makeAdminButton.setPrefWidth(width * 0.2);
 
     }
+
 
     @FXML
     private void initialize() {
 
-        if ("regular".equals(userType)) {
-            setCols("[::%19]1%[::80%]");
-            buttonGroup.setVisible(false);
-        } else if ("admin".equals(userType)) {
+        playerName.setText(name);
+
+        if ("admin".equals(userType)) {
             playerName.setText(playerName.getText() + " (Admin)");
+            buttonGroup.setVisible(false);
+        } else if ("regular".equals(userType)) {
+            //setCols("[::%19]1%[::80%]");
+            buttonGroup.setVisible(true);
         }
+
 
     }
 

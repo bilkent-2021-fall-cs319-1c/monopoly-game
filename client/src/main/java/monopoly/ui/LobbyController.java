@@ -14,7 +14,11 @@ public class LobbyController {
 	@FXML
 	private Text nameText;
 	@FXML
+	private Text nameField;
+	@FXML
 	private Text passwordText;
+	@FXML
+	private Text passwordField;
 	@FXML
 	private Text waitingText;
 
@@ -58,9 +62,11 @@ public class LobbyController {
 	}
 
 	private void setFontSizes(double width, double height) {
-		lobbyText.setFont(UIUtil.calculateFittingFontSize(width * 0.38, height * 0.14, "Kabel", lobbyText.getText()));
-		nameText.setFont(UIUtil.calculateFittingFontSize(width * 0.38, height * 0.09, nameText.getText()));
-		passwordText.setFont(UIUtil.calculateFittingFontSize(width * 0.38, height * 0.09, passwordText.getText()));
-		waitingText.setFont(UIUtil.calculateFittingFontSize(width * 0.38, height * 0.19, waitingText.getText()));
+		lobbyText.setFont(UIUtil.calculateFittingFontSize(width * 0.30, height * 0.10, "Kabel", lobbyText.getText()));
+		nameText.setFont(UIUtil.calculateFittingFontSize(width * 0.20, height * 0.09, "Avenir Next", nameText.getText()));
+		nameField.setFont(UIUtil.calculateFittingFontSize(width * 0.15, height * 0.09, "Avenir Next", nameText.getText()));
+		passwordText.setFont(UIUtil.calculateFittingFontSize(width * 0.25, height * 0.09, "Avenir Next", passwordText.getText()));
+		passwordField.setFont(UIUtil.calculateFittingFontSize(width * 0.15, height * 0.09, "Avenir Next", nameText.getText()));
+		waitingText.setFont(UIUtil.calculateFittingFontSize(width * 0.25, height * 0.09, "Avenir Next", waitingText.getText()));
 	}
 }
