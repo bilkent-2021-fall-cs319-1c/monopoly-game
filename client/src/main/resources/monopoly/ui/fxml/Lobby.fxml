@@ -7,6 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.*?>
 <?import monopoly.ui.UIUtil?>
+<?import monopoly.ui.PlayerLobbyPane?>
 
 <MigPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" layout="fill, debug"
@@ -34,8 +35,10 @@
 		<Button styleClass="buttonRegular" text="Ready" />
 	</MigPane>
 
-	<MigPane layout="fill" cols="5%[fill]5%" rows="5%[fill]10%"
+	<MigPane layout="fill" cols="5%[fill]5%" rows="5%[]15%[]15%[]15%[]15%[]15%[]5%"
 		MigPane.cc="grow, wrap">
-		<TableView MigPane.cc="span 2, center" />
+		<PlayerLobbyPane userType="admin"/>
+		<PlayerLobbyPane></PlayerLobbyPane>
+		<PlayerLobbyPane></PlayerLobbyPane>
 	</MigPane>
 </MigPane>
