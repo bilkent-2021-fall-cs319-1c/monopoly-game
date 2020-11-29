@@ -1,6 +1,5 @@
 package monopoly.ui;
 
-import javafx.css.Stylesheet;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -9,6 +8,7 @@ public class UIUtil {
 	public static final Image GAMEPLAY_BACKGROUND_IMAGE = loadImage("images/Background.jpg");
 	public static final Image DEFAULT_PLAYER_IMAGE = loadImage("images/PlayerIcon.png");
 	public static final Image DEFAULT_PLAYER_IMAGE_LOOKING_LEFT = loadImage("images/PlayerIconLookingLeft.png");
+	public static final Image LOCK_ICON = loadImage("images/Lock.png");
 
 	public static final Image BOARD = loadImage("images/Board.png");
 	public static final Image CURVED_ARROW_CW = loadImage("images/CurvedArrowCW.png");

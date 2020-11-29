@@ -15,8 +15,11 @@ public class LobbyPacketData extends PacketData {
 	private static final long serialVersionUID = 1586964682050981428L;
 
 	private int lobbyId;
-	private String lobbyName;
-	private boolean isPublic;
+	private String name;
 	private String password;
+	private boolean isPublic;
+
+	private String ownerUsername;
+	private int playerCount;
 	private int playerLimit;
 }

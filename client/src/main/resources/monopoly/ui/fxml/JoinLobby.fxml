@@ -7,13 +7,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.control.cell.*?>
 <?import monopoly.ui.*?>
+<?import monopoly.ui.join_lobby.*?>
 
 <StackPane fx:id="rootPane" xmlns:fx="http://javafx.com/fxml"
-	fx:controller="monopoly.ui.JoinLobbyController">
-	
-    <stylesheets>
-        <UIUtil fx:constant="MAIN_CSS"/>
-    </stylesheets>
+	fx:controller="monopoly.ui.join_lobby.JoinLobbyController">
+
+	<stylesheets>
+		<UIUtil fx:constant="MAIN_CSS" />
+	</stylesheets>
 
 	<MigPane fx:id="mainPane" layout="fill, center" rows="[fill]"
 		cols="[::39%, fill, grow]2%[::59%, fill, grow]">
@@ -38,21 +39,38 @@
 				MigPane.cc="span 2, center" />
 		</MigPane>
 
-		<MigPane layout="fill, debug" fx:id="rightPane"
-			MigPane.cc="grow">
+		<MigPane layout="fill, debug, flowy" rows="0[90%]0[10%]0"
+			fx:id="rightPane" MigPane.cc="grow">
 			<TableView fx:id="lobbyTable" MigPane.cc="grow">
 				<columns>
-					<TableColumn text="Owner">
+					<TableColumn text="Owner" sortable="false"
+						prefWidth="${lobbyTable.width * 0.2}">
 						<cellValueFactory>
 							<PropertyValueFactory property="owner" />
 						</cellValueFactory>
 					</TableColumn>
-					<TableColumn text="Lobby Name">
+
+					<TableColumn text="Lobby Name" sortable="false"
+						prefWidth="${lobbyTable.width * 0.58}">
 						<cellValueFactory>
 							<PropertyValueFactory property="name" />
 						</cellValueFactory>
 					</TableColumn>
-					<TableColumn text="Players">
+
+					<TableColumn style="-fx-alignment: CENTER;"
+						text="Private?" sortable="false"
+						prefWidth="${lobbyTable.width * 0.1}">
+						<cellValueFactory>
+							<PropertyValueFactory property="isPrivate" />
+						</cellValueFactory>
+						<cellFactory>
+							<LobbyIsPrivateTableCellFactory />
+						</cellFactory>
+					</TableColumn>
+
+					<TableColumn style="-fx-alignment: CENTER;"
+						text="Players" sortable="false"
+						prefWidth="${lobbyTable.width * 0.1}">
 						<cellValueFactory>
 							<PropertyValueFactory
 								property="fullnessRatio" />
@@ -61,7 +79,7 @@
 				</columns>
 			</TableView>
 
-			<Pagination fx:id="lobbyTablePagination" />
+			<Pagination fx:id="lobbyTablePagination" MigPane.cc="grow" />
 		</MigPane>
 	</MigPane>
 </StackPane>

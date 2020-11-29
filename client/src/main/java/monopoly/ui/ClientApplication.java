@@ -35,7 +35,7 @@ public class ClientApplication extends Application {
 
 	@Override
 	public void start(Stage stage) throws IOException {
-		switchToView("fxml/Gameplay.fxml");
+		switchToView("fxml/JoinLobby.fxml");
 
 		stage.setTitle("Monopoly");
 		stage.setScene(scene);
