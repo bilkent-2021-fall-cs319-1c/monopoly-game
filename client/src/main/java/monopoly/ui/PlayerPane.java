@@ -13,7 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Font;
 
 public class PlayerPane extends MigPane {
 	@FXML
@@ -51,13 +50,11 @@ public class PlayerPane extends MigPane {
 		double width = getWidth();
 		double height = getHeight();
 
-		playerNameLabel
-				.setFont(new Font(UIUtil.calculateFittingFontSize(height, width * 0.09, playerNameLabel.getText())));
+		playerNameLabel.setFont(UIUtil.calculateFittingFontSize(height, width * 0.09, playerNameLabel.getText()));
 
-		moneyLabel.setFont(
-				new Font(UIUtil.calculateFittingFontSize(width * 0.84 * 0.49, height * 0.14, moneyLabel.getText())));
-		tradeButton.setFont(new Font(
-				UIUtil.calculateFittingFontSize(width * 0.84 * 0.49 - 10, height * 0.14 - 10, tradeButton.getText())));
+		moneyLabel.setFont(UIUtil.calculateFittingFontSize(width * 0.84 * 0.49, height * 0.14, moneyLabel.getText()));
+		tradeButton.setFont(
+				UIUtil.calculateFittingFontSize(width * 0.84 * 0.49 - 10, height * 0.14 - 10, tradeButton.getText()));
 
 		playerImage.setFitHeight(height * 0.84);
 		playerImage.setFitWidth(width * 0.89);

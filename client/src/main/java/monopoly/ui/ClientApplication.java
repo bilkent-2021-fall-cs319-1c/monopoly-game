@@ -28,6 +28,10 @@ public class ClientApplication extends Application {
 
 	@Override
 	public void init() {
+		// Loading UIUtil class into memory here to call its static initialize block
+		// that loads fonts
+		UIUtil.calculateFittingFontSize(0, 0, "");
+
 		setInstance(this);
 		scene = null;
 		controller = null;
@@ -35,7 +39,7 @@ public class ClientApplication extends Application {
 
 	@Override
 	public void start(Stage stage) throws IOException {
-		switchToView("fxml/MainScreen.fxml");
+		switchToView("fxml/Lobby.fxml");
 
 		stage.setTitle("Monopoly");
 		stage.setScene(scene);

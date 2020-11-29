@@ -59,7 +59,7 @@ public class MainScreenController {
 
 	@FXML
 	public void switchToHelpScreen() throws IOException {
-		ClientApplication.getInstance().switchToView("fxml/Gameplay.fxml");
+		ClientApplication.getInstance().switchToView("fxml/Help.fxml");
 	}
 
 	@FXML

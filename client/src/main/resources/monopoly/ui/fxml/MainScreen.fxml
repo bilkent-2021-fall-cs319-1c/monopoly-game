@@ -24,7 +24,7 @@
 
 	<stylesheets>
 		<UIUtil fx:constant="MAIN_SCREEN_CSS" />
-		<UIUtil fx:constant="MAIN_CSS" />
+		<UIUtil fx:constant="COMMON_CSS" />
 	</stylesheets>
 
 	<MigPane layout="fill, flowy" cols="0[fill]0"

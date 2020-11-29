@@ -22,7 +22,7 @@ public class UIUtil {
 	public static final Image MICROPHONE_ICON = loadImage("images/Microphone.png");
 	public static final Image MICROPHONE_CROSSED_ICON = loadImage("images/MicrophoneCross.png");
 
-	public static final String MAIN_CSS = loadStylesheet("css/common.css");
+	public static final String COMMON_CSS = loadStylesheet("css/common.css");
 	public static final String MAIN_SCREEN_CSS = loadStylesheet("css/mainScreen.css");
 
 	static {
@@ -33,15 +33,15 @@ public class UIUtil {
 	}
 
 	/**
-	 * Calculates the font size that fits in the given area
+	 * Calculates the font that fits in the given area
 	 * 
 	 * @param width      The width of the area
 	 * @param height     The height of the area
 	 * @param fontFamily The name of the font family to use for the calculation
 	 * @param text       The text to fit
-	 * @return The maximum font size that fits in the given rectangular area
+	 * @return The font that fits in the given rectangular area
 	 */
-	public static double calculateFittingFontSize(double width, double height, String fontFamily, String text) {
+	public static Font calculateFittingFontSize(double width, double height, String fontFamily, String text) {
 		final int defaultFontSize = 20;
 		Font font = Font.font(fontFamily, defaultFontSize);
 		Text tempText = new Text(text);
@@ -50,7 +50,8 @@ public class UIUtil {
 		double textWidth = tempText.getLayoutBounds().getWidth();
 		double textHeight = tempText.getLayoutBounds().getHeight();
 
-		return Math.min(defaultFontSize * width / textWidth, defaultFontSize * height / textHeight);
+		double fontSize = Math.min(defaultFontSize * width / textWidth, defaultFontSize * height / textHeight);
+		return new Font(fontFamily, fontSize);
 	}
 
 	/**
@@ -59,10 +60,10 @@ public class UIUtil {
 	 * @param width  The width of the area
 	 * @param height The height of the area
 	 * @param text   The text to fit
-	 * @return The maximum font size that fits in the given rectangular area using
-	 *         the default font
+	 * @return The font with the maximum font size that fits in the given
+	 *         rectangular area using the default font
 	 */
-	public static double calculateFittingFontSize(double width, double height, String text) {
+	public static Font calculateFittingFontSize(double width, double height, String text) {
 		String defaultFontFamily = Font.getDefault().getFamily();
 		return calculateFittingFontSize(width, height, defaultFontFamily, text);
 	}

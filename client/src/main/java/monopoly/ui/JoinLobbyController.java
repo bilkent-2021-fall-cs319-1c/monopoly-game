@@ -61,17 +61,15 @@ public class JoinLobbyController {
 	}
 
 	private void setFontSizes(double height, double width) {
-		mainTitle.setFont(new Font(UIUtil.calculateFittingFontSize(width * 0.18, height, mainTitle.getText())));
-		promptText.setFont(new Font(UIUtil.calculateFittingFontSize(width * 0.12, height, promptText.getText())));
-		infoText.setFont(new Font(UIUtil.calculateFittingFontSize(width * 0.35, height, infoText.getText())));
-		roomTitle.setFont(new Font(UIUtil.calculateFittingFontSize(width * 0.10, height, roomTitle.getText())));
-		passwordTitle
-				.setFont(new Font(UIUtil.calculateFittingFontSize(width * 0.075, height, passwordTitle.getText())));
-		roomName.setFont(new Font(UIUtil.calculateFittingFontSize(height, width * 0.011, roomName.getText())));
-		passwordValue
-				.setFont(new Font(UIUtil.calculateFittingFontSize(height, width * 0.010, passwordValue.getText())));
-		joinButton.setFont(new Font(UIUtil.calculateFittingFontSize(joinButton.getWidth() - 5,
-				joinButton.getHeight() - 5, joinButton.getText())));
+		mainTitle.setFont(UIUtil.calculateFittingFontSize(width * 0.18, height, mainTitle.getText()));
+		promptText.setFont(UIUtil.calculateFittingFontSize(width * 0.12, height, promptText.getText()));
+		infoText.setFont(UIUtil.calculateFittingFontSize(width * 0.35, height, infoText.getText()));
+		roomTitle.setFont(UIUtil.calculateFittingFontSize(width * 0.10, height, roomTitle.getText()));
+		passwordTitle.setFont(UIUtil.calculateFittingFontSize(width * 0.075, height, passwordTitle.getText()));
+		roomName.setFont(UIUtil.calculateFittingFontSize(height, width * 0.011, roomName.getText()));
+		passwordValue.setFont(UIUtil.calculateFittingFontSize(height, width * 0.010, passwordValue.getText()));
+		joinButton.setFont(UIUtil.calculateFittingFontSize(joinButton.getWidth() - 5, joinButton.getHeight() - 5,
+				joinButton.getText()));
 	}
 
 	private void windowHeightChanged() {

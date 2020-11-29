@@ -60,17 +60,16 @@ public class CreateLobbyController {
 	}
 
 	private void setFontSizes(double height, double width) {
-		mainTitle.setFont(new Font(UIUtil.calculateFittingFontSize(height, width * 0.055, mainTitle.getText())));
-		limitTitle.setFont(new Font(UIUtil.calculateFittingFontSize(height, width * 0.03, limitTitle.getText())));
-		roomTitle.setFont(new Font(UIUtil.calculateFittingFontSize(height, width * 0.03, roomTitle.getText())));
-		passwordTitle.setFont(new Font(UIUtil.calculateFittingFontSize(height, width * 0.03, passwordTitle.getText())));
-		roomName.setFont(new Font(UIUtil.calculateFittingFontSize(height, width * 0.014, roomName.getText())));
-		passwordValue
-				.setFont(new Font(UIUtil.calculateFittingFontSize(height, width * 0.014, passwordValue.getText())));
+		mainTitle.setFont(UIUtil.calculateFittingFontSize(height, width * 0.055, mainTitle.getText()));
+		limitTitle.setFont(UIUtil.calculateFittingFontSize(height, width * 0.03, limitTitle.getText()));
+		roomTitle.setFont(UIUtil.calculateFittingFontSize(height, width * 0.03, roomTitle.getText()));
+		passwordTitle.setFont(UIUtil.calculateFittingFontSize(height, width * 0.03, passwordTitle.getText()));
+		roomName.setFont(UIUtil.calculateFittingFontSize(height, width * 0.014, roomName.getText()));
+		passwordValue.setFont(UIUtil.calculateFittingFontSize(height, width * 0.014, passwordValue.getText()));
 
-		checkPriv.setFont(new Font(UIUtil.calculateFittingFontSize(height, width * 0.02, checkPriv.getText())));
-		createButton.setFont(new Font(UIUtil.calculateFittingFontSize(createButton.getWidth() - 20,
-				createButton.getHeight() - 20, createButton.getText())));
+		checkPriv.setFont(UIUtil.calculateFittingFontSize(height, width * 0.02, checkPriv.getText()));
+		createButton.setFont(UIUtil.calculateFittingFontSize(createButton.getWidth() - 20,
+				createButton.getHeight() - 20, createButton.getText()));
 	}
 
 	private void windowHeightChanged() {

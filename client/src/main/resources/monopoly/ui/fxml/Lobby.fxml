@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.*?>
+<?import monopoly.ui.UIUtil?>
+
+<MigPane xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" layout="fill, debug"
+	cols="[::39%, grow]2%[::59%, grow]" fx:id="root"
+	fx:controller="monopoly.ui.LobbyController">
+
+	<stylesheets>
+		<UIUtil fx:constant="COMMON_CSS" />
+	</stylesheets>
+
+	<MigPane layout="fill, wrap, debug"
+		rows="[15%][10%][10%][10%][10%][20%][10%][10%]" cols="[]"
+		MigPane.cc="grow">
+
+		<Text style="-fx-font-family: 'Kabel'" text="Lobby"
+			fx:id="lobbyText" />
+		<Text text="Room Name" fx:id="nameText" />
+		<Text text="Room Name" fx:id="nameField" />
+		<Text text="Room Password" fx:id="passwordText" />
+		<Text text="Room Password" fx:id="passwordField" />
+		<Text fx:id="waitingText">
+			Waiting for players...
+		</Text>
+		<Button styleClass="buttonRegular" text="Make Public" />
+		<Button styleClass="buttonRegular" text="Ready" />
+	</MigPane>
+
+	<MigPane layout="fill" cols="5%[fill]5%" rows="5%[fill]10%"
+		MigPane.cc="grow, wrap">
+		<TableView MigPane.cc="span 2, center" />
+	</MigPane>
+</MigPane>
