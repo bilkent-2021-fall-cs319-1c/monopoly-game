@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.EqualsAndHashCode;
+import monopoly.Model;
 
 /**
  * Lobby Setup
@@ -34,6 +35,8 @@ public class Lobby {
     private List<User> bannedPlayers;
     private LobbyOwner host;
     
+    private Model model;
+    
     
     /**
      * Creates a lobby 
@@ -43,14 +46,16 @@ public class Lobby {
      * @param isPublic  status of being either public or private
      * @param password  specified pass code
      */
-    public Lobby(String title, int limit, boolean isPublic, String password) {
+    public Lobby(Model model, String title, int limit, boolean isPublic, String password) {
+    	this.model = model;
+    	
 		players = Collections.synchronizedList(new ArrayList<User>());
 		bannedPlayers = Collections.synchronizedList(new ArrayList<User>());
 		
 		id = ++lastUsedId;
 		
 		setName(title);
-		setPlayerLimit(playerLimit);
+		setPlayerLimit( limit);
 		setPublic(isPublic);
 		setPassword(password);
 		setInGame(false);
@@ -65,6 +70,7 @@ public class Lobby {
     public void addPlayer(User player) {
 		if (player != null && players.size() < playerLimit) {
 		    players.add(player);
+		    player.setLobby( this);
 		}
     }
 
@@ -94,13 +100,20 @@ public class Lobby {
      */
     public void ban( User player) {
 		bannedPlayers.add( player);
-		player.leaveLobby();
     }
     
     public void startGame() {
     	setInGame( true);
+    	model.sendGameStartNotification(this);
     	
     	//To be implemented in later versions
     }
     
+    public void checkGameStart() {
+    	for (User player : players) {
+    		if (!player.isReady())
+    			return;
+    	}
+    	startGame();
+    }
 }
