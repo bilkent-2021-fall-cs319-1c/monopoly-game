@@ -202,7 +202,8 @@ public class NetworkManager {
 
 		@Override
 		public void connected(int connectionID) {
-			askAndGetResponse(new ImportantNetworkPacket(PacketType.CONNECT), PacketType.ACCEPTED);
+			new Thread(() -> askAndGetResponse(new ImportantNetworkPacket(PacketType.CONNECT), PacketType.ACCEPTED))
+					.start();
 		}
 
 		@Override

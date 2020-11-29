@@ -8,8 +8,8 @@
 
 <MigPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" fx:id="mainMigPane" layout="fill"
-	cols="33.3%[center]33.3%" rows="0[grow]0"
-	fx:controller="monopoly.ui.MainScreenController">
+	cols="33%[center]33%" rows="0[grow]0"
+	fx:controller="monopoly.ui.MainMenuController">
 	<background>
 		<Background>
 			<images>
@@ -36,8 +36,9 @@
 		<Button fx:id="createGameButton"
 			onAction="#switchToCreateGameScreen" styleClass="buttonRegular"
 			text="Create Game" />
-		<Button fx:id="joinGameButton" onAction="#switchToJoinLobbyScreen"
-			styleClass="buttonRegular" text="Join Game" />
+		<Button fx:id="joinGameButton"
+			onAction="#switchToJoinLobbyScreen" styleClass="buttonRegular"
+			text="Join Game" />
 		<Button fx:id="helpButton" onAction="#switchToHelpScreen"
 			styleClass="buttonRegular" text="Help" />
 		<Button fx:id="exitButton" onAction="#exitApp"

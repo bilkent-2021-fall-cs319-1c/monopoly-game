@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import monopoly.NetworkManager;
 
 /**
  * Singleton JavaFX Application class for Monopoly.
@@ -23,23 +24,25 @@ public class ClientApplication extends Application {
 	@Getter
 	@Setter(AccessLevel.PRIVATE)
 	private static ClientApplication instance;
+
 	private Scene scene;
 	private Object controller;
+	private NetworkManager networkManager;
 
-	@Override
-	public void init() {
+	public ClientApplication() throws IOException {
 		// Loading UIUtil class into memory here to call its static initialize block
 		// that loads fonts
 		UIUtil.calculateFittingFontSize(0, 0, "");
-
 		setInstance(this);
 		scene = null;
 		controller = null;
+
+		networkManager = new NetworkManager();
 	}
 
 	@Override
 	public void start(Stage stage) throws IOException {
-		switchToView("fxml/Lobby.fxml");
+		switchToView("fxml/MainMenu.fxml");
 
 		stage.setTitle("Monopoly");
 		stage.setScene(scene);

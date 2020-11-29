@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import monopoly.network.Server;
 import monopoly.network.packet.important.ImportantNetworkPacket;
+import monopoly.network.packet.important.PacketType;
 import monopoly.network.packet.realtime.BufferedImagePacket;
 import monopoly.network.packet.realtime.MicSoundPacket;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
@@ -71,6 +72,8 @@ public class ServerDemo {
 			@Override
 			public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
 				logger.warn("Received important packet {} from id {}", packet, connectionID);
+				sendImportantPacket(new ImportantNetworkPacket(PacketType.ACCEPTED), connectionID);
+				sendImportantPacket(new ImportantNetworkPacket(PacketType.ERR_UNKNOWN), connectionID);
 			}
 		};
 
