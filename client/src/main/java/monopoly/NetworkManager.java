@@ -140,7 +140,7 @@ public class NetworkManager {
 	 */
 	public boolean createLobby(String lobbyName, boolean isPublic, String password, int playerLimit) {
 		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.CREATE_LOBBY,
-				new LobbyPacketData(0, lobbyName, isPublic, password, playerLimit));
+				new LobbyPacketData(0, lobbyName, password, isPublic, "", 0, playerLimit));
 		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.LOBBY_CREATED);
 
 		return response != null;

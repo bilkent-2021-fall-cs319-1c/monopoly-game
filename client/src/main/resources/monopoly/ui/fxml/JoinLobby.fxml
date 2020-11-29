@@ -5,19 +5,24 @@
 <?import javafx.scene.layout.*?>
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 <?import javafx.scene.control.*?>
-<?import monopoly.ui.UIUtil?>
+<?import javafx.scene.control.cell.*?>
+<?import monopoly.ui.*?>
+<?import monopoly.ui.join_lobby.*?>
 
-<StackPane xmlns="http://javafx.com/javafx/15.0.1"
-	xmlns:fx="http://javafx.com/fxml" fx:id="rootPane"
-	fx:controller="monopoly.ui.JoinLobbyController">
+<StackPane fx:id="rootPane" xmlns:fx="http://javafx.com/fxml"
+	fx:controller="monopoly.ui.join_lobby.JoinLobbyController">
 
-	<MigPane fx:id="mainPane" layout=" fill, center" rows="[fill]"
+	<stylesheets>
+		<UIUtil fx:constant="MAIN_CSS" />
+	</stylesheets>
+
+	<MigPane fx:id="mainPane" layout="fill, center" rows="[fill]"
 		cols="[::39%, fill, grow]2%[::59%, fill, grow]">
 
-		<MigPane fx:id="leftPane" layout="debug,wrap"
+		<MigPane fx:id="leftPane" layout="wrap"
 			rows="13%[15%]5%[10%]0[10%]2%[10%]5%[10%, top]5%"
 			cols="5%[left]2%[left]" MigPane.cc="grow">
-
+			
 			<Text fx:id="mainTitle" MigPane.cc="span 2">Join Lobby</Text>
 
 			<Text fx:id="promptText"
@@ -27,7 +32,7 @@
 				You can also search for a room
 				by entering its name or by the player.
 			</Text>
-
+			
 			<Text fx:id="roomTitle">Room Name:</Text>
 			<TextField fx:id="roomName" text="" />
 
@@ -38,9 +43,47 @@
 				MigPane.cc="span 2, center" />
 		</MigPane>
 
-		<MigPane fx:id="rightPane" layout="fill, flowy"
-			cols="5%[fill]5%" rows="5%[fill]10%" MigPane.cc="grow, wrap">
-			<TableView fx:id="roomList" MigPane.cc="span 2, center" />
+		<MigPane layout="fill, debug, flowy" rows="0[90%]0[10%]0"
+			fx:id="rightPane" MigPane.cc="grow">
+			<TableView fx:id="lobbyTable" MigPane.cc="grow">
+				<columns>
+					<TableColumn text="Owner" sortable="false"
+						prefWidth="${lobbyTable.width * 0.2}">
+						<cellValueFactory>
+							<PropertyValueFactory property="owner" />
+						</cellValueFactory>
+					</TableColumn>
+
+					<TableColumn text="Lobby Name" sortable="false"
+						prefWidth="${lobbyTable.width * 0.58}">
+						<cellValueFactory>
+							<PropertyValueFactory property="name" />
+						</cellValueFactory>
+					</TableColumn>
+
+					<TableColumn style="-fx-alignment: CENTER;"
+						text="Private?" sortable="false"
+						prefWidth="${lobbyTable.width * 0.1}">
+						<cellValueFactory>
+							<PropertyValueFactory property="isPrivate" />
+						</cellValueFactory>
+						<cellFactory>
+							<LobbyIsPrivateTableCellFactory />
+						</cellFactory>
+					</TableColumn>
+
+					<TableColumn style="-fx-alignment: CENTER;"
+						text="Players" sortable="false"
+						prefWidth="${lobbyTable.width * 0.1}">
+						<cellValueFactory>
+							<PropertyValueFactory
+								property="fullnessRatio" />
+						</cellValueFactory>
+					</TableColumn>
+				</columns>
+			</TableView>
+
+			<Pagination fx:id="lobbyTablePagination" MigPane.cc="grow" />
 		</MigPane>
 	</MigPane>
 </StackPane>

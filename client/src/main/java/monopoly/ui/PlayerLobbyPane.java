@@ -1,16 +1,16 @@
 package monopoly.ui;
 
+import java.io.IOException;
+import java.util.stream.Stream;
+
+import org.tbee.javafx.scene.layout.fxml.MigPane;
+
 import javafx.beans.NamedArg;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
-import org.tbee.javafx.scene.layout.fxml.MigPane;
-
-import java.io.IOException;
-import java.util.stream.Stream;
 
 public class PlayerLobbyPane extends MigPane {
 
@@ -31,14 +31,12 @@ public class PlayerLobbyPane extends MigPane {
     private Button removeButton;
 
     private String userType;
-    private Image userImage;
     private String name;
 
-    public PlayerLobbyPane(@NamedArg("userType") String userType, @NamedArg("name") String name, @NamedArg("userImage") Image userImage) throws IOException {
+    public PlayerLobbyPane(@NamedArg("userType") String userType, @NamedArg("name") String name) throws IOException {
 
         this.userType = userType;
         this.name = name;
-        this.userImage = userImage;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/PlayerLobbyPane.fxml"));
         loader.setController(this);
@@ -56,17 +54,13 @@ public class PlayerLobbyPane extends MigPane {
 
         playerName.setFont(UIUtil.calculateFittingFontSize(width * 0.3, height * 0.3, playerName.getText()));
 
-
-        //makeAdminButton.setFont(UIUtil.calculateFittingFontSize(width * 0.3, height * 0.3, makeAdminButton.getText()));
         makeAdminButton.setPrefHeight(height * 0.2);
         makeAdminButton.setPrefWidth(width * 0.2);
-
     }
 
 
     @FXML
     private void initialize() {
-
         playerName.setText(name);
 
         if ("admin".equals(userType)) {

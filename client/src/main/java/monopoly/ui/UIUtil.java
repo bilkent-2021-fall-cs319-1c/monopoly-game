@@ -11,6 +11,7 @@ public class UIUtil {
 
 	public static final Image DEFAULT_PLAYER_IMAGE = loadImage("images/PlayerIcon.png");
 	public static final Image DEFAULT_PLAYER_IMAGE_LOOKING_LEFT = loadImage("images/PlayerIconLookingLeft.png");
+	public static final Image LOCK_ICON = loadImage("images/Lock.png");
 
 	public static final Image BOARD = loadImage("images/Board.png");
 	public static final Image CURVED_ARROW_CW = loadImage("images/CurvedArrowCW.png");
@@ -24,7 +25,7 @@ public class UIUtil {
 
 	public static final String COMMON_CSS = loadStylesheet("css/common.css");
 	public static final String MAIN_SCREEN_CSS = loadStylesheet("css/mainScreen.css");
-	public static final String PLAYER_LOBBY_PANEL_SCREEN_CSS = loadStylesheet("css/playerLobbyPanel.css");
+	public static final String PLAYER_LOBBY_PANEL_SCREEN_CSS = loadStylesheet("css/playerLobbyPane.css");
 
 	static {
 		loadFont("fonts/kabel/Kabel-Bold.ttf");

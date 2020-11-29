@@ -84,7 +84,6 @@ public class CreateLobbyController {
 
 		boolean success = ClientApplication.getInstance().getNetworkManager().createLobby(lobbyName, isPublic, password,
 				playerLimit);
-		System.out.println(success);
 		if (success) {
 			ClientApplication.getInstance().switchToView("fxml/Lobby.fxml");
 		}

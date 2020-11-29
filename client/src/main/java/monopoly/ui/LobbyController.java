@@ -63,10 +63,12 @@ public class LobbyController {
 
 	private void setFontSizes(double width, double height) {
 		lobbyText.setFont(UIUtil.calculateFittingFontSize(width * 0.30, height * 0.10, "Kabel", lobbyText.getText()));
-		nameText.setFont(UIUtil.calculateFittingFontSize(width * 0.20, height * 0.09, "Avenir Next", nameText.getText()));
-		nameField.setFont(UIUtil.calculateFittingFontSize(width * 0.15, height * 0.09, "Avenir Next", nameText.getText()));
-		passwordText.setFont(UIUtil.calculateFittingFontSize(width * 0.25, height * 0.09, "Avenir Next", passwordText.getText()));
-		passwordField.setFont(UIUtil.calculateFittingFontSize(width * 0.15, height * 0.09, "Avenir Next", nameText.getText()));
-		waitingText.setFont(UIUtil.calculateFittingFontSize(width * 0.25, height * 0.09, "Avenir Next", waitingText.getText()));
+		
+		String avenirFontFamily = "Avenir Next";
+		nameText.setFont(UIUtil.calculateFittingFontSize(width * 0.20, height * 0.09, avenirFontFamily, nameText.getText()));
+		nameField.setFont(UIUtil.calculateFittingFontSize(width * 0.15, height * 0.09, avenirFontFamily, nameText.getText()));
+		passwordText.setFont(UIUtil.calculateFittingFontSize(width * 0.25, height * 0.09, avenirFontFamily, passwordText.getText()));
+		passwordField.setFont(UIUtil.calculateFittingFontSize(width * 0.15, height * 0.09, avenirFontFamily, nameText.getText()));
+		waitingText.setFont(UIUtil.calculateFittingFontSize(width * 0.25, height * 0.09, avenirFontFamily, waitingText.getText()));
 	}
 }
