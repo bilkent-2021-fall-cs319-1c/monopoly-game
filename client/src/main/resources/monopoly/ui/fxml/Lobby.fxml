@@ -7,12 +7,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.*?>
 <?import monopoly.ui.UIUtil?>
-<?import monopoly.ui.PlayerLobbyPane?>
+<?import monopoly.ui.in_lobby.PlayerLobbyPane?>
 
 <MigPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" layout="fill, wrap"
 	cols="[::39%, grow]2%[::59%, grow]" fx:id="root"
-	fx:controller="monopoly.ui.LobbyController">
+	fx:controller="monopoly.ui.in_lobby.LobbyController">
 
 	<stylesheets>
 		<UIUtil fx:constant="COMMON_CSS" />

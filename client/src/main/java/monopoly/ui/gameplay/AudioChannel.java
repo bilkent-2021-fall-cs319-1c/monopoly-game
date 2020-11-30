@@ -1,4 +1,4 @@
-package monopoly.network.demo;
+package monopoly.ui.gameplay;
 
 import java.util.ArrayList;
 import java.util.Collections;

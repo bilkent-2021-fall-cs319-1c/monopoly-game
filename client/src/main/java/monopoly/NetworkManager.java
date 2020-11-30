@@ -8,6 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lombok.Getter;
 import monopoly.network.Client;
 import monopoly.network.ServerInfo;
 import monopoly.network.packet.important.ImportantNetworkPacket;
@@ -19,13 +20,16 @@ import monopoly.network.packet.important.packet_data.LobbyPacketData;
 import monopoly.network.packet.important.packet_data.PlayerPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.ui.ClientApplication;
-import monopoly.ui.GameplayController;
-import monopoly.ui.LobbyController;
+import monopoly.ui.gameplay.GameplayController;
+import monopoly.ui.in_lobby.LobbyController;
 
 public class NetworkManager {
 	private static Logger logger = LoggerFactory.getLogger(NetworkManager.class);
 
+	@Getter
 	private Client client;
+	@Getter
+	private Integer selfConnectionId;
 
 	private PacketType waitingForResponseType;
 	private ImportantNetworkPacket responsePacket;
@@ -33,6 +37,7 @@ public class NetworkManager {
 	private List<ErrorListener> errorListeners;
 
 	public NetworkManager() throws IOException {
+		selfConnectionId = null;
 		waitingForResponseType = null;
 		errorListeners = Collections.synchronizedList(new ArrayList<ErrorListener>());
 		client = new MonopolyClient(ServerInfo.IP);
@@ -211,6 +216,7 @@ public class NetworkManager {
 
 		@Override
 		public void connected(int connectionID) {
+			selfConnectionId = connectionID;
 			new Thread(() -> askAndGetResponse(new ImportantNetworkPacket(PacketType.CONNECT), PacketType.ACCEPTED))
 					.start();
 		}
@@ -222,10 +228,13 @@ public class NetworkManager {
 
 		@Override
 		public void receivedRealTimePacket(int connectionID, RealTimeNetworkPacket packet) {
+			System.out.println(packet);
 			Object uiController = ClientApplication.getInstance().getController();
 			if (uiController instanceof GameplayController) {
 				GameplayController gameplayController = (GameplayController) uiController;
 				gameplayController.realTimePacketReceived(packet);
+			} else {
+				logger.error("WRONG CONTROLLER");
 			}
 		}
 
@@ -275,10 +284,12 @@ public class NetworkManager {
 		}
 
 		private void handleGameStart() {
-			try {
-				ClientApplication.getInstance().switchToView("fxml/Gameplay.fxml");
-			} catch (IOException e) {
-				e.printStackTrace();
+			Object uiController = ClientApplication.getInstance().getController();
+			if (uiController instanceof LobbyController) {
+				LobbyController lobbyController = (LobbyController) uiController;
+				lobbyController.gameStart();
+			} else {
+				logger.error("WRONG CONTROLLER!");
 			}
 		}
 	}

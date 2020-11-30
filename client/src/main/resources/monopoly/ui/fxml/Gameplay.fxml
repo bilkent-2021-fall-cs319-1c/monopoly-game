@@ -5,12 +5,12 @@
 <?import javafx.scene.layout.*?>
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 
-<?import monopoly.ui.PlayerPane?>
+<?import monopoly.ui.gameplay.PlayerPane?>
 <?import monopoly.ui.UIUtil?>
 
 <StackPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
-	fx:controller="monopoly.ui.GameplayController">
+	fx:controller="monopoly.ui.gameplay.GameplayController">
 
 	<!-- Main Gameplay View -->
 	<MigPane layout="fill" rows="0[grow, fill] [:5%:5%]"
@@ -29,12 +29,7 @@
 
 		<!-- Players on the left side -->
 		<MigPane layout="fill, flowy" cols="0[fill]0"
-			MigPane.cc="grow">
-			<PlayerPane MigPane.cc="grow, hmax 30%, wmax 100%"
-				player="self" />
-			<PlayerPane MigPane.cc="grow, hmax 30%, wmax 100%" />
-			<PlayerPane MigPane.cc="grow, hmax 30%, wmax 100%" />
-		</MigPane>
+			MigPane.cc="grow" fx:id="playersLeft" />
 
 		<!-- Board -->
 		<ImageView fx:id="board" scaleX="0" scaleY="0"
@@ -46,12 +41,7 @@
 
 		<!-- Players on the right side -->
 		<MigPane layout="fill, flowy" cols="0[fill]0"
-			MigPane.cc="grow, wrap">
-			<PlayerPane MigPane.cc="grow, hmax 30%, wmax 100%"
-				side="right" />
-			<PlayerPane MigPane.cc="grow, hmax 30%, wmax 100%"
-				side="right" />
-		</MigPane>
+			MigPane.cc="grow, wrap" fx:id="playersRight" />
 
 		<!-- Rotation Icons -->
 		<MigPane MigPane.cc="skip 1, grow" cols="[]push[]" rows="0[]0">

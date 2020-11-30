@@ -1,11 +1,18 @@
-package monopoly.ui;
+package monopoly.ui.gameplay;
 
 import java.io.IOException;
 import java.util.stream.Stream;
 
+import javax.sound.sampled.LineUnavailableException;
+
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamEvent;
+import com.github.sarxos.webcam.WebcamListener;
+
 import javafx.beans.NamedArg;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -13,7 +20,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import lombok.Getter;
+import monopoly.network.Client;
+import monopoly.ui.ClientApplication;
+import monopoly.ui.UIUtil;
 
+/**
+ * Displays a player's container in gameplay view
+ * 
+ * @author Ziya Mukhtarov
+ * @version Nov 30, 2020
+ */
 public class PlayerPane extends MigPane {
 	@FXML
 	private Label playerNameLabel;
@@ -21,6 +38,7 @@ public class PlayerPane extends MigPane {
 	private Label moneyLabel;
 	@FXML
 	private Button tradeButton;
+	@Getter
 	@FXML
 	private ImageView playerImage;
 	@FXML
@@ -32,18 +50,66 @@ public class PlayerPane extends MigPane {
 
 	private String side;
 	private String player;
+	private String username;
 
-	public PlayerPane(@NamedArg("side") String side, @NamedArg("player") String player) throws IOException {
+	private MicSender micSender;
+	private WebcamSender webcamSender;
+
+	/**
+	 * @param side     "right" for username to be on the right, or it will on the
+	 *                 left
+	 * @param player   "self" for webcam/audio controls, or trade button will be
+	 *                 displayed
+	 * @param username Username to display
+	 */
+	public PlayerPane(@NamedArg("side") String side, @NamedArg("player") String player, String username) {
 		this.side = side;
 		this.player = player;
+		this.username = username;
 
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/PlayerPane.fxml"));
+		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/PlayerPane.fxml"));
 		loader.setController(this);
 		loader.setRoot(this);
-		loader.load();
+		try {
+			loader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		Stream.of(widthProperty(), heightProperty())
 				.forEach(p -> p.addListener((observable, oldVal, newVal) -> adjustSize()));
+
+		if ("self".equals(player)) {
+			try {
+				Client client = ClientApplication.getInstance().getNetworkManager().getClient();
+				micSender = new MicSender(client);
+				webcamSender = new WebcamSender(client, Webcam.getDefault());
+
+				webcamSender.getWebcam().addWebcamListener(new WebcamListener() {
+					@Override
+					public void webcamOpen(WebcamEvent we) {
+						// Do nothing
+					}
+
+					@Override
+					public void webcamImageObtained(WebcamEvent we) {
+						playerImage.setImage(SwingFXUtils.toFXImage(we.getImage(), null));
+					}
+
+					@Override
+					public void webcamDisposed(WebcamEvent we) {
+						// Do nothing
+					}
+
+					@Override
+					public void webcamClosed(WebcamEvent we) {
+						// Do nothing
+					}
+				});
+			} catch (LineUnavailableException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void adjustSize() {
@@ -86,14 +152,18 @@ public class PlayerPane extends MigPane {
 			webcamIcon.setVisible(true);
 			micIcon.setVisible(true);
 		}
+
+		playerNameLabel.setText(username);
 	}
 
 	@FXML
 	private void toggleMicrophone() {
 		if (micIcon.getImage() == UIUtil.MICROPHONE_CROSSED_ICON) {
 			micIcon.setImage(UIUtil.MICROPHONE_ICON);
+			micSender.start();
 		} else {
 			micIcon.setImage(UIUtil.MICROPHONE_CROSSED_ICON);
+			micSender.stop();
 		}
 	}
 
@@ -101,8 +171,10 @@ public class PlayerPane extends MigPane {
 	private void toggleWebcam() {
 		if (webcamIcon.getImage() == UIUtil.WEBCAM_CROSSED_ICON) {
 			webcamIcon.setImage(UIUtil.WEBCAM_ICON);
+			webcamSender.start();
 		} else {
 			webcamIcon.setImage(UIUtil.WEBCAM_CROSSED_ICON);
+			webcamSender.stop();
 		}
 	}
 }

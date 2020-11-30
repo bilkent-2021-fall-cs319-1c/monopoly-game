@@ -71,14 +71,14 @@ public class UIUtil {
 	}
 
 	private static Image loadImage(String path) {
-		return new Image(GameplayController.class.getResourceAsStream(path));
+		return new Image(UIUtil.class.getResourceAsStream(path));
 	}
 
 	private static String loadStylesheet(String path) {
-		return GameplayController.class.getResource(path).toExternalForm();
+		return UIUtil.class.getResource(path).toExternalForm();
 	}
 
 	private static void loadFont(String path) {
-		Font.loadFont(GameplayController.class.getResourceAsStream(path), 20);
+		Font.loadFont(UIUtil.class.getResourceAsStream(path), 20);
 	}
 }
