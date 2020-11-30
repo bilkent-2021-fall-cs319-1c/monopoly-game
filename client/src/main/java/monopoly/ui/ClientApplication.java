@@ -15,7 +15,7 @@ import monopoly.NetworkManager;
 
 /**
  * Singleton JavaFX Application class for Monopoly.
- * 
+ *
  * @author Ziya Mukhtarov
  * @version Nov 28, 2020
  */
@@ -47,14 +47,14 @@ public class ClientApplication extends Application {
 		stage.setTitle("Monopoly");
 		stage.setScene(scene);
 		stage.centerOnScreen();
-//		stage.setFullScreen(true);
+		stage.setFullScreen(true);
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		stage.show();
 	}
 
 	/**
 	 * Switches the active scene's root node to the given one
-	 * 
+	 *
 	 * @param resourcePath The path to the resource (mainly, FXML file) to switch to
 	 * @throws IOException If the resource cannot be found
 	 */

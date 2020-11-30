@@ -68,6 +68,10 @@ public class PlayerPane extends MigPane {
 		Image playerIconImg = ("right".equals(side) ? UIUtil.DEFAULT_PLAYER_IMAGE_LOOKING_LEFT
 				: UIUtil.DEFAULT_PLAYER_IMAGE);
 		playerImage.setImage(playerIconImg);
+
+		tradeButton.getStyleClass().add("buttonRegular");
+		tradeButton.getStyleClass().add("tradeButton");
+		playerNameLabel.getStyleClass().add("playerNameLabel");
 	}
 
 	@FXML

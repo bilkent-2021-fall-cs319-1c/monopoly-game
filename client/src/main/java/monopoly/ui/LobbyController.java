@@ -102,7 +102,7 @@ public class LobbyController {
 	}
 
 	private void setFontSizes(double width, double height) {
-		lobbyText.setFont(UIUtil.calculateFittingFont(width * 0.30, height * 0.10, "Kabel", lobbyText.getText()));
+		lobbyText.setFont(UIUtil.calculateFittingFont(width * 0.32, height * 0.10, "Recoleta Alt", lobbyText.getText()));
 
 		String avenirFontFamily = "Avenir Next";
 		nameText.setFont(

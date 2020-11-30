@@ -1,0 +1,17 @@
+.tradeButton {
+    -fx-border-color: linear-gradient(to bottom right, #b100fc, #ff002f);
+    -fx-text-fill: linear-gradient(to bottom right, #b100fc, #ff002f);
+    -fx-background-color: white;
+    -fx-padding: 5px;
+}
+
+.tradeButton:hover {
+    -fx-border-color: linear-gradient(to bottom right, #b100fc, #ff002f);
+    -fx-background-color: linear-gradient(to bottom right, #b100fc, #ff002f);
+    -fx-text-fill: white;
+}
+
+.playerNameLabel {
+    -fx-text-fill: linear-gradient(to bottom right, #b100fc, #ff002f);
+}
+

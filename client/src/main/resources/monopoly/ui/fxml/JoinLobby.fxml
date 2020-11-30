@@ -14,6 +14,7 @@
 
 	<stylesheets>
 		<UIUtil fx:constant="COMMON_CSS" />
+		<UIUtil fx:constant="JOIN_LOBBY_CSS" />
 	</stylesheets>
 
 	<MigPane fx:id="mainPane" layout="fill, center" rows="[fill]"

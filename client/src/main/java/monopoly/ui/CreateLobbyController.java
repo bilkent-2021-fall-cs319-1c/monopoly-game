@@ -57,6 +57,11 @@ public class CreateLobbyController {
 				windowWidthChanged();
 			}
 		});
+
+		createButton.getStyleClass().add("buttonRegular");
+		stackPane.getStyleClass().add("stackPane");
+		checkPriv.getStyleClass().add("checkPriv");
+
 	}
 
 	@FXML
@@ -113,10 +118,10 @@ public class CreateLobbyController {
 	}
 
 	private void setFontSizes(double height, double width) {
-		mainTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.055, mainTitle.getText()));
-		limitTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.03, limitTitle.getText()));
-		roomTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.03, roomTitle.getText()));
-		passwordTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.03, passwordTitle.getText()));
+		mainTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.065, "Recoleta Alt", mainTitle.getText()));
+		limitTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.03, "Avenir Next", limitTitle.getText()));
+		roomTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.03, "Avenir Next", roomTitle.getText()));
+		passwordTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.03, "Avenir Next", passwordTitle.getText()));
 		roomName.setFont(UIUtil.calculateFittingFont(height, width * 0.014, roomName.getText()));
 		passwordValue.setFont(UIUtil.calculateFittingFont(height, width * 0.014, passwordValue.getText()));
 

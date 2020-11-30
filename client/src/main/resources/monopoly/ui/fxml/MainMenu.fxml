@@ -10,17 +10,17 @@
 	xmlns:fx="http://javafx.com/fxml" fx:id="mainMigPane" layout="fill"
 	cols="33%[center]33%" rows="0[grow]0"
 	fx:controller="monopoly.ui.MainMenuController">
-	<background>
+	<!--<background>
 		<Background>
 			<images>
 				<BackgroundImage>
 					<image>
-						<UIUtil fx:constant="BACKGROUND_IMAGE1" />
+						<UIUtil fx:constant="BACKGROUND_IMAGE4" />
 					</image>
 				</BackgroundImage>
 			</images>
 		</Background>
-	</background>
+	</background>-->
 
 	<stylesheets>
 		<UIUtil fx:constant="MAIN_SCREEN_CSS" />

@@ -1,5 +1,7 @@
 .table-row-cell:empty {-fx-background-color: white;}  .table-row-cell:empty .table-cell {-fx-border-width: 0px;}
 
+
+
 .button {
     -fx-padding: 15px;
     -fx-font-size: 20px;
@@ -9,33 +11,37 @@
     -fx-font-weight: bold;
 }
 
-.buttonRegular {
-    -fx-border-color: rgb(10, 104, 255);
-    -fx-border-width: 4px;
-    -fx-background-color: white;
-    -fx-text-fill: rgb(10, 104, 255);
+.button:disabled {
+    -fx-background-color: gray;
+    -fx-border-color: darkgray;
 }
 
-.buttonDanger {
-    -fx-border-color: rgb(240, 42, 31);
+
+.buttonRegular {
+    -fx-border-color: linear-gradient(to bottom right, #5AFF15, #007B34);
     -fx-border-width: 4px;
-    -fx-background-color: white;
-    -fx-text-fill: rgb(240, 42, 31);
+    -fx-background-color: linear-gradient(to bottom right, #5AFF15, #007B34);
+    -fx-text-fill: white;
 }
 
 .buttonRegular:hover {
-    -fx-border-color: transparent;
-    -fx-background-color: rgb(10, 104, 255);
+    -fx-border-color: linear-gradient(to bottom right, #007B34, #5AFF15);
+    -fx-background-color: linear-gradient(to bottom right, #007B34, #5AFF15);
     -fx-text-fill: white;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0, 0.6), 13, 0, 0, 0);
+}
 
+.buttonDanger {
+    -fx-border-color: linear-gradient(to bottom right, #eb053a, #b50404);
+    -fx-border-width: 4px;
+    -fx-background-color: linear-gradient(to bottom right, #eb053a, #b50404);
+    -fx-text-fill: white;
 }
 
 .buttonDanger:hover {
-    -fx-border-color: transparent;
-    -fx-background-color: rgb(240, 42, 31);
+    -fx-border-color: linear-gradient(to bottom right, #b50404, #eb053a);
+    -fx-background-color: linear-gradient(to bottom right, #b50404, #eb053a);
     -fx-text-fill: white;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0, 0.6), 13, 0, 0, 0);
+
 
 }
 

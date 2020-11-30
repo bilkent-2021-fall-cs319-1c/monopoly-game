@@ -87,6 +87,9 @@ public class JoinLobbyController {
 				windowHeightChanged();
 				windowWidthChanged();
 			}
+
+			joinButton.getStyleClass().add("buttonRegular");
+			joinButton.getStyleClass().add("joinButton");
 		});
 
 		updateLobbyCount();
@@ -157,12 +160,12 @@ public class JoinLobbyController {
 	}
 
 	private void setFontSizes(double height, double width) {
-		mainTitle.setFont(UIUtil.calculateFittingFont(width * 0.18, height, mainTitle.getText()));
-		promptText.setFont(UIUtil.calculateFittingFont(width * 0.12, height, promptText.getText()));
-		infoText.setFont(UIUtil.calculateFittingFont(width * 0.35, height, infoText.getText()));
-		roomTitle.setFont(UIUtil.calculateFittingFont(width * 0.10, height, roomTitle.getText()));
-		passwordTitle.setFont(UIUtil.calculateFittingFont(width * 0.075, height, passwordTitle.getText()));
-		roomName.setFont(UIUtil.calculateFittingFont(height, width * 0.011, roomName.getText()));
+		mainTitle.setFont(UIUtil.calculateFittingFont(width * 0.18, height, "Recoleta Alt", mainTitle.getText()));
+		promptText.setFont(UIUtil.calculateFittingFont(width * 0.12, height, "Avenir Next", promptText.getText()));
+		infoText.setFont(UIUtil.calculateFittingFont(width * 0.35, height, "Avenir Next",infoText.getText()));
+		roomTitle.setFont(UIUtil.calculateFittingFont(width * 0.10, height, "Avenir Next", roomTitle.getText()));
+		passwordTitle.setFont(UIUtil.calculateFittingFont(width * 0.075, height, "Avenir Next", passwordTitle.getText()));
+		roomName.setFont(UIUtil.calculateFittingFont(height, width * 0.011, "Avenir Next", roomName.getText()));
 		passwordValue.setFont(UIUtil.calculateFittingFont(height, width * 0.010, passwordValue.getText()));
 		joinButton.setFont(UIUtil.calculateFittingFont(joinButton.getWidth() - 5, joinButton.getHeight() - 5,
 				joinButton.getText()));

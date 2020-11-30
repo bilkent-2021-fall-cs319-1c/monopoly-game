@@ -8,6 +8,7 @@ public class UIUtil {
 	public static final Image BACKGROUND_IMAGE1 = loadImage("images/Background1.jpg");
 	public static final Image BACKGROUND_IMAGE2 = loadImage("images/Background2.jpg");
 	public static final Image BACKGROUND_IMAGE3 = loadImage("images/Background3.jpg");
+	public static final Image BACKGROUND_IMAGE4 = loadImage("images/Background4.png");
 
 	public static final Image DEFAULT_PLAYER_IMAGE = loadImage("images/PlayerIcon.png");
 	public static final Image DEFAULT_PLAYER_IMAGE_LOOKING_LEFT = loadImage("images/PlayerIconLookingLeft.png");
@@ -26,9 +27,13 @@ public class UIUtil {
 	public static final String COMMON_CSS = loadStylesheet("css/common.css");
 	public static final String MAIN_SCREEN_CSS = loadStylesheet("css/mainScreen.css");
 	public static final String PLAYER_LOBBY_PANEL_SCREEN_CSS = loadStylesheet("css/playerLobbyPane.css");
+	public static final String CREATE_LOBBY_CSS = loadStylesheet("css/createLobby.css");
+	public static final String PLAYER_PANE_CSS = loadStylesheet("css/playerPane.css");
+	public static final String JOIN_LOBBY_CSS = loadStylesheet("css/joinLobby.css");
 
 	static {
 		loadFont("fonts/kabel/Kabel-Bold.ttf");
+		loadFont("fonts/recoleta/RecoletaAlt-Bold.ttf");
 	}
 
 	private UIUtil() {

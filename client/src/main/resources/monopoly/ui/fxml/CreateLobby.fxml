@@ -6,9 +6,26 @@
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 <?import javafx.scene.control.*?>
 
+<?import monopoly.ui.UIUtil?>
 <StackPane xmlns="http://javafx.com/javafx/15.0.1"
-	xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
-	fx:controller="monopoly.ui.CreateLobbyController">
+		   xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
+		   fx:controller="monopoly.ui.CreateLobbyController">
+	<!--<background>
+		<Background>
+			<images>
+				<BackgroundImage>
+					<image>
+						<UIUtil fx:constant="BACKGROUND_IMAGE4" />
+					</image>
+				</BackgroundImage>
+			</images>
+		</Background>
+	</background>-->
+
+	<stylesheets>
+		<UIUtil fx:constant="COMMON_CSS" />
+		<UIUtil fx:constant="CREATE_LOBBY_CSS" />
+	</stylesheets>
 
 	<MigPane fx:id="migPanel" layout=" wrap, center"
 		rows="13%[15%]5%[10%]2%[10%]2%[10%]5%[10%, top]5%"
