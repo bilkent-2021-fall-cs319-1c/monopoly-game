@@ -179,6 +179,9 @@ public class PlayerPane extends MigPane {
 		} else {
 			webcamIcon.setImage(UIUtil.WEBCAM_CROSSED_ICON);
 			webcamSender.stop();
+
+			playerImage.setImage(
+					"right".equals(side) ? UIUtil.DEFAULT_PLAYER_IMAGE_LOOKING_LEFT : UIUtil.DEFAULT_PLAYER_IMAGE);
 		}
 	}
 }
