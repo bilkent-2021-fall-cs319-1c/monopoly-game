@@ -126,6 +126,10 @@ public class GameplayController {
 	public void realTimePacketReceived(RealTimeNetworkPacket packet) {
 		int sourceId = packet.getSourceConnectionID();
 		PlayerPane pane = playerMap.get(sourceId);
+		
+		if (pane == null) {
+			return;
+		}
 
 		if (packet instanceof MicSoundPacket) {
 			((AudioChannel) pane.getUserData()).addToQueue((MicSoundPacket) packet);
