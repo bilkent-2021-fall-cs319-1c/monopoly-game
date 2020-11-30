@@ -1,4 +1,11 @@
-package monopoly.ui;
+package monopoly.ui.gameplay;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.sound.sampled.LineUnavailableException;
 
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
@@ -8,16 +15,27 @@ import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import monopoly.network.packet.important.packet_data.PlayerPacketData;
+import monopoly.network.packet.realtime.BufferedImagePacket;
+import monopoly.network.packet.realtime.MicSoundPacket;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
+import monopoly.ui.ClientApplication;
+import monopoly.ui.in_lobby.PlayerLobbyPane;
 
 public class GameplayController {
 	@FXML
 	private StackPane stackPane;
+	@FXML
+	private MigPane playersLeft;
+	@FXML
+	private MigPane playersRight;
 	@FXML
 	private ImageView board;
 	@FXML
@@ -43,7 +61,11 @@ public class GameplayController {
 	private ChangeListener<Number> widthListener;
 	private ChangeListener<Number> heightListener;
 
+	private Map<Integer, PlayerPane> playerMap;
+
 	public GameplayController() {
+		playerMap = Collections.synchronizedMap(new HashMap<Integer, PlayerPane>());
+
 		widthListener = (observable, oldValue, newValue) -> windowWidthChanged();
 		heightListener = (observable, oldValue, newValue) -> windowHeightChanged();
 
@@ -68,8 +90,48 @@ public class GameplayController {
 		boardRoateAndScaleTransition.setOnFinished(e -> boardRotating = false);
 	}
 
+	public void addPlayers(Collection<PlayerLobbyPane> collection) {
+		Platform.runLater(() -> {
+			PlayerLobbyPane[] players = collection.toArray(new PlayerLobbyPane[0]);
+			for (int i = 0; i < players.length; i++) {
+				int connectionId = ((PlayerPacketData) players[i].getUserData()).getConnectionId();
+
+				String type = "other";
+				if (connectionId == ClientApplication.getInstance().getNetworkManager().getSelfConnectionId()) {
+					type = "self";
+				}
+
+				PlayerPane playerPane;
+				if (i % 2 == 0) {
+					playerPane = new PlayerPane("left", type, players[i].getName());
+					playersLeft.add(playerPane, "grow, hmax 30%, wmax 100%");
+				} else {
+					playerPane = new PlayerPane("right", type, players[i].getName());
+					playersRight.add(playerPane, "grow, hmax 30%, wmax 100%");
+				}
+
+				AudioChannel audioChannel = null;
+				try {
+					audioChannel = new AudioChannel();
+				} catch (LineUnavailableException e) {
+					e.printStackTrace();
+				}
+				playerPane.setUserData(audioChannel);
+
+				playerMap.put(connectionId, playerPane);
+			}
+		});
+	}
+
 	public void realTimePacketReceived(RealTimeNetworkPacket packet) {
-		// TODO If audio, play it. If webcam, show it
+		int sourceId = packet.getSourceConnectionID();
+		PlayerPane pane = playerMap.get(sourceId);
+
+		if (packet instanceof MicSoundPacket) {
+			((AudioChannel) pane.getUserData()).addToQueue((MicSoundPacket) packet);
+		} else {
+			pane.getPlayerImage().setImage(SwingFXUtils.toFXImage(((BufferedImagePacket) packet).getImg(), null));
+		}
 	}
 
 	@FXML

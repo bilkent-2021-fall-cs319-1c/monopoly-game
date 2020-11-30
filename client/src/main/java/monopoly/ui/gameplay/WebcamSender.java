@@ -1,4 +1,4 @@
-package monopoly.network.sender;
+package monopoly.ui.gameplay;
 
 import java.awt.Dimension;
 
@@ -6,6 +6,7 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamEvent;
 import com.github.sarxos.webcam.WebcamListener;
 
+import lombok.Getter;
 import monopoly.network.Client;
 import monopoly.network.packet.realtime.BufferedImagePacket;
 
@@ -19,7 +20,7 @@ public class WebcamSender {
 	/**
 	 * The FPS limit of webcam screenshots
 	 */
-	public static final int FPS = 20;
+	public static final int FPS = 15;
 
 	/**
 	 * The resolution of webcam captures
@@ -27,6 +28,7 @@ public class WebcamSender {
 	public static final Dimension DEFAULT_RESOLUTION = new Dimension(BufferedImagePacket.IMAGE_WIDTH,
 			BufferedImagePacket.IMAGE_HEIGHT);
 
+	@Getter
 	private Webcam webcam;
 
 	/**

@@ -21,8 +21,8 @@ import lombok.Getter;
 public class BufferedImagePacket extends RealTimeNetworkPacket {
 	private static final long serialVersionUID = 650861908884172142L;
 
-	public static final int IMAGE_WIDTH = 640;
-	public static final int IMAGE_HEIGHT = 360;
+	public static final int IMAGE_WIDTH = 320;
+	public static final int IMAGE_HEIGHT = 180;
 
 	private transient BufferedImage img;
 
