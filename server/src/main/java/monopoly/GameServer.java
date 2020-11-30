@@ -51,12 +51,12 @@ public class GameServer extends Server {
 			return;
 		}
 
+		Lobby current = model.findLobby(connectionID);
 		// Send the network data of current user to everyone except himself in the lobby
 		new Thread(() -> {
-			for (int i = 0; i < model.findLobby(connectionID).getPlayers().size(); i++) {
-				if (!model.findLobby(connectionID).getPlayers().get(i).equals(model.getByID(connectionID))) {
-					sendRealTimePacket(new RealTimeNetworkPacket(connectionID),
-							model.findLobby(connectionID).getPlayers().get(i).getConnectionId());
+			for (int i = 0; i < current.getPlayers().size(); i++) {
+				if (!current.getPlayers().get(i).equals(model.getByID(connectionID))) {
+					sendRealTimePacket(packet, current.getPlayers().get(i).getConnectionId());
 				}
 			}
 		}).start();
@@ -171,17 +171,22 @@ public class GameServer extends Server {
 	private void handleJoin(int connectionID, ImportantNetworkPacket packet) {
 		long id = ((LobbyPacketData) packet.getData().get(0)).getLobbyId();
 		String password = ((LobbyPacketData) packet.getData().get(0)).getPassword();
+		Lobby current = model.getByID(id);
 
 		// Check if the user can join the lobby
 		if (model.getByID(connectionID).getLobby() != null) {
 			sendImportantPacket(new ImportantNetworkPacket(PacketType.ERR_ALREADY_IN_LOBBY), connectionID);
 
-		} else if (model.getByID(id).getPlayerCount() == model.getByID(id).getPlayerLimit()) {
+		} else if (current.getPlayerCount() == current.getPlayerLimit()) {
 			sendImportantPacket(new ImportantNetworkPacket(PacketType.ERR_LOBBY_FULL), connectionID);
+
+		} else if (!current.getPassword().equals(password)) {
+			sendImportantPacket(new ImportantNetworkPacket(PacketType.ERR_UNKNOWN), connectionID);
 
 		} else {
 			sendImportantPacket(new ImportantNetworkPacket(PacketType.JOIN_SUCCESS), connectionID);
 
+			// Join the user to the lobby
 			model.joinLobby(model.getByID(id), password, connectionID);
 
 			// Send the join status of the current user to everyone except himself in the
@@ -232,6 +237,12 @@ public class GameServer extends Server {
 		}
 	}
 
+	/**
+	 * Sends playerJoin notification to the client
+	 * 
+	 * @param playerJoined   the joined user
+	 * @param playerToNotify the user to be notified
+	 */
 	public void sendPlayerJoinNotification(User playerJoined, User playerToNotify) {
 		sendImportantPacket(
 				new ImportantNetworkPacket(PacketType.PLAYER_JOIN,
@@ -239,12 +250,24 @@ public class GameServer extends Server {
 				playerToNotify.getConnectionId());
 	}
 
+	/**
+	 * Sends playerLeft notification to the client
+	 * 
+	 * @param playerLeft     the left user
+	 * @param playerToNotify the user to be notified
+	 */
 	public void sendPlayerLeaveNotification(User playerLeft, User playerToNotify) {
 		sendImportantPacket(
 				new ImportantNetworkPacket(PacketType.PLAYER_LEFT, new StringPacketData(playerLeft.getUsername())),
 				playerToNotify.getConnectionId());
 	}
 
+	/**
+	 * Sends playerReady notification to the client
+	 * 
+	 * @param playerReady    the ready user
+	 * @param playerToNotify the user to be notified
+	 */
 	public void sendPlayerReadyNotification(User playerReady, User playerToNotify) {
 		sendImportantPacket(
 				new ImportantNetworkPacket(PacketType.PLAYER_READY,
@@ -254,6 +277,11 @@ public class GameServer extends Server {
 				playerToNotify.getConnectionId());
 	}
 
+	/**
+	 * Sends game start notification to the client
+	 * 
+	 * @param user the user to be notified
+	 */
 	public void sendGameStartNotification(User user) {
 		sendImportantPacket(new ImportantNetworkPacket(PacketType.GAME_START), user.getConnectionId());
 	}

@@ -22,42 +22,15 @@ import monopoly.lobby.User;
 @Setter
 public class Model {
 	private List<Lobby> lobbies;
-	// private List<Lobby> lobbiesNotStarted;
 	private List<User> users;
 
 	private GameServer server;
 
 	public Model() throws IOException {
 		lobbies = Collections.synchronizedList(new ArrayList<Lobby>());
-		// lobbiesNotStarted = Collections.synchronizedList(new ArrayList<Lobby>());
 		users = Collections.synchronizedList(new ArrayList<User>());
 
 		server = new GameServer(this);
-
-//		String name;
-//
-//		for (int i = 0; i < 23; i++) {
-//			name = "Lobby " + (i + 1);
-//			createLobby(name, (i + 1), true, "", 10);
-//		}
-//
-//		lobbies.get(4).setPublic(false);
-//		lobbies.get(4).setPassword("secret");
-//
-//		lobbies.get(7).setPublic(false);
-//		lobbies.get(4).setPassword("secret1");
-//
-//		lobbies.get(10).setPublic(false);
-//		lobbies.get(4).setPassword("secret2");
-//
-//		lobbies.get(11).setPublic(false);
-//		lobbies.get(4).setPassword("secret3");
-//
-//		lobbies.get(18).setPublic(false);
-//		lobbies.get(4).setPassword("secret4");
-//
-//		lobbies.get(21).setPublic(false);
-//		lobbies.get(4).setPassword("secret5");
 	}
 
 	/**
@@ -76,24 +49,15 @@ public class Model {
 
 		userLogin("test", connectionID);
 		User user = getByID(connectionID);
-		lobby.addPlayer(user);
 
+		// Make the user the owner of the lobby
 		LobbyOwner host = new LobbyOwner(user.getUsername(), connectionID, lobby);
 		lobby.setHost(host);
 		user = host;
 		addLobby(user.getLobby());
 
-		// TODO New protocol required for this!
-		new Thread(() -> {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				e.printStackTrace();
-			}
-			server.sendPlayerJoinNotification(host, host);
-			System.out.println("1Player: " + host.getConnectionId() + " to " + host.getConnectionId());
-		}).start();
+		// Join the user to the created lobby
+		joinLobby(lobby, password, user.getConnectionId());
 
 		return host;
 
@@ -111,6 +75,7 @@ public class Model {
 	public boolean joinLobby(Lobby lobby, String password, int connectionID) {
 		boolean isBanned = false;
 
+		// Check if the user is banned
 		for (int i = 0; i < lobby.getBannedPlayers().size(); i++) {
 			if (lobby.getBannedPlayers().get(i).getConnectionId() == connectionID) {
 				isBanned = true;
@@ -129,14 +94,14 @@ public class Model {
 		// TODO New protocol required for this!
 		new Thread(() -> {
 			try {
-				Thread.sleep(100);
+				Thread.sleep(250);
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 				e.printStackTrace();
 			}
+			// Send join notification to everyone in the lobby
 			lobby.getPlayers().parallelStream().forEach(player -> {
 				server.sendPlayerJoinNotification(player, playerJoined);
-				System.out.println("2Player: " + player.getConnectionId() + " to " + playerJoined.getConnectionId());
 			});
 		}).start();
 
@@ -157,7 +122,7 @@ public class Model {
 	/**
 	 * Sends playerJoined info to everyone except himself
 	 * 
-	 * @param playerJoined
+	 * @param playerJoined the user who joined
 	 */
 	public void sendJoinedNotification(User playerJoined) {
 		new Thread(() -> {
@@ -171,6 +136,11 @@ public class Model {
 		}).start();
 	}
 
+	/**
+	 * Sends playerLeft info to everyone except himself
+	 * 
+	 * @param playerLeft the user who left
+	 */
 	public void sendLeftNotification(User playerLeft) {
 		new Thread(() -> {
 			for (int i = 0; i < playerLeft.getLobby().getPlayerCount(); i++) {
@@ -180,7 +150,12 @@ public class Model {
 			}
 		}).start();
 	}
-
+	
+	/**
+	 * Sends playerReady info to everyone
+	 * 
+	 * @param playerReady the user who is ready
+	 */
 	public void sendReadyNotification(User playerReady) {
 		new Thread(() -> {
 			for (int i = 0; i < playerReady.getLobby().getPlayerCount(); i++) {
@@ -189,6 +164,11 @@ public class Model {
 		}).start();
 	}
 
+	/**
+	 * Sends game start notification to everyone
+	 * 
+	 * @param lobby the lobby to start the game from
+	 */
 	public void sendGameStartNotification(Lobby lobby) {
 		new Thread(() -> {
 			for (int i = 0; i < lobby.getPlayerCount(); i++) {
@@ -301,7 +281,14 @@ public class Model {
 		} else
 			return null;
 	}
-
+	
+	/**
+	 * Finds a lobby by using connectionID of a user
+	 * 
+	 * @param connectionID the specified id to be searched with
+	 * 
+	 * @return Lobby if found one, null if not
+	 */
 	public Lobby findLobby(int connectionID) {
 		User currentUser = getByID(connectionID);
 
