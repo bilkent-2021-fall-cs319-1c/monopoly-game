@@ -94,12 +94,14 @@ public class LobbyController {
 	}
 
 	public void gameStart() {
-		try {
-			ClientApplication.getInstance().switchToView("fxml/Gameplay.fxml");
-			((GameplayController) ClientApplication.getInstance().getController()).addPlayers(playerMap.values());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Platform.runLater(() -> {
+			try {
+				ClientApplication.getInstance().switchToView("fxml/Gameplay.fxml");
+				((GameplayController) ClientApplication.getInstance().getController()).addPlayers(playerMap.values());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 	private void windowHeightChanged() {
@@ -117,7 +119,8 @@ public class LobbyController {
 	}
 
 	private void setFontSizes(double width, double height) {
-		lobbyText.setFont(UIUtil.calculateFittingFont(width * 0.32, height * 0.10, "Recoleta Alt", lobbyText.getText()));
+		lobbyText
+				.setFont(UIUtil.calculateFittingFont(width * 0.32, height * 0.10, "Recoleta Alt", lobbyText.getText()));
 
 		String avenirFontFamily = "Avenir Next";
 		nameText.setFont(
