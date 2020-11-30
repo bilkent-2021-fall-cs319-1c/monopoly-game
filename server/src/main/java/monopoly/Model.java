@@ -94,7 +94,7 @@ public class Model {
 		// TODO New protocol required for this!
 		new Thread(() -> {
 			try {
-				Thread.sleep(250);
+				Thread.sleep( 500);
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 				e.printStackTrace();
