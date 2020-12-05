@@ -8,9 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import monopoly.NetworkManager;
 
 /**
@@ -21,10 +19,6 @@ import monopoly.NetworkManager;
  */
 @Getter
 public class ClientApplication extends Application {
-	@Getter
-	@Setter(AccessLevel.PRIVATE)
-	private static ClientApplication instance;
-
 	private Scene scene;
 	private Object controller;
 	private NetworkManager networkManager;
@@ -33,11 +27,10 @@ public class ClientApplication extends Application {
 		// Loading UIUtil class into memory here to call its static initialize block
 		// that loads fonts
 		UIUtil.calculateFittingFont(0, 0, "");
-		setInstance(this);
 		scene = null;
 		controller = null;
 
-		networkManager = new NetworkManager();
+		networkManager = new NetworkManager(this);
 	}
 
 	@Override
@@ -47,7 +40,7 @@ public class ClientApplication extends Application {
 		stage.setTitle("Monopoly");
 		stage.setScene(scene);
 		stage.centerOnScreen();
-		stage.setFullScreen(true);
+//		stage.setFullScreen(true);
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		stage.show();
 	}
@@ -62,6 +55,7 @@ public class ClientApplication extends Application {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
 		Parent root = loader.load();
 		controller = loader.getController();
+		((MonopolyUIController) controller).setApp(this);
 
 		if (scene == null) {
 			scene = new Scene(root);

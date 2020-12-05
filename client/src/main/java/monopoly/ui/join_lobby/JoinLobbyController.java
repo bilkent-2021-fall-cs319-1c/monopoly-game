@@ -18,12 +18,17 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
+import lombok.Setter;
 import monopoly.network.packet.important.packet_data.LobbyPacketData;
 import monopoly.ui.ClientApplication;
+import monopoly.ui.MonopolyUIController;
 import monopoly.ui.UIUtil;
 
-public class JoinLobbyController {
+public class JoinLobbyController implements MonopolyUIController {
 	private static final int ROWS_PER_PAGE = 10;
+
+	@Setter
+	private ClientApplication app;
 
 	@FXML
 	private StackPane rootPane;
@@ -108,7 +113,8 @@ public class JoinLobbyController {
 	 * Updates the number of available lobbies from the server.
 	 */
 	public void updateLobbyCount() {
-		lobbyCount.set(ClientApplication.getInstance().getNetworkManager().getNumberOfLobbies());
+		if (app != null)
+			lobbyCount.set(app.getNetworkManager().getNumberOfLobbies());
 	}
 
 	private Node createPage(int pageIndex) {
@@ -117,7 +123,7 @@ public class JoinLobbyController {
 		int fromIndex = pageIndex * ROWS_PER_PAGE;
 		int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, lobbyCount.get());
 		lobbies.clear();
-		ClientApplication.getInstance().getNetworkManager().getLobbies(fromIndex, toIndex)
+		app.getNetworkManager().getLobbies(fromIndex, toIndex)
 				.forEach(lobby -> lobbies.add(new LobbyDisplayData(lobby)));
 
 		return new Text("");
@@ -133,9 +139,9 @@ public class JoinLobbyController {
 
 		LobbyPacketData packetData = lobby.getPacketData();
 		packetData.setPassword(passwordValue.getText());
-		boolean success = ClientApplication.getInstance().getNetworkManager().joinLobby(lobby.getPacketData());
+		boolean success = app.getNetworkManager().joinLobby(lobby.getPacketData());
 		if (success) {
-			ClientApplication.getInstance().switchToView("fxml/Lobby.fxml");
+			app.switchToView("fxml/Lobby.fxml");
 		}
 	}
 
@@ -162,9 +168,10 @@ public class JoinLobbyController {
 	private void setFontSizes(double height, double width) {
 		mainTitle.setFont(UIUtil.calculateFittingFont(width * 0.18, height, "Recoleta Alt", mainTitle.getText()));
 		promptText.setFont(UIUtil.calculateFittingFont(width * 0.12, height, "Avenir Next", promptText.getText()));
-		infoText.setFont(UIUtil.calculateFittingFont(width * 0.35, height, "Avenir Next",infoText.getText()));
+		infoText.setFont(UIUtil.calculateFittingFont(width * 0.35, height, "Avenir Next", infoText.getText()));
 		roomTitle.setFont(UIUtil.calculateFittingFont(width * 0.10, height, "Avenir Next", roomTitle.getText()));
-		passwordTitle.setFont(UIUtil.calculateFittingFont(width * 0.075, height, "Avenir Next", passwordTitle.getText()));
+		passwordTitle
+				.setFont(UIUtil.calculateFittingFont(width * 0.075, height, "Avenir Next", passwordTitle.getText()));
 		roomName.setFont(UIUtil.calculateFittingFont(height, width * 0.011, "Avenir Next", roomName.getText()));
 		passwordValue.setFont(UIUtil.calculateFittingFont(height, width * 0.010, passwordValue.getText()));
 		joinButton.setFont(UIUtil.calculateFittingFont(joinButton.getWidth() - 5, joinButton.getHeight() - 5,

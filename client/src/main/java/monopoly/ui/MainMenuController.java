@@ -9,8 +9,12 @@ import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
+import lombok.Setter;
 
-public class MainMenuController {
+public class MainMenuController implements MonopolyUIController {
+	@Setter
+	private ClientApplication app;
+
 	@FXML
 	private MigPane mainMigPane;
 	@FXML
@@ -49,17 +53,17 @@ public class MainMenuController {
 
 	@FXML
 	public void switchToCreateGameScreen() throws IOException {
-		ClientApplication.getInstance().switchToView("fxml/CreateLobby.fxml");
+		app.switchToView("fxml/CreateLobby.fxml");
 	}
 
 	@FXML
 	public void switchToJoinLobbyScreen() throws IOException {
-		ClientApplication.getInstance().switchToView("fxml/JoinLobby.fxml");
+		app.switchToView("fxml/JoinLobby.fxml");
 	}
 
 	@FXML
 	public void switchToHelpScreen() throws IOException {
-		ClientApplication.getInstance().switchToView("fxml/Help.fxml");
+		app.switchToView("fxml/Help.fxml");
 	}
 
 	@FXML

@@ -9,6 +9,8 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+client/logs/
+RUNNING_PID
 
 # Compiled class file
 *.class

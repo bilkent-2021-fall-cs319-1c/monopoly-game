@@ -28,6 +28,7 @@ public class NetworkManager {
 
 	@Getter
 	private Client client;
+	private ClientApplication app;
 	@Getter
 	private Integer selfConnectionId;
 
@@ -36,7 +37,9 @@ public class NetworkManager {
 
 	private List<ErrorListener> errorListeners;
 
-	public NetworkManager() throws IOException {
+	public NetworkManager(ClientApplication app) throws IOException {
+		this.app = app;
+
 		selfConnectionId = null;
 		waitingForResponseType = null;
 		errorListeners = Collections.synchronizedList(new ArrayList<ErrorListener>());
@@ -216,6 +219,7 @@ public class NetworkManager {
 
 		@Override
 		public void connected(int connectionID) {
+			System.out.println("New self connection id: " + connectionID);
 			selfConnectionId = connectionID;
 			new Thread(() -> askAndGetResponse(new ImportantNetworkPacket(PacketType.CONNECT), PacketType.ACCEPTED))
 					.start();
@@ -229,7 +233,7 @@ public class NetworkManager {
 		@Override
 		public void receivedRealTimePacket(int connectionID, RealTimeNetworkPacket packet) {
 			System.out.println(packet);
-			Object uiController = ClientApplication.getInstance().getController();
+			Object uiController = app.getController();
 			if (uiController instanceof GameplayController) {
 				GameplayController gameplayController = (GameplayController) uiController;
 				gameplayController.realTimePacketReceived(packet);
@@ -260,12 +264,12 @@ public class NetworkManager {
 		}
 
 		private void handlePlayerJoin(PlayerPacketData player) {
-			Object uiController = ClientApplication.getInstance().getController();
+			Object uiController = app.getController();
 			if (uiController instanceof LobbyController) {
 				LobbyController lobbyController = (LobbyController) uiController;
 				lobbyController.playerJoined(player);
 			} else {
-				logger.error("WRONG CONTROLLER!");
+				logger.error("WRONG CONTROLLER");
 			}
 		}
 
@@ -274,7 +278,7 @@ public class NetworkManager {
 		}
 
 		private void handlePlayerReadyChange(PlayerPacketData player, boolean ready) {
-			Object uiController = ClientApplication.getInstance().getController();
+			Object uiController = app.getController();
 			if (uiController instanceof LobbyController) {
 				LobbyController lobbyController = (LobbyController) uiController;
 				lobbyController.playerReady(player);
@@ -284,7 +288,7 @@ public class NetworkManager {
 		}
 
 		private void handleGameStart() {
-			Object uiController = ClientApplication.getInstance().getController();
+			Object uiController = app.getController();
 			if (uiController instanceof LobbyController) {
 				LobbyController lobbyController = (LobbyController) uiController;
 				lobbyController.gameStart();

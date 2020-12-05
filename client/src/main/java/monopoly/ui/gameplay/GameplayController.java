@@ -22,14 +22,19 @@ import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import lombok.Setter;
 import monopoly.network.packet.important.packet_data.PlayerPacketData;
 import monopoly.network.packet.realtime.BufferedImagePacket;
 import monopoly.network.packet.realtime.MicSoundPacket;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.ui.ClientApplication;
+import monopoly.ui.MonopolyUIController;
 import monopoly.ui.in_lobby.PlayerLobbyPane;
 
-public class GameplayController {
+public class GameplayController implements MonopolyUIController {
+	@Setter
+	private ClientApplication app;
+
 	@FXML
 	private StackPane stackPane;
 	@FXML
@@ -97,16 +102,16 @@ public class GameplayController {
 				int connectionId = ((PlayerPacketData) players[i].getUserData()).getConnectionId();
 
 				String type = "other";
-				if (connectionId == ClientApplication.getInstance().getNetworkManager().getSelfConnectionId()) {
+				if (connectionId == app.getNetworkManager().getSelfConnectionId()) {
 					type = "self";
 				}
 
 				PlayerPane playerPane;
 				if (i % 2 == 0) {
-					playerPane = new PlayerPane("left", type, players[i].getName());
+					playerPane = new PlayerPane("left", type, players[i].getName(), app);
 					playersLeft.add(playerPane, "grow, hmax 30%, wmax 100%");
 				} else {
-					playerPane = new PlayerPane("right", type, players[i].getName());
+					playerPane = new PlayerPane("right", type, players[i].getName(), app);
 					playersRight.add(playerPane, "grow, hmax 30%, wmax 100%");
 				}
 
@@ -126,7 +131,7 @@ public class GameplayController {
 	public void realTimePacketReceived(RealTimeNetworkPacket packet) {
 		int sourceId = packet.getSourceConnectionID();
 		PlayerPane pane = playerMap.get(sourceId);
-		
+
 		if (pane == null) {
 			return;
 		}
@@ -134,7 +139,8 @@ public class GameplayController {
 		if (packet instanceof MicSoundPacket) {
 			((AudioChannel) pane.getUserData()).addToQueue((MicSoundPacket) packet);
 		} else {
-			pane.getPlayerImage().setImage(SwingFXUtils.toFXImage(((BufferedImagePacket) packet).getImg(), null));
+			Platform.runLater(() -> pane.getPlayerImage()
+					.setImage(SwingFXUtils.toFXImage(((BufferedImagePacket) packet).getImg(), null)));
 		}
 	}
 

@@ -13,12 +13,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import lombok.Getter;
+import lombok.Setter;
 import monopoly.network.packet.important.packet_data.PlayerPacketData;
 import monopoly.ui.ClientApplication;
+import monopoly.ui.MonopolyUIController;
 import monopoly.ui.UIUtil;
 import monopoly.ui.gameplay.GameplayController;
 
-public class LobbyController {
+public class LobbyController implements MonopolyUIController {
+	@Setter
+	private ClientApplication app;
+
 	@FXML
 	private MigPane root;
 	@FXML
@@ -90,14 +95,14 @@ public class LobbyController {
 	@FXML
 	private void iAmReady() {
 		readyButton.setDisable(true);
-		ClientApplication.getInstance().getNetworkManager().setReady(true);
+		app.getNetworkManager().setReady(true);
 	}
 
 	public void gameStart() {
 		Platform.runLater(() -> {
 			try {
-				ClientApplication.getInstance().switchToView("fxml/Gameplay.fxml");
-				((GameplayController) ClientApplication.getInstance().getController()).addPlayers(playerMap.values());
+				app.switchToView("fxml/Gameplay.fxml");
+				((GameplayController) app.getController()).addPlayers(playerMap.values());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

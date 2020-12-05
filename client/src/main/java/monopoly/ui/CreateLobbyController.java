@@ -9,8 +9,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
+import lombok.Setter;
 
-public class CreateLobbyController {
+public class CreateLobbyController implements MonopolyUIController {
+	@Setter
+	private ClientApplication app;
+
 	@FXML
 	private StackPane stackPane;
 	@FXML
@@ -87,10 +91,9 @@ public class CreateLobbyController {
 		String password = passwordValue.getText();
 		int playerLimit = limitValue.getValue();
 
-		boolean success = ClientApplication.getInstance().getNetworkManager().createLobby(lobbyName, isPublic, password,
-				playerLimit);
+		boolean success = app.getNetworkManager().createLobby(lobbyName, isPublic, password, playerLimit);
 		if (success) {
-			ClientApplication.getInstance().switchToView("fxml/Lobby.fxml");
+			app.switchToView("fxml/Lobby.fxml");
 		}
 	}
 
@@ -121,7 +124,8 @@ public class CreateLobbyController {
 		mainTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.065, "Recoleta Alt", mainTitle.getText()));
 		limitTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.03, "Avenir Next", limitTitle.getText()));
 		roomTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.03, "Avenir Next", roomTitle.getText()));
-		passwordTitle.setFont(UIUtil.calculateFittingFont(height, width * 0.03, "Avenir Next", passwordTitle.getText()));
+		passwordTitle
+				.setFont(UIUtil.calculateFittingFont(height, width * 0.03, "Avenir Next", passwordTitle.getText()));
 		roomName.setFont(UIUtil.calculateFittingFont(height, width * 0.014, roomName.getText()));
 		passwordValue.setFont(UIUtil.calculateFittingFont(height, width * 0.014, passwordValue.getText()));
 

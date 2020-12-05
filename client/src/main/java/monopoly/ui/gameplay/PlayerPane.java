@@ -10,7 +10,9 @@ import org.tbee.javafx.scene.layout.fxml.MigPane;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamEvent;
 import com.github.sarxos.webcam.WebcamListener;
+import com.jpro.webapi.WebAPI;
 
+import javafx.application.Platform;
 import javafx.beans.NamedArg;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -48,6 +50,8 @@ public class PlayerPane extends MigPane {
 	@FXML
 	private Group playerNameLabelWrapper;
 
+	private ClientApplication app;
+
 	private String side;
 	private String player;
 	private String username;
@@ -62,7 +66,9 @@ public class PlayerPane extends MigPane {
 	 *                 displayed
 	 * @param username Username to display
 	 */
-	public PlayerPane(@NamedArg("side") String side, @NamedArg("player") String player, String username) {
+	public PlayerPane(@NamedArg("side") String side, @NamedArg("player") String player, String username,
+			ClientApplication app) {
+		this.app = app;
 		this.side = side;
 		this.player = player;
 		this.username = username;
@@ -80,32 +86,33 @@ public class PlayerPane extends MigPane {
 				.forEach(p -> p.addListener((observable, oldVal, newVal) -> adjustSize()));
 
 		if ("self".equals(player)) {
+			Client client = app.getNetworkManager().getClient();
+			webcamSender = new WebcamSender(client, Webcam.getDefault());
+
+			webcamSender.getWebcam().addWebcamListener(new WebcamListener() {
+				@Override
+				public void webcamOpen(WebcamEvent we) {
+					// Do nothing
+				}
+
+				@Override
+				public void webcamImageObtained(WebcamEvent we) {
+					Platform.runLater(() -> playerImage.setImage(SwingFXUtils.toFXImage(we.getImage(), null)));
+				}
+
+				@Override
+				public void webcamDisposed(WebcamEvent we) {
+					// Do nothing
+				}
+
+				@Override
+				public void webcamClosed(WebcamEvent we) {
+					// Do nothing
+				}
+			});
+
 			try {
-				Client client = ClientApplication.getInstance().getNetworkManager().getClient();
 				micSender = new MicSender(client);
-				webcamSender = new WebcamSender(client, Webcam.getDefault());
-
-				webcamSender.getWebcam().addWebcamListener(new WebcamListener() {
-					@Override
-					public void webcamOpen(WebcamEvent we) {
-						// Do nothing
-					}
-
-					@Override
-					public void webcamImageObtained(WebcamEvent we) {
-						playerImage.setImage(SwingFXUtils.toFXImage(we.getImage(), null));
-					}
-
-					@Override
-					public void webcamDisposed(WebcamEvent we) {
-						// Do nothing
-					}
-
-					@Override
-					public void webcamClosed(WebcamEvent we) {
-						// Do nothing
-					}
-				});
 			} catch (LineUnavailableException e) {
 				e.printStackTrace();
 			}
@@ -155,6 +162,16 @@ public class PlayerPane extends MigPane {
 			tradeButton.setVisible(false);
 			webcamIcon.setVisible(true);
 			micIcon.setVisible(true);
+
+			try {
+				WebAPI.getWebAPI(app.getScene());
+
+				// Running on a browser, disable webcam and mic
+				webcamIcon.setDisable(true);
+				micIcon.setDisable(true);
+			} catch (RuntimeException e) {
+				// Running as a Java application
+			}
 		}
 
 		playerNameLabel.setText(username);
@@ -162,6 +179,11 @@ public class PlayerPane extends MigPane {
 
 	@FXML
 	private void toggleMicrophone() {
+		if (micSender == null) {
+			// TODO SHOW ERROR
+			return;
+		}
+
 		if (micIcon.getImage() == UIUtil.MICROPHONE_CROSSED_ICON) {
 			micIcon.setImage(UIUtil.MICROPHONE_ICON);
 			micSender.start();
