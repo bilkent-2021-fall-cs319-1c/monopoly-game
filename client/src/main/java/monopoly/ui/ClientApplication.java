@@ -40,7 +40,11 @@ public class ClientApplication extends Application {
 		stage.setTitle("Monopoly");
 		stage.setScene(scene);
 		stage.centerOnScreen();
+
+		stage.setWidth(1280);
+		stage.setHeight(720);
 //		stage.setFullScreen(true);
+		
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		stage.show();
 	}

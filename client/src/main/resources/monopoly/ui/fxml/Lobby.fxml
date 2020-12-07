@@ -11,7 +11,7 @@
 
 <MigPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" layout="fill, wrap"
-	cols="[::39%, grow]2%[::59%, grow]" fx:id="root"
+	cols="[::39%, grow]2%[::59%, grow]" rows="[100%!]" fx:id="root"
 	fx:controller="monopoly.ui.in_lobby.LobbyController">
 
 	<stylesheets>

@@ -36,7 +36,11 @@ public class MainMenuController implements MonopolyUIController {
 
 	private void windowWidthChanged() {
 		double windowWidth = mainMigPane.getScene().getWidth();
+		double windowHeight = mainMigPane.getScene().getHeight();
 		mainMigPane.setMaxWidth(windowWidth);
+
+		heroMonopolyText.setFont(UIUtil.calculateFittingFont(Math.max(windowWidth * 0.33, 200), windowHeight,
+				heroMonopolyText.getFont().getFamily(), heroMonopolyText.getText()));
 	}
 
 	@FXML
