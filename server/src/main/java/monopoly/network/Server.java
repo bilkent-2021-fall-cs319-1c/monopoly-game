@@ -106,6 +106,7 @@ public abstract class Server {
 	 *                     string should be sent
 	 */
 	public void sendImportantPacket(ImportantNetworkPacket packet, int connectionID) {
+		System.out.println("Sending " + packet.getType());
 		kryoServer.sendToTCP(connectionID, packet);
 	}
 }
