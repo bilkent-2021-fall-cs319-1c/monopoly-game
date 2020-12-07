@@ -1,0 +1,13 @@
+.stackPane {
+    -fx-background-color: red;
+}
+
+.heroMonopolyText {
+    -fx-font-size: 90.0px;
+    -fx-font-family: 'Kabel';
+    -fx-background-color: red;
+}
+
+.textPane {
+    -fx-background-color: red;
+}

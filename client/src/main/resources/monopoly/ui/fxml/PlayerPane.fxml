@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.*?>
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+<?import monopoly.ui.UIUtil?>
+
+<fx:root xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill"
+	rows="0[]:1%:1%[]:1%:1%"
+	style="-fx-border-color: gray;
+		-fx-border-width: 5;
+		-fx-border-insets: -5;
+		-fx-border-radius: 10 10 10 10;
+		-fx-background-color: white ">
+
+	<stylesheets>
+		<UIUtil fx:constant="COMMON_CSS" />
+		<UIUtil fx:constant="PLAYER_PANE_CSS" />
+	</stylesheets>
+
+	<!-- Player's Name -->
+	<Group MigPane.cc="spany 2" fx:id="playerNameLabelWrapper">
+		<Label text="Player 1" style="-fx-rotate: -90"
+			fx:id="playerNameLabel" />
+	</Group>
+
+	<!-- Player's Image or Webcam -->
+	<ImageView preserveRatio="true" MigPane.cc="wrap, top, left"
+		fx:id="playerImage" />
+
+	<!-- Player's Status Bar -->
+	<MigPane layout="hidemode 3" cols="[::50%]push[::25%][::25%]"
+		rows="0[center]0" MigPane.cc="grow">
+		<Label text="1500M" fx:id="moneyLabel" />
+
+		<!-- Trade or Webcam/Mic Icons -->
+		<Button text="Trade" fx:id="tradeButton" MigPane.cc="span 2" />
+
+		<ImageView fx:id="webcamIcon" visible="false"
+			pickOnBounds="true" onMouseClicked="#toggleWebcam">
+			<image>
+				<UIUtil fx:constant="WEBCAM_CROSSED_ICON" />
+			</image>
+		</ImageView>
+
+		<ImageView fx:id="micIcon" visible="false"
+			pickOnBounds="true" onMouseClicked="#toggleMicrophone">
+			<image>
+				<UIUtil fx:constant="MICROPHONE_CROSSED_ICON" />
+			</image>
+		</ImageView>
+	</MigPane>
+</fx:root>

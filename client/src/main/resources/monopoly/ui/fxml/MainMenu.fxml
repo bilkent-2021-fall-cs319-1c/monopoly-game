@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+<?import monopoly.ui.UIUtil?>
+
+<MigPane xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" fx:id="mainMigPane" layout="fill"
+	cols="33%[center]33%" rows="0[grow]0"
+	fx:controller="monopoly.ui.MainMenuController">
+	<!--<background>
+		<Background>
+			<images>
+				<BackgroundImage>
+					<image>
+						<UIUtil fx:constant="BACKGROUND_IMAGE4" />
+					</image>
+				</BackgroundImage>
+			</images>
+		</Background>
+	</background>-->
+
+	<stylesheets>
+		<UIUtil fx:constant="MAIN_SCREEN_CSS" />
+		<UIUtil fx:constant="COMMON_CSS" />
+	</stylesheets>
+
+	<MigPane layout="fill, flowy" cols="0[fill]0"
+		rows="0[]20%[]5%[]5%[]0">
+
+		<Text fx:id="heroMonopolyText" text="MONOPOLY"
+			styleClass="heroMonopolyText" />
+
+		<Button fx:id="createGameButton"
+			onAction="#switchToCreateGameScreen" styleClass="buttonRegular"
+			text="Create Game" />
+		<Button fx:id="joinGameButton"
+			onAction="#switchToJoinLobbyScreen" styleClass="buttonRegular"
+			text="Join Game" />
+		<Button fx:id="helpButton" onAction="#switchToHelpScreen"
+			styleClass="buttonRegular" text="Help" />
+		<Button fx:id="exitButton" onAction="#exitApp"
+			styleClass="buttonDanger" text="Exit" />
+	</MigPane>
+</MigPane>
+
+

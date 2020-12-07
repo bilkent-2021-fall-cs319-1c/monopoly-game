@@ -1,0 +1,27 @@
+.avenirNext {
+    -fx-font-family: 'Avenir Next';
+}
+
+.mainTitle {
+    -fx-font-weight: bold;
+}
+
+.button {
+    -fx-padding: 7px;
+    -fx-border-radius: 5px;
+}
+
+.stackPane {
+
+}
+
+.checkPriv {
+}
+
+.checkPriv:selected .box {
+    -fx-background-color: linear-gradient(to bottom right, #5AFF15, #007B34)
+}
+
+.checkPriv:selected .mark {
+    -fx-background-color: white;
+}
