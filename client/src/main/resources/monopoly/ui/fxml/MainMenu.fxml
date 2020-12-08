@@ -8,7 +8,7 @@
 
 <MigPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" fx:id="mainMigPane"
-	layout="flowy, center, gap 5:5%, debug" cols="33%[center, fill, 200:]33%"
+	layout="flowy, center, gap 5:5%" cols="33%[center, fill]33%"
 	rows="push[]5:15%[][][][]push"
 	fx:controller="monopoly.ui.MainMenuController">
 	<!--<background> <Background> <images> <BackgroundImage> <image> <UIUtil 

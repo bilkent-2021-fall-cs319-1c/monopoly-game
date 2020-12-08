@@ -66,13 +66,13 @@ public class PlayerLobbyPane extends MigPane {
 		}
 	}
 
-	public void adjustSize() {
+	private void adjustSize() {
 		double width = getWidth();
 		double height = getHeight();
 
-		playerName.setFont(UIUtil.calculateFittingFont(width * 0.3, height * 0.3, playerName.getText()));
+		UIUtil.fitFont(playerName, width * 0.3, height * 0.3);
 
-		makeAdminButton.setPrefHeight(height * 0.2);
 		makeAdminButton.setPrefWidth(width * 0.2);
+		makeAdminButton.setPrefHeight(height * 0.2);
 	}
 }

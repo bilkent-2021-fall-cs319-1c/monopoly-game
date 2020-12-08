@@ -5,51 +5,42 @@
 <?import javafx.scene.layout.*?>
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 <?import javafx.scene.control.*?>
-
 <?import monopoly.ui.UIUtil?>
-<StackPane xmlns="http://javafx.com/javafx/15.0.1"
-		   xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
-		   fx:controller="monopoly.ui.CreateLobbyController">
-	<!--<background>
-		<Background>
-			<images>
-				<BackgroundImage>
-					<image>
-						<UIUtil fx:constant="BACKGROUND_IMAGE4" />
-					</image>
-				</BackgroundImage>
-			</images>
-		</Background>
-	</background>-->
+
+<MigPane xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" fx:id="root"
+	layout="wrap, center, gap 5%"
+	rows="[20%][5%, fill][5%, fill][5%, fill][5%, top, fill]"
+	cols="[right]2%[left, fill]"
+	fx:controller="monopoly.ui.CreateLobbyController">
+	<!--<background> <Background> <images> <BackgroundImage> <image> <UIUtil 
+		fx:constant="BACKGROUND_IMAGE4" /> </image> </BackgroundImage> </images> 
+		</Background> </background> -->
 
 	<stylesheets>
 		<UIUtil fx:constant="COMMON_CSS" />
 		<UIUtil fx:constant="CREATE_LOBBY_CSS" />
 	</stylesheets>
 
-	<MigPane fx:id="migPanel" layout=" wrap, center"
-		rows="13%[15%]5%[10%]2%[10%]2%[10%]5%[10%, top]5%"
-		cols="[right]2%[left]">
+	<Text fx:id="mainTitle" MigPane.cc="span 2, center">Create Lobby</Text>
 
-		<Text fx:id="mainTitle" MigPane.cc="span 2, center">Create Lobby</Text>
+	<Text fx:id="limitTitle">Player Limit:</Text>
+	<Spinner fx:id="limitValue">
+		<valueFactory>
+			<SpinnerValueFactory.IntegerSpinnerValueFactory
+				min="2" max="6" />
+		</valueFactory>
+	</Spinner>
 
-		<Text fx:id="limitTitle">Player Limit:</Text>
-		<Spinner fx:id="limitValue">
-			<valueFactory>
-				<SpinnerValueFactory.IntegerSpinnerValueFactory
-					min="2" max="6" />
-			</valueFactory>
-		</Spinner>
+	<Text fx:id="roomTitle">Room Name:</Text>
+	<TextField fx:id="roomName" text="" />
 
-		<Text fx:id="roomTitle">Room Name:</Text>
-		<TextField fx:id="roomName" text="" />
+	<Text fx:id="passwordTitle">Password:</Text>
+	<TextField fx:id="passwordValue" text="" disable="true" />
 
-		<Text fx:id="passwordTitle">Password:</Text>
-		<TextField fx:id="passwordValue" text="" disable="true" />
-
-		<CheckBox fx:id="checkPriv" MigPane.cc="left" text="Private"
-			onAction="#privateChange" />
-		<Button fx:id="createButton" mnemonicParsing="false"
-			text="Create" MigPane.cc="right" onAction="#validateAndCreateLobby" />
-	</MigPane>
-</StackPane>
+	<CheckBox fx:id="checkPriv" MigPane.cc="left" text="Private"
+		onAction="#privateChange" />
+	<Button fx:id="createButton" mnemonicParsing="false"
+		styleClass="buttonRegular" text="Create" MigPane.cc="right"
+		onAction="#validateAndCreateLobby" />
+</MigPane>

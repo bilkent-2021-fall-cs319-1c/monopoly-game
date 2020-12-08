@@ -7,7 +7,6 @@ import org.tbee.javafx.scene.layout.fxml.MigPane;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -59,18 +58,12 @@ public class JoinLobbyController implements MonopolyUIController {
 	@FXML
 	private Pagination lobbyTablePagination;
 
-	private ChangeListener<Number> widthListener;
-	private ChangeListener<Number> heightListener;
-
 	private IntegerProperty lobbyCount;
 	private ObservableList<LobbyDisplayData> lobbies;
 
 	public JoinLobbyController() {
 		lobbyCount = new SimpleIntegerProperty(0);
 		lobbies = FXCollections.observableArrayList();
-
-		widthListener = (observable, oldValue, newValue) -> windowWidthChanged();
-		heightListener = (observable, oldValue, newValue) -> windowHeightChanged();
 	}
 
 	@FXML
@@ -80,23 +73,8 @@ public class JoinLobbyController implements MonopolyUIController {
 				.bind(Bindings.divide(Bindings.add(lobbyCount, ROWS_PER_PAGE - 1), ROWS_PER_PAGE));
 		lobbyTablePagination.setPageFactory(this::createPage);
 
-		rootPane.sceneProperty().addListener((observable, oldValue, newValue) -> {
-			if (oldValue != null) {
-				oldValue.widthProperty().removeListener(widthListener);
-				oldValue.heightProperty().removeListener(heightListener);
-			}
-			if (newValue != null) {
-				newValue.widthProperty().addListener(widthListener);
-				newValue.heightProperty().addListener(heightListener);
-
-				windowHeightChanged();
-				windowWidthChanged();
-			}
-
-			joinButton.getStyleClass().add("buttonRegular");
-			joinButton.getStyleClass().add("joinButton");
-		});
-
+		joinButton.getStyleClass().add("buttonRegular");
+		joinButton.getStyleClass().add("joinButton");
 		updateLobbyCount();
 
 		lobbyTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -145,18 +123,16 @@ public class JoinLobbyController implements MonopolyUIController {
 		}
 	}
 
-	private void windowWidthChanged() {
-		double height = rootPane.getScene().getHeight();
-		double width = rootPane.getScene().getWidth();
+	@Override
+	public void widthChanged(double width, double height) {
 		rootPane.setMaxWidth(width);
 
 		joinButton.setPrefWidth(width * 0.08);
 		setFontSizes(height, width);
 	}
 
-	private void windowHeightChanged() {
-		double height = rootPane.getScene().getHeight();
-		double width = rootPane.getScene().getWidth();
+	@Override
+	public void heightChanged(double width, double height) {
 		rootPane.setMaxHeight(height);
 
 		joinButton.setPrefHeight(height * 0.04);
@@ -166,15 +142,14 @@ public class JoinLobbyController implements MonopolyUIController {
 	}
 
 	private void setFontSizes(double height, double width) {
-		mainTitle.setFont(UIUtil.calculateFittingFont(width * 0.18, height, "Recoleta Alt", mainTitle.getText()));
-		promptText.setFont(UIUtil.calculateFittingFont(width * 0.12, height, "Avenir Next", promptText.getText()));
-		infoText.setFont(UIUtil.calculateFittingFont(width * 0.35, height, "Avenir Next", infoText.getText()));
-		roomTitle.setFont(UIUtil.calculateFittingFont(width * 0.10, height, "Avenir Next", roomTitle.getText()));
-		passwordTitle
-				.setFont(UIUtil.calculateFittingFont(width * 0.075, height, "Avenir Next", passwordTitle.getText()));
-		roomName.setFont(UIUtil.calculateFittingFont(height, width * 0.011, "Avenir Next", roomName.getText()));
-		passwordValue.setFont(UIUtil.calculateFittingFont(height, width * 0.010, passwordValue.getText()));
-		joinButton.setFont(UIUtil.calculateFittingFont(joinButton.getWidth() - 5, joinButton.getHeight() - 5,
-				joinButton.getText()));
+		UIUtil.fitFont(mainTitle, width * 0.18, height);
+		UIUtil.fitFont(promptText, width * 0.12, height);
+		UIUtil.fitFont(infoText, width * 0.35, height);
+		UIUtil.fitFont(roomTitle, width * 0.10, height);
+		UIUtil.fitFont(passwordTitle, width * 0.075, height);
+//		UIUtil.fitFont(roomName, width * 0.10, height);
+//		UIUtil.fitFont(passwordValue, width * 0.10, height);
+//		UIUtil.fitFont(joinButton, width * 0.10, height);
 	}
+
 }

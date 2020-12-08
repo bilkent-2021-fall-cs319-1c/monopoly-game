@@ -52,25 +52,25 @@ public class PlayerPane extends MigPane {
 
 	private ClientApplication app;
 
-	private String side;
-	private String player;
+	private boolean nameOnLeft;
+	private boolean self;
 	private String username;
 
 	private MicSender micSender;
 	private WebcamSender webcamSender;
 
 	/**
-	 * @param side     "right" for username to be on the right, or it will on the
-	 *                 left
-	 * @param player   "self" for webcam/audio controls, or trade button will be
-	 *                 displayed
-	 * @param username Username to display
+	 * @param nameOnLeft false for username to be on the right, or it will on the
+	 *                   left
+	 * @param self       true for webcam/audio controls, or trade button will be
+	 *                   displayed
+	 * @param username   Username to display
 	 */
-	public PlayerPane(@NamedArg("side") String side, @NamedArg("player") String player, String username,
+	public PlayerPane(@NamedArg("nameOnLeft") boolean nameOnLeft, @NamedArg("self") boolean self, String username,
 			ClientApplication app) {
 		this.app = app;
-		this.side = side;
-		this.player = player;
+		this.nameOnLeft = nameOnLeft;
+		this.self = self;
 		this.username = username;
 
 		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/PlayerPane.fxml"));
@@ -85,7 +85,7 @@ public class PlayerPane extends MigPane {
 		Stream.of(widthProperty(), heightProperty())
 				.forEach(p -> p.addListener((observable, oldVal, newVal) -> adjustSize()));
 
-		if ("self".equals(player)) {
+		if (self) {
 			Client client = app.getNetworkManager().getClient();
 			webcamSender = new WebcamSender(client, Webcam.getDefault());
 
@@ -123,11 +123,9 @@ public class PlayerPane extends MigPane {
 		double width = getWidth();
 		double height = getHeight();
 
-		playerNameLabel.setFont(UIUtil.calculateFittingFont(height, width * 0.09, playerNameLabel.getText()));
-
-		moneyLabel.setFont(UIUtil.calculateFittingFont(width * 0.84 * 0.49, height * 0.14, moneyLabel.getText()));
-		tradeButton.setFont(
-				UIUtil.calculateFittingFont(width * 0.84 * 0.49 - 10, height * 0.14 - 10, tradeButton.getText()));
+		UIUtil.fitFont(playerNameLabel, height, width * 0.09);
+		UIUtil.fitFont(moneyLabel, width * 0.84 * 0.49, height * 0.14);
+		UIUtil.fitFont(tradeButton, width * 0.84 * 0.49 - 10, height * 0.14 - 10);
 
 		playerImage.setFitHeight(height * 0.84);
 		playerImage.setFitWidth(width * 0.89);
@@ -138,8 +136,7 @@ public class PlayerPane extends MigPane {
 		micIcon.setFitHeight(webcamMicIconSize);
 		micIcon.setFitWidth(webcamMicIconSize);
 
-		Image playerIconImg = ("right".equals(side) ? UIUtil.DEFAULT_PLAYER_IMAGE_LOOKING_LEFT
-				: UIUtil.DEFAULT_PLAYER_IMAGE);
+		Image playerIconImg = (nameOnLeft ? UIUtil.DEFAULT_PLAYER_IMAGE : UIUtil.DEFAULT_PLAYER_IMAGE_LOOKING_LEFT);
 		playerImage.setImage(playerIconImg);
 
 		tradeButton.getStyleClass().add("buttonRegular");
@@ -149,16 +146,17 @@ public class PlayerPane extends MigPane {
 
 	@FXML
 	private void initialize() {
-		if ("right".equals(side)) {
+		if (nameOnLeft)
+			setCols("0[10%:10%:10%]1%:1%:1%[grow]0");
+		else {
 			setCols("0[grow]1%:1%:1%[10%:10%:10%]0");
 
 			remove(playerNameLabelWrapper);
 			add(playerNameLabelWrapper, "spany 2, cell 1 0");
 			playerNameLabelWrapper.getChildren().get(0).setStyle("-fx-rotate: 90");
-		} else
-			setCols("0[10%:10%:10%]1%:1%:1%[grow]0");
+		}
 
-		if ("self".equals(player)) {
+		if (self) {
 			tradeButton.setVisible(false);
 			webcamIcon.setVisible(true);
 			micIcon.setVisible(true);
@@ -201,9 +199,6 @@ public class PlayerPane extends MigPane {
 		} else {
 			webcamIcon.setImage(UIUtil.WEBCAM_CROSSED_ICON);
 			webcamSender.stop();
-
-			playerImage.setImage(
-					"right".equals(side) ? UIUtil.DEFAULT_PLAYER_IMAGE_LOOKING_LEFT : UIUtil.DEFAULT_PLAYER_IMAGE);
 		}
 	}
 }

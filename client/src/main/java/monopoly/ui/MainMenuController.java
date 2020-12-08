@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
@@ -28,31 +27,19 @@ public class MainMenuController implements MonopolyUIController {
 	@FXML
 	private Button exitButton;
 
-	private ChangeListener<Number> widthListener;
+	@Override
+	public void widthChanged(double width, double height) {
+		UIUtil.fitFont(heroMonopolyText, width * 0.33, height * 0.2);
 
-	public MainMenuController() {
-		widthListener = (observable, oldValue, newValue) -> windowWidthChanged();
+		UIUtil.fitFont(createGameButton, width * 0.32 - 40, height * 0.05);
+		UIUtil.fitFont(joinGameButton, width * 0.32 - 40, height * 0.05);
+		UIUtil.fitFont(helpButton, width * 0.32 - 40, height * 0.05);
+		UIUtil.fitFont(exitButton, width * 0.32 - 40, height * 0.05);
 	}
 
-	private void windowWidthChanged() {
-		double windowWidth = mainMigPane.getScene().getWidth();
-		double windowHeight = mainMigPane.getScene().getHeight();
-		mainMigPane.setMaxWidth(windowWidth);
-
-		heroMonopolyText.setFont(UIUtil.calculateFittingFont(Math.max(windowWidth * 0.33, 200), windowHeight,
-				heroMonopolyText.getFont().getFamily(), heroMonopolyText.getText()));
-	}
-
-	@FXML
-	public void initialize() {
-		mainMigPane.sceneProperty().addListener((observable, oldValue, newValue) -> {
-			if (oldValue != null) {
-				oldValue.widthProperty().removeListener(widthListener);
-			}
-			if (newValue != null) {
-				newValue.widthProperty().addListener(widthListener);
-			}
-		});
+	@Override
+	public void heightChanged(double width, double height) {
+		widthChanged(width, height);
 	}
 
 	@FXML

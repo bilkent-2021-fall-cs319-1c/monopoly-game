@@ -1,9 +1,19 @@
 package monopoly.ui;
 
+import javafx.scene.control.Button;
+import javafx.scene.control.Labeled;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+/**
+ * Contains utility methods for working with UI. Loads resources such as images
+ * and CSS, and holds them in the static constant fields.
+ * 
+ * @author Ziya Mukhtarov
+ * @version Dec 8, 2020
+ */
 public class UIUtil {
 	public static final Image BACKGROUND_IMAGE1 = loadImage("images/Background1.jpg");
 	public static final Image BACKGROUND_IMAGE2 = loadImage("images/Background2.jpg");
@@ -31,12 +41,15 @@ public class UIUtil {
 	public static final String PLAYER_PANE_CSS = loadStylesheet("css/playerPane.css");
 	public static final String JOIN_LOBBY_CSS = loadStylesheet("css/joinLobby.css");
 
-	static {
-		loadFont("fonts/kabel/Kabel-Bold.ttf");
-		loadFont("fonts/recoleta/RecoletaAlt-Bold.ttf");
+	private UIUtil() {
 	}
 
-	private UIUtil() {
+	/**
+	 * Loads external fonts into the memory
+	 */
+	public static void loadFonts() {
+		loadFont("fonts/kabel/Kabel-Bold.ttf");
+		loadFont("fonts/recoleta/RecoletaAlt-Bold.ttf");
 	}
 
 	/**
@@ -48,7 +61,7 @@ public class UIUtil {
 	 * @param text       The text to fit
 	 * @return The font that fits in the given rectangular area
 	 */
-	public static Font calculateFittingFont(double width, double height, String fontFamily, String text) {
+	private static Font calculateFittingFont(double width, double height, String fontFamily, String text) {
 		final int defaultFontSize = 20;
 		Font font = Font.font(fontFamily, defaultFontSize);
 		Text tempText = new Text(text);
@@ -62,17 +75,50 @@ public class UIUtil {
 	}
 
 	/**
-	 * Calculates the default font size that fits in the given area
+	 * Changes the font of the given component so that it fits in the given area
 	 *
+	 * @param labeled The component to fit
+	 * @param width   The width of the area
+	 * @param height  The height of the area
+	 */
+	public static void fitFont(Labeled labeled, double width, double height) {
+		labeled.setFont(calculateFittingFont(width, height, labeled.getFont().getFamily(), labeled.getText()));
+	}
+
+	/**
+	 * Changes the font of the given component so that it fits in the given area
+	 *
+	 * @param textInput The component to fit
+	 * @param width     The width of the area
+	 * @param height    The height of the area
+	 */
+	public static void fitFont(TextInputControl textInput, double width, double height) {
+		textInput.setFont(calculateFittingFont(width, height, textInput.getFont().getFamily(), textInput.getText()));
+	}
+
+	/**
+	 * Changes the font of the given component so that it fits in the given area
+	 *
+	 * @param text   The component to fit
 	 * @param width  The width of the area
 	 * @param height The height of the area
-	 * @param text   The text to fit
-	 * @return The font with the maximum font size that fits in the given
-	 *         rectangular area using the default font
 	 */
-	public static Font calculateFittingFont(double width, double height, String text) {
-		String defaultFontFamily = Font.getDefault().getFamily();
-		return calculateFittingFont(width, height, defaultFontFamily, text);
+	public static void fitFont(Text text, double width, double height) {
+		text.setFont(calculateFittingFont(width, height, text.getFont().getFamily(), text.getText()));
+	}
+
+	/**
+	 * Changes the font of the given button so that it fits in the given area.
+	 * Changes the font using CSS.
+	 *
+	 * @param button The button to fit
+	 * @param width  The width of the area
+	 * @param height The height of the area
+	 */
+	public static void fitFont(Button button, double width, double height) {
+		double buttonFontSize = calculateFittingFont(width, height, button.getFont().getFamily(), button.getText())
+				.getSize();
+		button.setStyle("-fx-font-size: " + buttonFontSize);
 	}
 
 	private static Image loadImage(String path) {

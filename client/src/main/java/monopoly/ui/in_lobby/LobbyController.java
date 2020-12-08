@@ -8,7 +8,6 @@ import java.util.Map;
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
@@ -43,34 +42,11 @@ public class LobbyController implements MonopolyUIController {
 	@FXML
 	private Button readyButton;
 
-	private ChangeListener<Number> widthListener;
-	private ChangeListener<Number> heightListener;
-
 	@Getter
 	private Map<Integer, PlayerLobbyPane> playerMap;
 
 	public LobbyController() {
-		widthListener = (observable, oldValue, newValue) -> windowWidthChanged();
-		heightListener = (observable, oldValue, newValue) -> windowHeightChanged();
-
 		playerMap = Collections.synchronizedMap(new HashMap<Integer, PlayerLobbyPane>());
-	}
-
-	@FXML
-	public void initialize() {
-		root.sceneProperty().addListener((observable, oldValue, newValue) -> {
-			if (oldValue != null) {
-				oldValue.widthProperty().removeListener(widthListener);
-				oldValue.heightProperty().removeListener(heightListener);
-			}
-			if (newValue != null) {
-				newValue.widthProperty().addListener(widthListener);
-				newValue.heightProperty().addListener(heightListener);
-
-				windowHeightChanged();
-				windowWidthChanged();
-			}
-		});
 	}
 
 	public void playerJoined(PlayerPacketData player) {
@@ -109,34 +85,23 @@ public class LobbyController implements MonopolyUIController {
 		});
 	}
 
-	private void windowHeightChanged() {
-		double windowHeight = root.getScene().getHeight();
-		double windowWidth = root.getScene().getWidth();
-
-		setFontSizes(windowWidth, windowHeight);
+	@Override
+	public void heightChanged(double width, double height) {
+		setFontSizes(width, height);
 	}
 
-	private void windowWidthChanged() {
-		double windowHeight = root.getScene().getHeight();
-		double windowWidth = root.getScene().getWidth();
-
-		setFontSizes(windowWidth, windowHeight);
+	@Override
+	public void widthChanged(double width, double height) {
+		setFontSizes(width, height);
 	}
 
 	private void setFontSizes(double width, double height) {
-		lobbyText
-				.setFont(UIUtil.calculateFittingFont(width * 0.32, height * 0.10, "Recoleta Alt", lobbyText.getText()));
+		UIUtil.fitFont(lobbyText, width * 0.32, height * 0.1);
 
-		String avenirFontFamily = "Avenir Next";
-		nameText.setFont(
-				UIUtil.calculateFittingFont(width * 0.20, height * 0.09, avenirFontFamily, nameText.getText()));
-		nameField.setFont(
-				UIUtil.calculateFittingFont(width * 0.15, height * 0.09, avenirFontFamily, nameText.getText()));
-		passwordText.setFont(
-				UIUtil.calculateFittingFont(width * 0.25, height * 0.09, avenirFontFamily, passwordText.getText()));
-		passwordField.setFont(
-				UIUtil.calculateFittingFont(width * 0.15, height * 0.09, avenirFontFamily, nameText.getText()));
-		waitingText.setFont(
-				UIUtil.calculateFittingFont(width * 0.25, height * 0.09, avenirFontFamily, waitingText.getText()));
+		UIUtil.fitFont(nameText, width * 0.2, height * 0.09);
+		UIUtil.fitFont(nameField, width * 0.15, height * 0.09);
+		UIUtil.fitFont(passwordText, width * 0.25, height * 0.09);
+		UIUtil.fitFont(passwordField, width * 0.15, height * 0.09);
+		UIUtil.fitFont(waitingText, width * 0.25, height * 0.09);
 	}
 }

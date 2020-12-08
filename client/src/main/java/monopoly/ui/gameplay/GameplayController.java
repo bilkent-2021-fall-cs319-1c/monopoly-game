@@ -16,7 +16,6 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
@@ -63,16 +62,10 @@ public class GameplayController implements MonopolyUIController {
 	private boolean boardRotating;
 	private int currentBoardAngle;
 
-	private ChangeListener<Number> widthListener;
-	private ChangeListener<Number> heightListener;
-
 	private Map<Integer, PlayerPane> playerMap;
 
 	public GameplayController() {
 		playerMap = Collections.synchronizedMap(new HashMap<Integer, PlayerPane>());
-
-		widthListener = (observable, oldValue, newValue) -> windowWidthChanged();
-		heightListener = (observable, oldValue, newValue) -> windowHeightChanged();
 
 		currentBoardAngle = 0;
 		chatOpen = false;
@@ -101,17 +94,17 @@ public class GameplayController implements MonopolyUIController {
 			for (int i = 0; i < players.length; i++) {
 				int connectionId = ((PlayerPacketData) players[i].getUserData()).getConnectionId();
 
-				String type = "other";
+				boolean self = false;
 				if (connectionId == app.getNetworkManager().getSelfConnectionId()) {
-					type = "self";
+					self = true;
 				}
 
 				PlayerPane playerPane;
 				if (i % 2 == 0) {
-					playerPane = new PlayerPane("left", type, players[i].getName(), app);
+					playerPane = new PlayerPane(true, self, players[i].getName(), app);
 					playersLeft.add(playerPane, "grow, hmax 30%, wmax 100%");
 				} else {
-					playerPane = new PlayerPane("right", type, players[i].getName(), app);
+					playerPane = new PlayerPane(false, self, players[i].getName(), app);
 					playersRight.add(playerPane, "grow, hmax 30%, wmax 100%");
 				}
 
@@ -146,24 +139,11 @@ public class GameplayController implements MonopolyUIController {
 
 	@FXML
 	public void initialize() {
-		stackPane.sceneProperty().addListener((observable, oldValue, newValue) -> {
-			if (oldValue != null) {
-				oldValue.widthProperty().removeListener(widthListener);
-				oldValue.heightProperty().removeListener(heightListener);
-			}
-			if (newValue != null) {
-				newValue.widthProperty().addListener(widthListener);
-				newValue.heightProperty().addListener(heightListener);
-
-				windowHeightChanged();
-				windowWidthChanged();
-				new Thread(this::boardRotateAndEnter).start();
-			}
-		});
-
 		openChatPane.setNode(chatPane);
 		closeChatPane.setNode(chatPane);
 		boardRoateAndScaleTransition.setNode(board);
+
+		new Thread(this::boardRotateAndEnter).start();
 	}
 
 	private void boardRotateAndEnter() {
@@ -183,44 +163,6 @@ public class GameplayController implements MonopolyUIController {
 		SequentialTransition boardEntranceEffect = new SequentialTransition(rotateAndScale, pause, scaleToDefault);
 		boardEntranceEffect.setOnFinished(e -> boardRotating = false);
 		boardEntranceEffect.play();
-	}
-
-	private void windowHeightChanged() {
-		double windowHeight = stackPane.getScene().getHeight();
-		double windowWidth = stackPane.getScene().getWidth();
-		stackPane.setMaxHeight(windowHeight);
-
-		double boardSize = Math.min(windowWidth * 0.5, windowHeight * 0.9);
-		board.setFitWidth(boardSize);
-		board.setFitHeight(boardSize);
-
-		double iconHeight = windowHeight * 0.05;
-		chatIcon.setFitHeight(iconHeight);
-		rotateCWIcon.setFitHeight(iconHeight);
-		rotateCCWIcon.setFitHeight(iconHeight);
-	}
-
-	private void windowWidthChanged() {
-		double windowHeight = stackPane.getScene().getHeight();
-		double windowWidth = stackPane.getScene().getWidth();
-		stackPane.setMaxWidth(windowWidth);
-
-		double boardSize = Math.min(windowWidth * 0.5, windowHeight * 0.9);
-		board.setFitWidth(boardSize);
-		board.setFitHeight(boardSize);
-
-		double iconWidth = windowWidth * 0.025;
-		chatIcon.setFitWidth(iconWidth);
-		rotateCWIcon.setFitWidth(iconWidth);
-		rotateCCWIcon.setFitWidth(iconWidth);
-
-		double chatPaneWidth = windowWidth * 0.2;
-		chatPane.setMinWidth(chatPaneWidth);
-		chatPane.setPrefWidth(chatPaneWidth);
-		chatPane.setMaxWidth(chatPaneWidth);
-
-		chatPane.setTranslateX(chatPane.getPrefWidth());
-		closeChatPane.setToX(chatPane.getPrefWidth());
 	}
 
 	@FXML
@@ -252,5 +194,41 @@ public class GameplayController implements MonopolyUIController {
 		currentBoardAngle = currentBoardAngle - 90;
 		boardRotateTransition.setToAngle(currentBoardAngle);
 		boardRoateAndScaleTransition.play();
+	}
+
+	@Override
+	public void widthChanged(double width, double height) {
+		stackPane.setMaxWidth(width);
+
+		double boardSize = Math.min(width * 0.5, height * 0.9);
+		board.setFitWidth(boardSize);
+		board.setFitHeight(boardSize);
+
+		double iconWidth = width * 0.025;
+		chatIcon.setFitWidth(iconWidth);
+		rotateCWIcon.setFitWidth(iconWidth);
+		rotateCCWIcon.setFitWidth(iconWidth);
+
+		double chatPaneWidth = width * 0.2;
+		chatPane.setMinWidth(chatPaneWidth);
+		chatPane.setPrefWidth(chatPaneWidth);
+		chatPane.setMaxWidth(chatPaneWidth);
+
+		chatPane.setTranslateX(chatPane.getPrefWidth());
+		closeChatPane.setToX(chatPane.getPrefWidth());
+	}
+
+	@Override
+	public void heightChanged(double width, double height) {
+		stackPane.setMaxHeight(height);
+
+		double boardSize = Math.min(width * 0.5, height * 0.9);
+		board.setFitWidth(boardSize);
+		board.setFitHeight(boardSize);
+
+		double iconHeight = height * 0.05;
+		chatIcon.setFitHeight(iconHeight);
+		rotateCWIcon.setFitHeight(iconHeight);
+		rotateCCWIcon.setFitHeight(iconHeight);
 	}
 }

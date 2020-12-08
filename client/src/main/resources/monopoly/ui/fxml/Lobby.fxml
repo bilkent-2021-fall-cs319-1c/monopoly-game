@@ -11,16 +11,16 @@
 
 <MigPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" layout="fill, wrap"
-	cols="[::39%, grow]2%[::59%, grow]" rows="[100%!]" fx:id="root"
+	cols="[::39%]2%[::59%]" rows="0[]0" fx:id="root"
 	fx:controller="monopoly.ui.in_lobby.LobbyController">
 
 	<stylesheets>
 		<UIUtil fx:constant="COMMON_CSS" />
 	</stylesheets>
 
-	<MigPane layout="fill, wrap"
-		rows="[15%][10%][10%][10%][10%][20%][10%][10%]" cols="5%[]"
-		MigPane.cc="grow">
+	<MigPane layout="fill, wrap, debug"
+		rows="[15%][10%][10%][10%][10%][20%][::10%, fill][::10%, fill]"
+		cols="5%[fill]" MigPane.cc="height 100%, width 39%">
 
 		<Text style="-fx-font-family: 'Kabel'" text="Lobby"
 			fx:id="lobbyText" />
@@ -31,8 +31,10 @@
 		<Text fx:id="waitingText">
 			Waiting for players...
 		</Text>
+
 		<Button styleClass="buttonRegular" text="Make Public" />
-		<Button styleClass="buttonRegular" text="Ready" onAction="#iAmReady" fx:id="readyButton"/>
+		<Button styleClass="buttonRegular" text="Ready"
+			onAction="#iAmReady" fx:id="readyButton" />
 	</MigPane>
 
 	<MigPane layout="fill, wrap" cols="5%[fill]5%"
