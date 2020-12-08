@@ -9,7 +9,6 @@ import java.io.IOException;
  * @version Nov 29, 2020
  */
 public class ServerRunner {
-	
 	public static void main(String[] args) {
 		try {
 			new Model();

@@ -1,6 +1,7 @@
 package monopoly;
 
 import java.io.IOException;
+import java.util.List;
 
 import monopoly.lobby.Lobby;
 import monopoly.lobby.User;
@@ -11,7 +12,6 @@ import monopoly.network.packet.important.packet_data.BooleanPacketData;
 import monopoly.network.packet.important.packet_data.IntegerPacketData;
 import monopoly.network.packet.important.packet_data.LobbyListPacketData;
 import monopoly.network.packet.important.packet_data.LobbyPacketData;
-import monopoly.network.packet.important.packet_data.PlayerPacketData;
 import monopoly.network.packet.important.packet_data.StringPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 
@@ -47,33 +47,24 @@ public class GameServer extends Server {
 
 	@Override
 	public void receivedRealTimePacket(int connectionID, RealTimeNetworkPacket packet) {
-		if (model.findLobby(connectionID) == null) {
+		Lobby lobby = model.getLobbyOfUser(connectionID);
+		if (lobby == null) {
 			return;
 		}
 
-		Lobby current = model.findLobby(connectionID);
-		// Send the network data of current user to everyone except himself in the lobby
-		new Thread(() -> {
-			for (int i = 0; i < current.getPlayers().size(); i++) {
-				if (!current.getPlayers().get(i).equals(model.getByID(connectionID))) {
-					sendRealTimePacket(packet, current.getPlayers().get(i).getConnectionId());
-				}
-			}
-		}).start();
+		lobby.sendRealtimePacket(connectionID, packet);
 	}
 
 	@Override
 	public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
-
 		// Take action depending on the received packet type
 		if (packet.getType() == PacketType.CONNECT) {
 			handleConnect(connectionID);
 		} else if (packet.getType() == PacketType.GET_LOBBY_COUNT) {
-			sendImportantPacket(new ImportantNetworkPacket(PacketType.LOBBY_COUNT,
-					new IntegerPacketData(model.getLobbies().size())), connectionID);
+			handleGetLobbyCount(connectionID);
 
 		} else if (packet.getType() == PacketType.GET_LOBBIES) {
-			handleLobbies(connectionID, packet);
+			handleGetLobbies(connectionID, packet);
 
 		} else if (packet.getType() == PacketType.CREATE_LOBBY) {
 			handleCreate(connectionID, packet);
@@ -86,7 +77,6 @@ public class GameServer extends Server {
 
 		} else if (packet.getType() == PacketType.SET_READY) {
 			handleReady(connectionID);
-
 		}
 	}
 
@@ -97,10 +87,15 @@ public class GameServer extends Server {
 	 */
 	private void handleConnect(int connectionID) {
 		String username = "Player" + connectionID;
-
 		model.userLogin(username, connectionID);
 
 		sendImportantPacket(new ImportantNetworkPacket(PacketType.ACCEPTED, new StringPacketData(username)),
+				connectionID);
+	}
+
+	private void handleGetLobbyCount(int connectionID) {
+		sendImportantPacket(
+				new ImportantNetworkPacket(PacketType.LOBBY_COUNT, new IntegerPacketData(model.getLobbyCount())),
 				connectionID);
 	}
 
@@ -110,35 +105,15 @@ public class GameServer extends Server {
 	 * @param connectionID the id of the user
 	 * @param packet       the received network packet
 	 */
-	private void handleLobbies(int connectionID, ImportantNetworkPacket packet) {
+	private void handleGetLobbies(int connectionID, ImportantNetworkPacket packet) {
 		// Get the lobby numbers to be displayed as minimum and maximum
 		int min = ((IntegerPacketData) packet.getData().get(0)).getData();
 		int max = ((IntegerPacketData) packet.getData().get(1)).getData();
-
-		if (min < 0) {
-			min = 0;
-		}
-
-		if (max > model.getLobbies().size()) {
-			max = model.getLobbies().size();
-		}
+		List<Lobby> lobbies = model.getWaitingLobbies(min, max);
 
 		// Create lobby list packet data to be sent to the user
 		LobbyListPacketData lobbyList = new LobbyListPacketData();
-
-		for (int i = min; i < max; i++) {
-			String name = model.getLobbies().get(i).getName();
-			String password = model.getLobbies().get(i).getPassword();
-			Boolean isPublic = model.getLobbies().get(i).getPublic();
-			int limit = model.getLobbies().get(i).getPlayerLimit();
-			long id = model.getLobbies().get(i).getId();
-			int playerCount = model.getLobbies().get(i).getPlayerCount();
-			String hostName = model.getLobbies().get(i).getHost().getUsername();
-
-			// Create a lobby packet data to be added to lobby data list
-			LobbyPacketData lobbyData = new LobbyPacketData(id, name, password, isPublic, hostName, playerCount, limit);
-			lobbyList.add(lobbyData);
-		}
+		lobbies.forEach(lobby -> lobbyList.add(lobby.getAsPacket()));
 
 		sendImportantPacket(new ImportantNetworkPacket(PacketType.LOBBY_LIST, lobbyList), connectionID);
 	}
@@ -152,14 +127,19 @@ public class GameServer extends Server {
 	private void handleCreate(int connectionID, ImportantNetworkPacket packet) {
 		LobbyPacketData lobbyData = ((LobbyPacketData) packet.getData().get(0));
 		String name = lobbyData.getName();
-		Boolean isPublic = lobbyData.isPublic();
+		boolean isPublic = lobbyData.isPublic();
 		String password = lobbyData.getPassword();
 		int limit = lobbyData.getPlayerLimit();
 
-		// Create a lobby and get the connection id of the host
-		int hostID = model.createLobby(name, limit, isPublic, password, connectionID).getConnectionId();
+		// Create the lobby
+		try {
+			model.createLobby(name, limit, isPublic, password, connectionID);
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
+			return;
+		}
 
-		sendImportantPacket(new ImportantNetworkPacket(PacketType.LOBBY_CREATED), hostID);
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.LOBBY_CREATED), connectionID);
 	}
 
 	/**
@@ -169,112 +149,83 @@ public class GameServer extends Server {
 	 * @param packet       the received network packet
 	 */
 	private void handleJoin(int connectionID, ImportantNetworkPacket packet) {
-		long id = ((LobbyPacketData) packet.getData().get(0)).getLobbyId();
-		String password = ((LobbyPacketData) packet.getData().get(0)).getPassword();
-		Lobby current = model.getByID(id);
+		LobbyPacketData lobbyData = (LobbyPacketData) packet.getData().get(0);
+		int lobbyId = lobbyData.getLobbyId();
+		String password = lobbyData.getPassword();
 
-		// Check if the user can join the lobby
-		if (model.getByID(connectionID).getLobby() != null) {
-			sendImportantPacket(new ImportantNetworkPacket(PacketType.ERR_ALREADY_IN_LOBBY), connectionID);
+		Lobby lobby = model.getLobbyByID(lobbyId);
+		User user = model.getUserByID(connectionID);
 
-		} else if (current.getPlayerCount() == current.getPlayerLimit()) {
-			sendImportantPacket(new ImportantNetworkPacket(PacketType.ERR_LOBBY_FULL), connectionID);
-
-		} else if (!current.getPassword().equals(password)) {
-			sendImportantPacket(new ImportantNetworkPacket(PacketType.ERR_UNKNOWN), connectionID);
-
-		} else {
+		try {
+			user.joinLobby(lobby, password);
 			sendImportantPacket(new ImportantNetworkPacket(PacketType.JOIN_SUCCESS), connectionID);
-
-			// Join the user to the lobby
-			model.joinLobby(model.getByID(id), password, connectionID);
-
-			// Send the join status of the current user to everyone except himself in the
-			model.sendJoinedNotification(model.getByID(connectionID));
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
 		}
+
 	}
 
 	/**
 	 * Handles the leave lobby request from server side
 	 * 
-	 * @param user         the user to be removed from the lobby
 	 * @param connectionID the id of the user
 	 */
 	private void handleLeave(int connectionID) {
-		Lobby currentLobby = model.getByID(connectionID).getLobby();
-
-		if (currentLobby == null) {
-			sendImportantPacket(new ImportantNetworkPacket(PacketType.ERR_NOT_IN_LOBYY), connectionID);
-		} else {
-			model.leaveLobby(currentLobby, connectionID);
-
+		User user = model.getUserByID(connectionID);
+		try {
+			user.leaveLobby();
 			sendImportantPacket(new ImportantNetworkPacket(PacketType.LEAVE_SUCCESS), connectionID);
-
-			// Send the left status of the current user to everyone in the lobby
-			model.sendLeftNotification(model.getByID(connectionID));
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
 		}
 	}
 
 	/**
 	 * Handles the set ready request from server side
 	 * 
-	 * @param user         the user to be set ready
 	 * @param connectionID the id of the user
 	 */
 	private void handleReady(int connectionID) {
-		User user = model.getByID(connectionID);
-
-		if (user.getLobby() == null) {
-			sendImportantPacket(
-					new ImportantNetworkPacket(PacketType.ERR_NOT_IN_LOBYY, new BooleanPacketData(user.isReady())),
-					connectionID);
-		} else {
+		User user = model.getUserByID(connectionID);
+		try {
 			user.setReady(true);
-
 			sendImportantPacket(new ImportantNetworkPacket(PacketType.SET_READY_SUCCESS), connectionID);
-			// Send the ready status of the current user to everyone expect himself in the
-			model.sendReadyNotification(user);
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
 		}
 	}
 
 	/**
 	 * Sends playerJoin notification to the client
 	 * 
-	 * @param playerJoined   the joined user
-	 * @param playerToNotify the user to be notified
+	 * @param userJoined   the joined user
+	 * @param userToNotify the user to be notified
 	 */
-	public void sendPlayerJoinNotification(User playerJoined, User playerToNotify) {
-		sendImportantPacket(
-				new ImportantNetworkPacket(PacketType.PLAYER_JOIN,
-						new PlayerPacketData(playerJoined.getConnectionId(), playerJoined.getUsername(), false)),
-				playerToNotify.getConnectionId());
+	public void sendPlayerJoinNotification(User userJoined, User userToNotify) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.PLAYER_JOIN, userJoined.getAsPacket()),
+				userToNotify.getId());
 	}
 
 	/**
 	 * Sends playerLeft notification to the client
 	 * 
-	 * @param playerLeft     the left user
-	 * @param playerToNotify the user to be notified
+	 * @param userLeft     the left user
+	 * @param userToNotify the user to be notified
 	 */
-	public void sendPlayerLeaveNotification(User playerLeft, User playerToNotify) {
-		sendImportantPacket(
-				new ImportantNetworkPacket(PacketType.PLAYER_LEFT, new StringPacketData(playerLeft.getUsername())),
-				playerToNotify.getConnectionId());
+	public void sendPlayerLeaveNotification(User userLeft, User userToNotify) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.PLAYER_LEFT, userLeft.getAsPacket()),
+				userToNotify.getId());
 	}
 
 	/**
 	 * Sends playerReady notification to the client
 	 * 
-	 * @param playerReady    the ready user
-	 * @param playerToNotify the user to be notified
+	 * @param userReady    the ready user
+	 * @param userToNotify the user to be notified
 	 */
-	public void sendPlayerReadyNotification(User playerReady, User playerToNotify) {
-		sendImportantPacket(
-				new ImportantNetworkPacket(PacketType.PLAYER_READY,
-						new PlayerPacketData(playerReady.getConnectionId(), playerReady.getUsername(),
-								playerReady.isHost()),
-						new BooleanPacketData(playerReady.isReady())),
-				playerToNotify.getConnectionId());
+	public void sendPlayerReadyNotification(User userReady, User userToNotify) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.PLAYER_READY, userReady.getAsPacket(),
+				new BooleanPacketData(userReady.isReady())), userToNotify.getId());
 	}
 
 	/**
@@ -283,6 +234,6 @@ public class GameServer extends Server {
 	 * @param user the user to be notified
 	 */
 	public void sendGameStartNotification(User user) {
-		sendImportantPacket(new ImportantNetworkPacket(PacketType.GAME_START), user.getConnectionId());
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.GAME_START), user.getId());
 	}
 }
