@@ -23,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import lombok.Getter;
+import monopoly.Error;
 import monopoly.network.Client;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.UIUtil;
@@ -178,7 +179,8 @@ public class PlayerPane extends MigPane {
 	@FXML
 	private void toggleMicrophone() {
 		if (micSender == null) {
-			// TODO SHOW ERROR
+			app.displayError(new Error("Unable to Access a Microphone Device",
+					"We could not identify any available microphone devices. Please check whether you have given access to a microphone device."));
 			return;
 		}
 

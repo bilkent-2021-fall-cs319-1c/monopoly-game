@@ -11,6 +11,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import lombok.Setter;
+import monopoly.Error;
 
 public class CreateLobbyController implements MonopolyUIController {
 	@Setter
@@ -51,7 +52,8 @@ public class CreateLobbyController implements MonopolyUIController {
 	@FXML
 	private void validateAndCreateLobby() throws IOException {
 		if (!validate()) {
-			// TODO Display error
+			app.displayError(new Error("Invalid Lobby Data",
+					"The data you entered is invalid for a lobby. Please fix the issues and try again."));
 			return;
 		}
 

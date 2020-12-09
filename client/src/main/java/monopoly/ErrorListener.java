@@ -11,5 +11,5 @@ public interface ErrorListener {
 	 *                    {@link ImportantNetworkPacket#isErrorPacket()} is
 	 *                    guaranteed to return true for this packet.
 	 */
-	public void errorOccured(ImportantNetworkPacket errorPacket);
+	public void errorOccured(Error error);
 }

@@ -49,8 +49,7 @@ public class MainMenuController implements MonopolyUIController {
 
 	@FXML
 	public void switchToHelpScreen() throws IOException {
-//		app.switchToView("fxml/Help.fxml");
-		app.displayError();
+		app.switchToView("fxml/Help.fxml");
 	}
 
 	@FXML

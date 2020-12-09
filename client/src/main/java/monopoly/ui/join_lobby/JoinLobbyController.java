@@ -18,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import lombok.Setter;
+import monopoly.Error;
 import monopoly.network.packet.important.packet_data.LobbyPacketData;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.MonopolyUIController;
@@ -111,7 +112,8 @@ public class JoinLobbyController implements MonopolyUIController {
 	private void joinLobby() throws IOException {
 		LobbyDisplayData lobby = lobbyTable.getSelectionModel().getSelectedItem();
 		if (lobby == null) {
-			// TODO Show error
+			app.displayError(
+					new Error("No Lobby Selected", "Please select a lobby from the table on the right to join."));
 			return;
 		}
 

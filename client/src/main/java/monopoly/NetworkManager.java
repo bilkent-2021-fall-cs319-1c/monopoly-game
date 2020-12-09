@@ -67,7 +67,7 @@ public class NetworkManager {
 	}
 
 	private void notifyAllErrorListeners(ImportantNetworkPacket errorPacket) {
-		errorListeners.parallelStream().forEach(l -> l.errorOccured(errorPacket));
+		errorListeners.parallelStream().forEach(l -> l.errorOccured(new Error(errorPacket.getType())));
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class NetworkManager {
 		waitingForResponseType = responseType;
 		responsePacket = null;
 		client.sendImportantPacket(packet);
-		logger.warn("Sending {} Waiting for {}", packet.getType(), responseType);
+		logger.debug("Sending {} Waiting for {}", packet.getType(), responseType);
 
 		while (responsePacket == null) {
 			try {
@@ -202,7 +202,7 @@ public class NetworkManager {
 				e.printStackTrace();
 			}
 		}
-		logger.warn("Response: {}", responsePacket.getType());
+		logger.debug("Response: {}", responsePacket.getType());
 
 		if (responsePacket.isErrorPacket()) {
 			new Thread(() -> notifyAllErrorListeners(responsePacket)).start();
@@ -219,7 +219,6 @@ public class NetworkManager {
 
 		@Override
 		public void connected(int connectionID) {
-			System.out.println("New self connection id: " + connectionID);
 			selfConnectionId = connectionID;
 			new Thread(() -> askAndGetResponse(new ImportantNetworkPacket(PacketType.CONNECT), PacketType.ACCEPTED))
 					.start();
@@ -232,24 +231,23 @@ public class NetworkManager {
 
 		@Override
 		public void receivedRealTimePacket(int connectionID, RealTimeNetworkPacket packet) {
-			System.out.println(packet);
 			Object uiController = app.getMainController();
 			if (uiController instanceof GameplayController) {
 				GameplayController gameplayController = (GameplayController) uiController;
 				gameplayController.realTimePacketReceived(packet);
 			} else {
-				logger.error("WRONG CONTROLLER");
+				logger.error("Wrong controller. Expected GameplayController, displaying {}", uiController);
 			}
 		}
 
 		@Override
 		public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
 			PacketType type = packet.getType();
-			logger.error("General received: {}", packet.getType());
+			logger.debug("Received: {}", packet.getType());
 			if ((type == waitingForResponseType && responsePacket == null) || packet.isErrorPacket()) {
 				responsePacket = packet;
 			} else {
-				logger.warn("Received: {}", packet.getType());
+				logger.debug("Received not as a response: {}", packet.getType());
 				if (type == PacketType.PLAYER_JOIN) {
 					handlePlayerJoin((PlayerPacketData) packet.getData().get(0));
 				} else if (type == PacketType.PLAYER_LEFT) {
@@ -269,7 +267,7 @@ public class NetworkManager {
 				LobbyController lobbyController = (LobbyController) uiController;
 				lobbyController.playerJoined(player);
 			} else {
-				logger.error("WRONG CONTROLLER");
+				logger.error("Wrong controller. Expected LobbyController, displaying {}", uiController);
 			}
 		}
 
@@ -283,7 +281,7 @@ public class NetworkManager {
 				LobbyController lobbyController = (LobbyController) uiController;
 				lobbyController.playerReady(player);
 			} else {
-				logger.error("WRONG CONTROLLER!");
+				logger.error("Wrong controller. Expected LobbyController, displaying {}", uiController);
 			}
 		}
 
@@ -293,7 +291,7 @@ public class NetworkManager {
 				LobbyController lobbyController = (LobbyController) uiController;
 				lobbyController.gameStart();
 			} else {
-				logger.error("WRONG CONTROLLER!");
+				logger.error("Wrong controller. Expected LobbyController, displaying {}", uiController);
 			}
 		}
 	}

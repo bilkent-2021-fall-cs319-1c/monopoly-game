@@ -7,6 +7,7 @@ import java.util.List;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -17,6 +18,8 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import lombok.Getter;
+import monopoly.Error;
+import monopoly.ErrorListener;
 import monopoly.NetworkManager;
 
 /**
@@ -25,19 +28,24 @@ import monopoly.NetworkManager;
  * @author Ziya Mukhtarov
  * @version Nov 28, 2020
  */
-@Getter
-public class ClientApplication extends Application {
+public class ClientApplication extends Application implements ErrorListener {
+	@Getter
 	private Scene scene;
 	private StackPane rootPane;
+	@Getter
 	private List<MonopolyUIController> controllers;
+	@Getter
 	private NetworkManager networkManager;
 
 	private ChangeListener<Number> sizeListener;
+
+	private GaussianBlur baseNodeBlur;
 
 	public ClientApplication() throws IOException {
 		UIUtil.loadFonts();
 
 		scene = null;
+		baseNodeBlur = new GaussianBlur();
 		controllers = Collections.synchronizedList(new ArrayList<MonopolyUIController>());
 
 		sizeListener = (observable, newVal, oldVal) -> {
@@ -51,6 +59,7 @@ public class ClientApplication extends Application {
 		};
 
 		networkManager = new NetworkManager(this);
+		networkManager.addErrorListener(this);
 	}
 
 	@Override
@@ -96,36 +105,31 @@ public class ClientApplication extends Application {
 		children.clear();
 		children.add(root);
 
+		baseNodeBlur.setRadius(0);
+		root.setEffect(baseNodeBlur);
+
 		fakeResize();
 	}
 
-	public void displayError() {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/Overlay.fxml"));
-			Parent errorPane = loader.load();
+	public void displayError(Error error) {
+		Overlay errorOverlay = new Overlay(error);
+		errorOverlay.setApp(this);
+		controllers.add(errorOverlay);
 
-			MonopolyUIController controller = (MonopolyUIController) loader.getController();
-			controller.setApp(this);
-			controllers.add(controller);
+		Platform.runLater(() -> {
+			baseNodeBlur.radiusProperty().bind(Bindings.multiply(50.0, errorOverlay.fadeLevelProperty()));
 
-			Platform.runLater(() -> {
-				rootPane.getChildren().add(errorPane);
-				fakeResize();
-				
-				rootPane.getChildren().get(0).setEffect(new GaussianBlur(50));
-			});
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			rootPane.getChildren().add(errorOverlay);
+			fakeResize();
+		});
 	}
 
 	public void closeOverlay() {
 		List<Node> children = rootPane.getChildren();
 		if (children.size() > 1) {
-			children.remove(children.size() - 1);
 			controllers.remove(controllers.size() - 1);
-
-			rootPane.getChildren().get(0).setEffect(null);
+			children.remove(children.size() - 1);
+			baseNodeBlur.radiusProperty().unbind();
 		}
 	}
 
@@ -144,5 +148,10 @@ public class ClientApplication extends Application {
 		if (controllers.isEmpty())
 			return null;
 		return controllers.get(0);
+	}
+
+	@Override
+	public void errorOccured(Error error) {
+		displayError(error);
 	}
 }

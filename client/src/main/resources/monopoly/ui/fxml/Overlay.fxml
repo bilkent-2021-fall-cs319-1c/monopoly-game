@@ -6,10 +6,10 @@
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 <?import monopoly.ui.UIUtil?>
 
-<MigPane xmlns="http://javafx.com/javafx/15.0.1"
-	xmlns:fx="http://javafx.com/fxml" fx:id="root"
-	fx:controller="monopoly.ui.OverlayController" layout="center"
-	rows="push[50%, fill]push" cols="[50%, fill]" style="-fx-background-color: rgb(232, 135, 135, 0.3)">
+<fx:root xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="center"
+	rows="push[50%, fill]push" cols="[50%, fill]"
+	style="-fx-background-color: rgb(232, 135, 135, 0.3)">
 
 	<stylesheets>
 		<UIUtil fx:constant="COMMON_CSS" />
@@ -27,4 +27,4 @@
 			onMouseClicked="#closeOverlay" />
 
 	</MigPane>
-</MigPane>
+</fx:root>
