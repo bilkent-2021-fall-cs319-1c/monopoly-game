@@ -1,10 +1,11 @@
-package monopoly.network.packet.important.packet_data;
+package monopoly.network.packet.important.packet_data.lobby;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import monopoly.network.packet.important.packet_data.PacketData;
 
 @Getter
 @Setter

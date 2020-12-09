@@ -1,10 +1,11 @@
-package monopoly.network.packet.important.packet_data;
+package monopoly.network.packet.important.packet_data.lobby;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.ToString;
+import monopoly.network.packet.important.packet_data.PacketData;
 
 @Getter
 @ToString

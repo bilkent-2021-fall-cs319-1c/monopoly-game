@@ -90,6 +90,6 @@ public class User implements Identifiable {
 	}
 
 	public PlayerPacketData getAsPacket() {
-		return new PlayerPacketData(id, username, this instanceof LobbyOwner);
+		return new PlayerPacketData(id, username, this instanceof LobbyOwner, ready);
 	}
 }

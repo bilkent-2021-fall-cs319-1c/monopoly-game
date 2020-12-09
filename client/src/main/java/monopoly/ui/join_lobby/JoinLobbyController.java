@@ -19,7 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import lombok.Setter;
-import monopoly.network.packet.important.packet_data.LobbyPacketData;
+import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.MonopolyUIController;
 import monopoly.ui.UIUtil;

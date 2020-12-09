@@ -8,7 +8,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Getter;
-import monopoly.network.packet.important.packet_data.LobbyPacketData;
+import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 
 public class LobbyDisplayData {
 	@Getter

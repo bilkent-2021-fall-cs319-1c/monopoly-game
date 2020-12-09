@@ -10,9 +10,9 @@ import monopoly.network.packet.important.ImportantNetworkPacket;
 import monopoly.network.packet.important.PacketType;
 import monopoly.network.packet.important.packet_data.BooleanPacketData;
 import monopoly.network.packet.important.packet_data.IntegerPacketData;
-import monopoly.network.packet.important.packet_data.LobbyListPacketData;
-import monopoly.network.packet.important.packet_data.LobbyPacketData;
 import monopoly.network.packet.important.packet_data.StringPacketData;
+import monopoly.network.packet.important.packet_data.lobby.LobbyListPacketData;
+import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 
 /**

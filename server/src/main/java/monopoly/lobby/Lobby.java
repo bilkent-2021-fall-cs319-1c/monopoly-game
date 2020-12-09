@@ -11,7 +11,7 @@ import monopoly.GameServer;
 import monopoly.Identifiable;
 import monopoly.MonopolyException;
 import monopoly.network.packet.important.PacketType;
-import monopoly.network.packet.important.packet_data.LobbyPacketData;
+import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 
 /**
