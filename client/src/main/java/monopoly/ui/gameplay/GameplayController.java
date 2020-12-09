@@ -197,9 +197,7 @@ public class GameplayController implements MonopolyUIController {
 	}
 
 	@Override
-	public void widthChanged(double width, double height) {
-		stackPane.setMaxWidth(width);
-
+	public void sizeChanged(double width, double height) {
 		double boardSize = Math.min(width * 0.5, height * 0.9);
 		board.setFitWidth(boardSize);
 		board.setFitHeight(boardSize);
@@ -209,6 +207,11 @@ public class GameplayController implements MonopolyUIController {
 		rotateCWIcon.setFitWidth(iconWidth);
 		rotateCCWIcon.setFitWidth(iconWidth);
 
+		double iconHeight = height * 0.05;
+		chatIcon.setFitHeight(iconHeight);
+		rotateCWIcon.setFitHeight(iconHeight);
+		rotateCCWIcon.setFitHeight(iconHeight);
+
 		double chatPaneWidth = width * 0.2;
 		chatPane.setMinWidth(chatPaneWidth);
 		chatPane.setPrefWidth(chatPaneWidth);
@@ -216,19 +219,5 @@ public class GameplayController implements MonopolyUIController {
 
 		chatPane.setTranslateX(chatPane.getPrefWidth());
 		closeChatPane.setToX(chatPane.getPrefWidth());
-	}
-
-	@Override
-	public void heightChanged(double width, double height) {
-		stackPane.setMaxHeight(height);
-
-		double boardSize = Math.min(width * 0.5, height * 0.9);
-		board.setFitWidth(boardSize);
-		board.setFitHeight(boardSize);
-
-		double iconHeight = height * 0.05;
-		chatIcon.setFitHeight(iconHeight);
-		rotateCWIcon.setFitHeight(iconHeight);
-		rotateCCWIcon.setFitHeight(iconHeight);
 	}
 }

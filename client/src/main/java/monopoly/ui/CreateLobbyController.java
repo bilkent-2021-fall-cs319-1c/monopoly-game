@@ -72,13 +72,8 @@ public class CreateLobbyController implements MonopolyUIController {
 	}
 
 	@Override
-	public void heightChanged(double width, double height) {
+	public void sizeChanged(double width, double height) {
 		createButton.setPrefHeight(height * 0.04);
-		setFontSizes(width, height);
-	}
-
-	@Override
-	public void widthChanged(double width, double height) {
 		createButton.setPrefWidth(width * 0.08);
 		setFontSizes(width, height);
 	}

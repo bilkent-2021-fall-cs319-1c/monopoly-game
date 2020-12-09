@@ -1,11 +1,22 @@
-.table-row-cell:empty {-fx-background-color: white;}  .table-row-cell:empty .table-cell {-fx-border-width: 0px;}
+.table-row-cell:empty {
+	-fx-background-color: white;
+}
 
+.table-row-cell:empty .table-cell {
+	-fx-border-width: 0.0px;
+}
 
+.bordered {
+	-fx-border-color: gray;
+	-fx-border-width: 5.0;
+	-fx-border-insets: -5.0;
+	-fx-border-radius: 10.0 10.0 10.0 10.0;
+}
 
 .button {
-    -fx-padding: 15px;
-    -fx-border-radius: 10px;
-    -fx-background-radius: 13px;
+    -fx-padding: 15.0px;
+    -fx-border-radius: 10.0px;
+    -fx-background-radius: 13.0px;
     -fx-font-family: 'Avenir Next';
     -fx-font-weight: bold;
 }
@@ -18,7 +29,7 @@
 
 .buttonRegular {
     -fx-border-color: linear-gradient(to bottom right, #5AFF15, #007B34);
-    -fx-border-width: 4px;
+    -fx-border-width: 4.0px;
     -fx-background-color: linear-gradient(to bottom right, #5AFF15, #007B34);
     -fx-text-fill: white;
 }
@@ -31,7 +42,7 @@
 
 .buttonDanger {
     -fx-border-color: linear-gradient(to bottom right, #eb053a, #b50404);
-    -fx-border-width: 4px;
+    -fx-border-width: 4.0px;
     -fx-background-color: linear-gradient(to bottom right, #eb053a, #b50404);
     -fx-text-fill: white;
 }
@@ -40,8 +51,4 @@
     -fx-border-color: linear-gradient(to bottom right, #b50404, #eb053a);
     -fx-background-color: linear-gradient(to bottom right, #b50404, #eb053a);
     -fx-text-fill: white;
-
-
 }
-
-

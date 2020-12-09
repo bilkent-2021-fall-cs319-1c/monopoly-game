@@ -1,14 +1,18 @@
 package monopoly.ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -25,25 +29,25 @@ import monopoly.NetworkManager;
 public class ClientApplication extends Application {
 	private Scene scene;
 	private StackPane rootPane;
-	private MonopolyUIController controller;
+	private List<MonopolyUIController> controllers;
 	private NetworkManager networkManager;
 
-	private ChangeListener<Number> widthListener;
-	private ChangeListener<Number> heightListener;
+	private ChangeListener<Number> sizeListener;
 
 	public ClientApplication() throws IOException {
 		UIUtil.loadFonts();
 
 		scene = null;
-		controller = null;
+		controllers = Collections.synchronizedList(new ArrayList<MonopolyUIController>());
 
-		widthListener = (observable, newVal, oldVal) -> {
-			if (controller != null)
-				controller.widthChanged(rootPane.getWidth(), rootPane.getHeight());
-		};
-		heightListener = (observable, newVal, oldVal) -> {
-			if (controller != null)
-				controller.heightChanged(rootPane.getWidth(), rootPane.getHeight());
+		sizeListener = (observable, newVal, oldVal) -> {
+			synchronized (controllers) {
+				for (MonopolyUIController controller : controllers) {
+					if (controller != null) {
+						controller.sizeChanged(rootPane.getWidth(), rootPane.getHeight());
+					}
+				}
+			}
 		};
 
 		networkManager = new NetworkManager(this);
@@ -56,8 +60,8 @@ public class ClientApplication extends Application {
 
 		rootPane.maxHeightProperty().bind(stage.heightProperty());
 		rootPane.maxWidthProperty().bind(stage.widthProperty());
-		rootPane.widthProperty().addListener(widthListener);
-		rootPane.heightProperty().addListener(heightListener);
+		rootPane.widthProperty().addListener(sizeListener);
+		rootPane.heightProperty().addListener(sizeListener);
 
 		switchToView("fxml/MainMenu.fxml");
 
@@ -82,15 +86,63 @@ public class ClientApplication extends Application {
 	public void switchToView(String resourcePath) throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
 		Parent root = loader.load();
-		controller = (MonopolyUIController) loader.getController();
+
+		MonopolyUIController controller = (MonopolyUIController) loader.getController();
 		controller.setApp(this);
+		controllers.clear();
+		controllers.add(controller);
 
 		List<Node> children = rootPane.getChildren();
 		children.clear();
 		children.add(root);
 
-		// Fire fake resize action for correct initial sizing
-		widthListener.changed(null, null, null);
-		heightListener.changed(null, null, null);
+		fakeResize();
+	}
+
+	public void displayError() {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/Overlay.fxml"));
+			Parent errorPane = loader.load();
+
+			MonopolyUIController controller = (MonopolyUIController) loader.getController();
+			controller.setApp(this);
+			controllers.add(controller);
+
+			Platform.runLater(() -> {
+				rootPane.getChildren().add(errorPane);
+				fakeResize();
+				
+				rootPane.getChildren().get(0).setEffect(new GaussianBlur(50));
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void closeOverlay() {
+		List<Node> children = rootPane.getChildren();
+		if (children.size() > 1) {
+			children.remove(children.size() - 1);
+			controllers.remove(controllers.size() - 1);
+
+			rootPane.getChildren().get(0).setEffect(null);
+		}
+	}
+
+	/**
+	 * Fires fake resize event for correct initial sizing
+	 */
+	private void fakeResize() {
+		sizeListener.changed(null, null, null);
+	}
+
+	/**
+	 * @return The controller of the base node - the node that is displayed under
+	 *         all other overlays, or null if there are no nodes
+	 */
+	public MonopolyUIController getMainController() {
+		if (controllers.isEmpty())
+			return null;
+		return controllers.get(0);
 	}
 }

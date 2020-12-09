@@ -28,18 +28,13 @@ public class MainMenuController implements MonopolyUIController {
 	private Button exitButton;
 
 	@Override
-	public void widthChanged(double width, double height) {
+	public void sizeChanged(double width, double height) {
 		UIUtil.fitFont(heroMonopolyText, width * 0.33, height * 0.2);
 
 		UIUtil.fitFont(createGameButton, width * 0.32 - 40, height * 0.05);
 		UIUtil.fitFont(joinGameButton, width * 0.32 - 40, height * 0.05);
 		UIUtil.fitFont(helpButton, width * 0.32 - 40, height * 0.05);
 		UIUtil.fitFont(exitButton, width * 0.32 - 40, height * 0.05);
-	}
-
-	@Override
-	public void heightChanged(double width, double height) {
-		widthChanged(width, height);
 	}
 
 	@FXML
@@ -54,7 +49,8 @@ public class MainMenuController implements MonopolyUIController {
 
 	@FXML
 	public void switchToHelpScreen() throws IOException {
-		app.switchToView("fxml/Help.fxml");
+//		app.switchToView("fxml/Help.fxml");
+		app.displayError();
 	}
 
 	@FXML

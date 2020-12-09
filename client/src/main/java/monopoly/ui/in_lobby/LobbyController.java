@@ -78,7 +78,7 @@ public class LobbyController implements MonopolyUIController {
 		Platform.runLater(() -> {
 			try {
 				app.switchToView("fxml/Gameplay.fxml");
-				((GameplayController) app.getController()).addPlayers(playerMap.values());
+				((GameplayController) app.getMainController()).addPlayers(playerMap.values());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -86,12 +86,7 @@ public class LobbyController implements MonopolyUIController {
 	}
 
 	@Override
-	public void heightChanged(double width, double height) {
-		setFontSizes(width, height);
-	}
-
-	@Override
-	public void widthChanged(double width, double height) {
+	public void sizeChanged(double width, double height) {
 		setFontSizes(width, height);
 	}
 

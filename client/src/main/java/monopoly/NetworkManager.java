@@ -233,7 +233,7 @@ public class NetworkManager {
 		@Override
 		public void receivedRealTimePacket(int connectionID, RealTimeNetworkPacket packet) {
 			System.out.println(packet);
-			Object uiController = app.getController();
+			Object uiController = app.getMainController();
 			if (uiController instanceof GameplayController) {
 				GameplayController gameplayController = (GameplayController) uiController;
 				gameplayController.realTimePacketReceived(packet);
@@ -264,7 +264,7 @@ public class NetworkManager {
 		}
 
 		private void handlePlayerJoin(PlayerPacketData player) {
-			Object uiController = app.getController();
+			Object uiController = app.getMainController();
 			if (uiController instanceof LobbyController) {
 				LobbyController lobbyController = (LobbyController) uiController;
 				lobbyController.playerJoined(player);
@@ -278,7 +278,7 @@ public class NetworkManager {
 		}
 
 		private void handlePlayerReadyChange(PlayerPacketData player, boolean ready) {
-			Object uiController = app.getController();
+			Object uiController = app.getMainController();
 			if (uiController instanceof LobbyController) {
 				LobbyController lobbyController = (LobbyController) uiController;
 				lobbyController.playerReady(player);
@@ -288,7 +288,7 @@ public class NetworkManager {
 		}
 
 		private void handleGameStart() {
-			Object uiController = app.getController();
+			Object uiController = app.getMainController();
 			if (uiController instanceof LobbyController) {
 				LobbyController lobbyController = (LobbyController) uiController;
 				lobbyController.gameStart();

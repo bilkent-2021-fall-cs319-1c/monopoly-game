@@ -124,20 +124,11 @@ public class JoinLobbyController implements MonopolyUIController {
 	}
 
 	@Override
-	public void widthChanged(double width, double height) {
-		rootPane.setMaxWidth(width);
-
+	public void sizeChanged(double width, double height) {
 		joinButton.setPrefWidth(width * 0.08);
-		setFontSizes(height, width);
-	}
-
-	@Override
-	public void heightChanged(double width, double height) {
-		rootPane.setMaxHeight(height);
-
 		joinButton.setPrefHeight(height * 0.04);
-		setFontSizes(height, width);
 
+		setFontSizes(height, width);
 		lobbyTable.setFixedCellSize(height * 0.86 / 10);
 	}
 

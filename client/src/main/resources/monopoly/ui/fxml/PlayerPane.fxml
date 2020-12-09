@@ -9,12 +9,8 @@
 
 <fx:root xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill"
-	rows="0[]:1%:1%[]:1%:1%"
-	style="-fx-border-color: gray;
-		-fx-border-width: 5;
-		-fx-border-insets: -5;
-		-fx-border-radius: 10 10 10 10;
-		-fx-background-color: white ">
+	rows="0[]:1%:1%[]:1%:1%" styleClass="bordered"
+	style="-fx-background-color: white">
 
 	<stylesheets>
 		<UIUtil fx:constant="COMMON_CSS" />
