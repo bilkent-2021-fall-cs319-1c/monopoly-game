@@ -17,6 +17,12 @@ import javafx.util.Duration;
 import lombok.Setter;
 import monopoly.Error;
 
+/**
+ * An overlay pane. Can be used to display errors or notifications.
+ * 
+ * @author Ziya Mukhtarov
+ * @version Dec 13, 2020
+ */
 public class Overlay extends MigPane implements MonopolyUIController {
 	@FXML
 	private Label title;
@@ -30,6 +36,9 @@ public class Overlay extends MigPane implements MonopolyUIController {
 	private DoubleProperty fadeLevel;
 	private Error error;
 
+	/**
+	 * Creates an overlay to display the given error
+	 */
 	public Overlay(Error error) {
 		this.error = error;
 		fadeLevel = new SimpleDoubleProperty(0);
@@ -72,6 +81,11 @@ public class Overlay extends MigPane implements MonopolyUIController {
 		fade(false);
 	}
 
+	/**
+	 * Fades in or out this overlay
+	 * 
+	 * @param fadeIn whether to fade in or out
+	 */
 	private void fade(boolean fadeIn) {
 		fadeTransition.setRate(fadeIn ? 1.0 : -1.0);
 		fadeTransition.play();
@@ -89,6 +103,12 @@ public class Overlay extends MigPane implements MonopolyUIController {
 		setFonts(width, height);
 	}
 
+	/**
+	 * Updates the fonts to match the bounds of this pane
+	 * 
+	 * @param width  The total width of this container
+	 * @param height The total height of this container
+	 */
 	private void setFonts(double width, double height) {
 		UIUtil.fitFont(title, width * 0.45, height * 0.09);
 		info.setFont(Font.font(title.getFont().getSize() * 0.5));

@@ -30,6 +30,12 @@ import monopoly.ui.ClientApplication;
 import monopoly.ui.MonopolyUIController;
 import monopoly.ui.in_lobby.PlayerLobbyPane;
 
+/**
+ * Controls the base gameplay screen
+ * 
+ * @author Ziya Mukhtarov
+ * @version Dec 13, 2020
+ */
 public class GameplayController implements MonopolyUIController {
 	@Setter
 	private ClientApplication app;
@@ -88,9 +94,15 @@ public class GameplayController implements MonopolyUIController {
 		boardRoateAndScaleTransition.setOnFinished(e -> boardRotating = false);
 	}
 
-	public void addPlayers(Collection<PlayerLobbyPane> collection) {
+	/**
+	 * Adds the players in this lobby to this view. Creates a new audio channel per
+	 * each player for voice chat
+	 * 
+	 * @param playerCollection The players to add
+	 */
+	public void addPlayers(Collection<PlayerLobbyPane> playerCollection) {
 		Platform.runLater(() -> {
-			PlayerLobbyPane[] players = collection.toArray(new PlayerLobbyPane[0]);
+			PlayerLobbyPane[] players = playerCollection.toArray(new PlayerLobbyPane[0]);
 			for (int i = 0; i < players.length; i++) {
 				int connectionId = ((PlayerPacketData) players[i].getUserData()).getConnectionId();
 
@@ -121,6 +133,11 @@ public class GameplayController implements MonopolyUIController {
 		});
 	}
 
+	/**
+	 * Handles the received realtime packet - webcam or microphone input
+	 * 
+	 * @param packet The packet received
+	 */
 	public void realTimePacketReceived(RealTimeNetworkPacket packet) {
 		int sourceId = packet.getSourceConnectionID();
 		PlayerPane pane = playerMap.get(sourceId);
@@ -146,6 +163,9 @@ public class GameplayController implements MonopolyUIController {
 		new Thread(this::boardRotateAndEnter).start();
 	}
 
+	/**
+	 * Cool board entrance effect
+	 */
 	private void boardRotateAndEnter() {
 		RotateTransition rotate = new RotateTransition(Duration.seconds(1), board);
 		ScaleTransition scale = new ScaleTransition(Duration.seconds(1), board);

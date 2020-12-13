@@ -18,6 +18,7 @@
 		<jpro.version>2020.1.0</jpro.version>
 		<javafx.version>15.0.1</javafx.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<javadocOutputDir>client</javadocOutputDir>
 	</properties>
 
 	<build>

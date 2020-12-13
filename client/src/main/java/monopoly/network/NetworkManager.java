@@ -1,4 +1,4 @@
-package monopoly;
+package monopoly.network;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lombok.Getter;
-import monopoly.network.Client;
-import monopoly.network.ServerInfo;
+import monopoly.Error;
+import monopoly.ErrorListener;
 import monopoly.network.packet.important.ImportantNetworkPacket;
 import monopoly.network.packet.important.PacketType;
 import monopoly.network.packet.important.packet_data.BooleanPacketData;
@@ -23,6 +23,12 @@ import monopoly.ui.ClientApplication;
 import monopoly.ui.gameplay.GameplayController;
 import monopoly.ui.in_lobby.LobbyController;
 
+/**
+ * Manages network communication for monopoly client
+ * 
+ * @author Ziya Mukhtarov
+ * @version Dec 13, 2020
+ */
 public class NetworkManager {
 	private static Logger logger = LoggerFactory.getLogger(NetworkManager.class);
 
@@ -37,6 +43,13 @@ public class NetworkManager {
 
 	private List<ErrorListener> errorListeners;
 
+	/**
+	 * Creates a new network manager for the given application. Initiates the
+	 * connection with the server
+	 * 
+	 * @param app The client application
+	 * @throws IOException if an I/O error occurs when connecting to the server
+	 */
 	public NetworkManager(ClientApplication app) throws IOException {
 		this.app = app;
 
@@ -49,8 +62,6 @@ public class NetworkManager {
 	/**
 	 * Adds a new error listener. Uniqueness is not checked, meaning that the
 	 * listener would be notified the number of times it is registered
-	 * 
-	 * @param listener
 	 */
 	public void addErrorListener(ErrorListener listener) {
 		errorListeners.add(listener);
@@ -59,13 +70,16 @@ public class NetworkManager {
 	/**
 	 * Removes the given listener. If the listener was not added, nothing happens.
 	 * If multiple instances were added, only the first one is removed.
-	 * 
-	 * @param listener
 	 */
 	public void removeErrorListener(ErrorListener listener) {
 		errorListeners.remove(listener);
 	}
 
+	/**
+	 * Notifies all error listeners about the error.
+	 * 
+	 * @param errorPacket The packet containing error details
+	 */
 	private void notifyAllErrorListeners(ImportantNetworkPacket errorPacket) {
 		errorListeners.parallelStream().forEach(l -> l.errorOccured(new Error(errorPacket.getType())));
 	}
@@ -156,7 +170,7 @@ public class NetworkManager {
 	public boolean createLobby(String lobbyName, boolean isPublic, String password, int playerLimit) {
 		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.CREATE_LOBBY,
 				new LobbyPacketData(0, lobbyName, password, isPublic, "", 0, playerLimit));
-		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.LOBBY_CREATED);
+		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.JOIN_SUCCESS);
 
 		return response != null;
 	}
@@ -167,6 +181,7 @@ public class NetworkManager {
 	 * the error listeners are notified. Note that, this method may return before
 	 * all the listeners have been notified.
 	 * 
+	 * @param ready User's readiness status
 	 * @return true if the player could change the status, false if an error packet
 	 *         is received
 	 */
@@ -212,7 +227,20 @@ public class NetworkManager {
 		}
 	}
 
+	/**
+	 * Handles low-level monopoly communication
+	 * 
+	 * @author Ziya Mukhtarov
+	 * @version Dec 13, 2020
+	 */
 	private class MonopolyClient extends Client {
+
+		/**
+		 * Connects to the server
+		 * 
+		 * @param serverAddress if an I/O error occurs when connecting
+		 * @throws IOException if an I/O error occurs when connecting
+		 */
 		public MonopolyClient(String serverAddress) throws IOException {
 			super(serverAddress);
 		}
@@ -261,6 +289,11 @@ public class NetworkManager {
 			}
 		}
 
+		/**
+		 * Handles a new player joining the lobby this client is in
+		 * 
+		 * @param player
+		 */
 		private void handlePlayerJoin(PlayerPacketData player) {
 			Object uiController = app.getMainController();
 			if (uiController instanceof LobbyController) {
@@ -271,10 +304,21 @@ public class NetworkManager {
 			}
 		}
 
+		/**
+		 * Handles a player leaving the lobby this client is in
+		 * 
+		 * @param player
+		 */
 		private void handlePlayerLeft(PlayerPacketData player) {
 			// TODO
 		}
 
+		/**
+		 * Handles a player changing his/her readiness status for starting the game
+		 * 
+		 * @param player
+		 * @param ready
+		 */
 		private void handlePlayerReadyChange(PlayerPacketData player, boolean ready) {
 			Object uiController = app.getMainController();
 			if (uiController instanceof LobbyController) {
@@ -285,6 +329,9 @@ public class NetworkManager {
 			}
 		}
 
+		/**
+		 * Handles the game start for the lobby this client is in
+		 */
 		private void handleGameStart() {
 			Object uiController = app.getMainController();
 			if (uiController instanceof LobbyController) {

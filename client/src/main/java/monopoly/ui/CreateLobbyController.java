@@ -13,6 +13,12 @@ import javafx.scene.text.Text;
 import lombok.Setter;
 import monopoly.Error;
 
+/**
+ * Controls the create lobby UI
+ * 
+ * @author Ziya Mukhtarov
+ * @version Dec 13, 2020
+ */
 public class CreateLobbyController implements MonopolyUIController {
 	@Setter
 	private ClientApplication app;
@@ -68,6 +74,12 @@ public class CreateLobbyController implements MonopolyUIController {
 		}
 	}
 
+	/**
+	 * Validates the input fields and check whether they are valid values for a
+	 * lobby
+	 * 
+	 * @return true if the fields are valid, false otherwise
+	 */
 	private boolean validate() {
 		// TODO
 		return true;
@@ -80,6 +92,13 @@ public class CreateLobbyController implements MonopolyUIController {
 		setFontSizes(width, height);
 	}
 
+	/**
+	 * Called when the bounds of this pane is changed. Responsive UIs should use
+	 * this method to update their font sizes and scaling
+	 * 
+	 * @param width  The total width of this container
+	 * @param height The total height of this container
+	 */
 	private void setFontSizes(double width, double height) {
 		UIUtil.fitFont(mainTitle, width, height * 0.14);
 

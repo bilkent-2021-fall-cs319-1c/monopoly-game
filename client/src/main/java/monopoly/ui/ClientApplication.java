@@ -20,10 +20,10 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import monopoly.Error;
 import monopoly.ErrorListener;
-import monopoly.NetworkManager;
+import monopoly.network.NetworkManager;
 
 /**
- * Singleton JavaFX Application class for Monopoly.
+ * JavaFX Application class for Monopoly.
  *
  * @author Ziya Mukhtarov
  * @version Nov 28, 2020
@@ -41,6 +41,11 @@ public class ClientApplication extends Application implements ErrorListener {
 
 	private GaussianBlur baseNodeBlur;
 
+	/**
+	 * Creates a new client application and connects it to the server
+	 * 
+	 * @throws IOException if an I/O error occurs when connecting to the server
+	 */
 	public ClientApplication() throws IOException {
 		UIUtil.loadFonts();
 
@@ -80,7 +85,7 @@ public class ClientApplication extends Application implements ErrorListener {
 
 		stage.setWidth(1280);
 		stage.setHeight(720);
-//		stage.setFullScreen(true);
+		stage.setFullScreen(true);
 
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		stage.show();
@@ -111,6 +116,12 @@ public class ClientApplication extends Application implements ErrorListener {
 		fakeResize();
 	}
 
+	/**
+	 * Displays an error overlay showing the given error details. Blurs the base
+	 * node that is displayed under the overlay.
+	 * 
+	 * @param error The error to display
+	 */
 	public void displayError(Error error) {
 		Overlay errorOverlay = new Overlay(error);
 		errorOverlay.setApp(this);
@@ -124,6 +135,10 @@ public class ClientApplication extends Application implements ErrorListener {
 		});
 	}
 
+	/**
+	 * Closes the most recent opened overlay. Removes the blur effect from the base
+	 * node that was displayed under the overlay.
+	 */
 	public void closeOverlay() {
 		List<Node> children = rootPane.getChildren();
 		if (children.size() > 1) {

@@ -32,10 +32,11 @@ public class WebcamSender {
 	private Webcam webcam;
 
 	/**
-	 * Creates a new WebcamSender that uses default webcam. Initially, it is not
+	 * Creates a new WebcamSender using the given webcam. Initially, it is not
 	 * sending any images.
 	 * 
 	 * @param client The client through which to send the images
+	 * @param webcam The webcam to use
 	 */
 	public WebcamSender(Client client, Webcam webcam) {
 		this.webcam = webcam;

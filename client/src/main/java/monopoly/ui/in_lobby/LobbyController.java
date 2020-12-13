@@ -19,6 +19,13 @@ import monopoly.ui.MonopolyUIController;
 import monopoly.ui.UIUtil;
 import monopoly.ui.gameplay.GameplayController;
 
+/**
+ * Controls the lobby UI (the screen after joining a lobby and waiting for the
+ * game start)
+ * 
+ * @author Ziya Mukhtarov
+ * @version Dec 13, 2020
+ */
 public class LobbyController implements MonopolyUIController {
 	@Setter
 	private ClientApplication app;
@@ -49,21 +56,28 @@ public class LobbyController implements MonopolyUIController {
 		playerMap = Collections.synchronizedMap(new HashMap<Integer, PlayerLobbyPane>());
 	}
 
+	/**
+	 * Displays a new player that joined this lobby
+	 * 
+	 * @param player The player joining this lobby
+	 */
 	public void playerJoined(PlayerPacketData player) {
 		Platform.runLater(() -> {
-			try {
-				PlayerLobbyPane playerPane = new PlayerLobbyPane(player.isAdmin() ? "admin" : "other",
-						player.getUsername());
-				playerPane.setUserData(player);
-				MigPane.setCc(playerPane, "grow, hmax 16%, wmax 100%");
-				players.getChildren().add(playerPane);
-				playerMap.put(player.getConnectionId(), playerPane);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			PlayerLobbyPane playerPane = new PlayerLobbyPane(player.isAdmin() ? "admin" : "other",
+					player.getUsername());
+			playerPane.setUserData(player);
+			MigPane.setCc(playerPane, "grow, hmax 16%, wmax 100%");
+			players.getChildren().add(playerPane);
+			playerMap.put(player.getConnectionId(), playerPane);
 		});
 	}
 
+	/**
+	 * Changes the player's readiness status
+	 * 
+	 * @param player The player data that identifies the player and contains the
+	 *               readiness to set
+	 */
 	public void playerReady(PlayerPacketData player) {
 		Platform.runLater(() -> playerMap.get(player.getConnectionId()).setStyle("-fx-background-color: lightgreen"));
 	}
@@ -74,6 +88,9 @@ public class LobbyController implements MonopolyUIController {
 		app.getNetworkManager().setReady(true);
 	}
 
+	/**
+	 * Switches the screen to gameplay screen
+	 */
 	public void gameStart() {
 		Platform.runLater(() -> {
 			try {
@@ -90,6 +107,13 @@ public class LobbyController implements MonopolyUIController {
 		setFontSizes(width, height);
 	}
 
+	/**
+	 * Called when the bounds of this pane is changed. Responsive UIs should use
+	 * this method to update their font sizes and scaling
+	 * 
+	 * @param width  The total width of this container
+	 * @param height The total height of this container
+	 */
 	private void setFontSizes(double width, double height) {
 		UIUtil.fitFont(lobbyText, width * 0.32, height * 0.1);
 

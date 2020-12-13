@@ -10,6 +10,12 @@ import javafx.beans.property.StringProperty;
 import lombok.Getter;
 import monopoly.network.packet.important.packet_data.LobbyPacketData;
 
+/**
+ * Lobby data wrapper for JavaFX table
+ * 
+ * @author Ziya Mukhtarov
+ * @version Dec 13, 2020
+ */
 public class LobbyDisplayData {
 	@Getter
 	private LobbyPacketData packetData;
@@ -23,6 +29,9 @@ public class LobbyDisplayData {
 	private IntegerProperty limit;
 	private StringProperty fullnessRatio;
 
+	/**
+	 * Initializes the wrapper data with the given lobby packet data
+	 */
 	public LobbyDisplayData(LobbyPacketData lobby) {
 		packetData = lobby;
 

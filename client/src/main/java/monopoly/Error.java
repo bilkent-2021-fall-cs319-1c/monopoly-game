@@ -3,21 +3,40 @@ package monopoly;
 import lombok.Data;
 import monopoly.network.packet.important.PacketType;
 
+/**
+ * Simple data class that holds an error details. An error has a title and an
+ * info.
+ * 
+ * @author Ziya Mukhtarov
+ * @version Dec 13, 2020
+ */
 @Data
 public class Error {
 	private String title;
 	private String info;
 
+	/**
+	 * Constructs an Error that represents the given error packet type.
+	 */
 	public Error(PacketType errorType) {
 		title = getErrorTitle(errorType);
 		info = getErrorInfo(errorType);
 	}
 
+	/**
+	 * Constructs an error with the given title and info
+	 */
 	public Error(String title, String info) {
 		this.title = title;
 		this.info = info;
 	}
 
+	/**
+	 * Returns the error title associated with the given error packet type.
+	 * 
+	 * @param errorType
+	 * @return The title for the given error
+	 */
 	private String getErrorTitle(PacketType errorType) {
 		if (errorType == PacketType.ERR_ALREADY_IN_LOBBY) {
 			return "Already in a Lobby";
@@ -43,6 +62,12 @@ public class Error {
 		return "Error";
 	}
 
+	/**
+	 * Returns the error info associated with the given error packet type.
+	 * 
+	 * @param errorType
+	 * @return The info for the given error
+	 */
 	private String getErrorInfo(PacketType errorType) {
 		if (errorType == PacketType.ERR_ALREADY_IN_LOBBY) {
 			return "You are already in a lobby. To perform the action, please leave the current lobby.";

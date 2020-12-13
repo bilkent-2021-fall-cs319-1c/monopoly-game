@@ -61,6 +61,9 @@ public class PlayerPane extends MigPane {
 	private WebcamSender webcamSender;
 
 	/**
+	 * Initializes the pane. Creates webcam sender and microphone sender if this
+	 * pane is displaying this player
+	 * 
 	 * @param nameOnLeft false for username to be on the right, or it will on the
 	 *                   left
 	 * @param self       true for webcam/audio controls, or trade button will be
@@ -120,6 +123,9 @@ public class PlayerPane extends MigPane {
 		}
 	}
 
+	/**
+	 * Adjusts the size of inner components based on the outer bounds
+	 */
 	private void adjustSize() {
 		double width = getWidth();
 		double height = getHeight();

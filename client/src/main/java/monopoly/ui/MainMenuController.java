@@ -10,6 +10,12 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import lombok.Setter;
 
+/**
+ * Controls the main menu UI
+ * 
+ * @author Ziya Mukhtarov
+ * @version Dec 13, 2020
+ */
 public class MainMenuController implements MonopolyUIController {
 	@Setter
 	private ClientApplication app;

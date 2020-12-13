@@ -24,7 +24,16 @@ import monopoly.ui.ClientApplication;
 import monopoly.ui.MonopolyUIController;
 import monopoly.ui.UIUtil;
 
+/**
+ * Controls the join lobby UI
+ * 
+ * @author Ziya Mukhtarov
+ * @version Dec 13, 2020
+ */
 public class JoinLobbyController implements MonopolyUIController {
+	/**
+	 * The number of lobby rows that is displayed in one page
+	 */
 	private static final int ROWS_PER_PAGE = 10;
 
 	@Setter
@@ -96,6 +105,14 @@ public class JoinLobbyController implements MonopolyUIController {
 			lobbyCount.set(app.getNetworkManager().getNumberOfLobbies());
 	}
 
+	/**
+	 * Creates the lobby page for the given page index. The data for that page is
+	 * taken from the server.
+	 * 
+	 * @param pageIndex
+	 * @return An empty meaningless node. It is returned for correct JavaFX paging
+	 *         API.
+	 */
 	private Node createPage(int pageIndex) {
 		updateLobbyCount();
 
@@ -134,6 +151,13 @@ public class JoinLobbyController implements MonopolyUIController {
 		lobbyTable.setFixedCellSize(height * 0.86 / 10);
 	}
 
+	/**
+	 * Called when the bounds of this pane is changed. Responsive UIs should use
+	 * this method to update their font sizes and scaling
+	 * 
+	 * @param width  The total width of this container
+	 * @param height The total height of this container
+	 */
 	private void setFontSizes(double height, double width) {
 		UIUtil.fitFont(mainTitle, width * 0.18, height);
 		UIUtil.fitFont(promptText, width * 0.12, height);

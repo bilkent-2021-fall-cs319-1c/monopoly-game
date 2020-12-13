@@ -41,14 +41,18 @@ public class PlayerLobbyPane extends MigPane {
 	 *                 view
 	 * @param name     username to display
 	 */
-	public PlayerLobbyPane(@NamedArg("userType") String userType, @NamedArg("name") String name) throws IOException {
+	public PlayerLobbyPane(@NamedArg("userType") String userType, @NamedArg("name") String name) {
 		this.userType = userType;
 		this.name = name;
 
 		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/PlayerLobbyPane.fxml"));
 		loader.setController(this);
 		loader.setRoot(this);
-		loader.load();
+		try {
+			loader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		Stream.of(widthProperty(), heightProperty())
 				.forEach(p -> p.addListener((observable, oldVal, newVal) -> adjustSize()));
@@ -66,6 +70,9 @@ public class PlayerLobbyPane extends MigPane {
 		}
 	}
 
+	/**
+	 * Adjusts the size of inner components based on the outer bounds
+	 */
 	private void adjustSize() {
 		double width = getWidth();
 		double height = getHeight();

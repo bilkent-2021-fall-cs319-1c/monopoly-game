@@ -41,6 +41,9 @@ public class UIUtil {
 	public static final String PLAYER_PANE_CSS = loadStylesheet("css/playerPane.css");
 	public static final String JOIN_LOBBY_CSS = loadStylesheet("css/joinLobby.css");
 
+	/**
+	 * Utility classes should not have instances
+	 */
 	private UIUtil() {
 	}
 
