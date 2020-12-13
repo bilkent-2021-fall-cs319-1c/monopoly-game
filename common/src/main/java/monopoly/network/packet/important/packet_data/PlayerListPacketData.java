@@ -6,6 +6,13 @@ import java.util.List;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * Player list data holder that extends the generic packet data
+ * 
+ * @author Javid Baghirov
+ * @version Dec 13, 2020
+ */
+
 @Getter
 @ToString
 public class PlayerListPacketData extends PacketData {

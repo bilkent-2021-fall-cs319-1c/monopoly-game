@@ -6,6 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import monopoly.network.packet.important.packet_data.PacketData;
 
+/**
+ * Bank data holder that extends the generic packet data
+ * 
+ * @author Javid Baghirov
+ * @version Dec 13, 2020
+ */
+
 @Getter
 @Setter
 @NoArgsConstructor

@@ -6,6 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * String data holder that extends the generic packet data
+ * 
+ * @author Ziya Mukhtarov
+ * @version Dec 13, 2020
+ */
+
 @Getter
 @Setter
 @NoArgsConstructor

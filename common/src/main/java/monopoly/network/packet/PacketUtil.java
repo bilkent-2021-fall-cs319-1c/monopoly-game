@@ -22,10 +22,23 @@ import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.network.packet.realtime.BufferedImagePacket;
 import monopoly.network.packet.realtime.MicSoundPacket;
 
+/**
+ * This class is for registering all the new data classes using a java
+ * serializer
+ * 
+ * @author Ziya Mukhtarov
+ * @version Dec 13, 2020
+ */
+
 public class PacketUtil {
 	private PacketUtil() {
 	}
 
+	/**
+	 * Registers new classes using java serializer
+	 * 
+	 * @param kryo the serialization framework for registering the classes
+	 */
 	public static void registerPackets(Kryo kryo) {
 		kryo.register(BufferedImagePacket.class, new JavaSerializer());
 		kryo.register(byte[].class);
