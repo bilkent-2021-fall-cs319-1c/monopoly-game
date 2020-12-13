@@ -9,7 +9,8 @@ import monopoly.lobby.Lobby;
 import monopoly.lobby.User;
 
 /**
- * Model for server, lobby and user management
+ * The game model that establishes connection between classes and server side
+ * operations
  *
  * @author Alper Sarı, Javid Baghirov
  * @version Nov 29, 2020
@@ -22,7 +23,12 @@ public class Model {
 	private List<Lobby> waitingLobbies;
 
 	private GameServer server;
-
+	
+	/**
+	 * Creates a model object
+	 * 
+	 * @throws IOException if the server could not be opened
+	 */
 	public Model() throws IOException {
 		lobbies = new EntitiesWithId<>();
 		users = new EntitiesWithId<>();
@@ -43,7 +49,7 @@ public class Model {
 	}
 
 	/**
-	 * Creates a lobby
+	 * Creates a new lobby with the specified parameters
 	 * 
 	 * @param name     specified title
 	 * @param limit    specified player limit
@@ -51,7 +57,9 @@ public class Model {
 	 * @param password specified pass code
 	 * @param userId   the id of the user
 	 * 
-	 * @throws MonopolyException
+	 * @throws MonopolyException when user is already in the specified lobby, the
+	 *                           lobby do not exist, the user is banned, the lobby
+	 *                           is full or the passwords do not match
 	 */
 	public void createLobby(String name, int limit, boolean isPublic, String password, int userId)
 			throws MonopolyException {
@@ -71,11 +79,6 @@ public class Model {
 		waitingLobbies.remove(lobby);
 	}
 
-	/**
-	 * A user is removed from the list
-	 * 
-	 * @param user the user to be logged out
-	 */
 	public void userLogout(User userLoggedOut) {
 		users.remove(userLoggedOut);
 	}
@@ -106,6 +109,13 @@ public class Model {
 		return users.getByID(userId);
 	}
 
+	/**
+	 * Finds the lobby of a user
+	 * 
+	 * @param userId the specified user id
+	 * 
+	 * @return Lobby if found one, null if not
+	 */
 	public Lobby getLobbyOfUser(int userId) {
 		return getUserByID(userId).getLobby();
 	}
@@ -113,7 +123,14 @@ public class Model {
 	public int getLobbyCount() {
 		return lobbies.size();
 	}
-
+	
+	/**
+	 * Finds a lobby by using id
+	 * 
+	 * @param userId the specified id to be searched with
+	 * 
+	 * @return Lobby if found one, null if not
+	 */
 	public Lobby getLobbyByID(int id) {
 		return lobbies.getByID(id);
 	}

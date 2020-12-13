@@ -11,11 +11,12 @@ import monopoly.GameServer;
 import monopoly.Identifiable;
 import monopoly.MonopolyException;
 import monopoly.network.packet.important.PacketType;
+import monopoly.network.packet.important.packet_data.PlayerListPacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 
 /**
- * Lobby Setup
+ * Lobby functionality
  * 
  * @author Javid Baghirov
  * @version Nov 29, 2020
@@ -52,7 +53,10 @@ public class Lobby implements Identifiable {
 	 * @param limit    limit on the number of maximum players
 	 * @param isPublic status of being either public or private
 	 * @param password specified pass code
-	 * @throws MonopolyException
+	 * @param server   the game server
+	 * 
+	 * @throws MonopolyException when the specified limit is out of bounds of
+	 *                           minimum or maximum limits
 	 */
 	public Lobby(String title, int limit, boolean isPublic, String password, GameServer server)
 			throws MonopolyException {
@@ -70,6 +74,13 @@ public class Lobby implements Identifiable {
 		owner = null;
 	}
 
+	/**
+	 * Sets the player limit to a specified number
+	 * 
+	 * @param limit the number to be set to
+	 * @throws MonopolyException when the specified limit is out of bounds of
+	 *                           minimum or maximum limits
+	 */
 	void setPlayerLimit(int limit) throws MonopolyException {
 		if (limit >= MIN_LOBBY_LIMIT && limit <= MAX_LOBBY_LIMIT) {
 			playerLimit = limit;
@@ -78,6 +89,16 @@ public class Lobby implements Identifiable {
 		}
 	}
 
+	/**
+	 * A user joins to the current lobby
+	 * 
+	 * @param userJoining      the joining user
+	 * @param providedPassword the pass code specified by the user
+	 * 
+	 * @throws MonopolyException when either the user is banned, the lobby is full,
+	 *                           the passwords do not match or the user is already
+	 *                           in the lobby
+	 */
 	void userJoin(User userJoining, String providedPassword) throws MonopolyException {
 		if (bannedUsers.contains(userJoining)) {
 //			throw new MonopolyException(PacketType.ERR_BANNED);
@@ -97,23 +118,23 @@ public class Lobby implements Identifiable {
 		if (users.isEmpty()) {
 			owner = new LobbyOwner(userJoining);
 		}
-		users.add(userJoining);
 
-		// TODO New protocol required for this! GET_USERS_IN_LOBBY
-		new Thread(() -> {
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				e.printStackTrace();
-			}
+		//Send join success notification to the joining user
+		server.sendSuccessfulJoinNotification(userJoining);
 
-			// Send join notification to everyone in the lobby
-			users.parallelStream().forEach(user -> server.sendPlayerJoinNotification(user, userJoining));
-		}).start();
+		// Send join notification to everyone in the lobby
 		sendJoinedNotification(userJoining);
+
+		users.add(userJoining);
 	}
 
+	/**
+	 * Notifies the user about ready state being changed and checks if the game
+	 * should start
+	 * 
+	 * @param user  the user to be notified
+	 * @param ready new state of the user
+	 */
 	void userReadyChange(User user, boolean ready) {
 		sendReadyNotification(user);
 
@@ -121,6 +142,11 @@ public class Lobby implements Identifiable {
 			checkGameStart();
 	}
 
+	/**
+	 * User is removed and is notified
+	 * 
+	 * @param user the user to be removed
+	 */
 	void userLeft(User user) {
 		users.remove(user);
 		sendLeftNotification(user);
@@ -143,6 +169,11 @@ public class Lobby implements Identifiable {
 		bannedUsers.add(user);
 	}
 
+	/**
+	 * The game is initiated for the current lobby and the users are notified. This
+	 * method runs in a new thread
+	 * 
+	 */
 	public void startGame() {
 		inGame = true;
 
@@ -164,20 +195,19 @@ public class Lobby implements Identifiable {
 	}
 
 	/**
-	 * Sends playerJoined info to everyone except himself
+	 * Sends playerJoined info to everyone except himself. This method runs in a new
+	 * thread
 	 * 
 	 * @param userJoined the user who joined
 	 */
 	public void sendJoinedNotification(User userJoined) {
-		new Thread(() -> users.parallelStream().forEach(user -> {
-			if (!user.equals(userJoined)) {
-				server.sendPlayerJoinNotification(userJoined, user);
-			}
-		})).start();
+		new Thread(() -> users.parallelStream().forEach(user -> server.sendPlayerJoinNotification(userJoined, user)))
+				.start();
 	}
 
 	/**
-	 * Sends playerLeft info to everyone except himself
+	 * Sends playerLeft info to everyone except himself. This method runs in a new
+	 * thread
 	 * 
 	 * @param userLeft the user who left
 	 */
@@ -187,7 +217,7 @@ public class Lobby implements Identifiable {
 	}
 
 	/**
-	 * Sends playerReady info to everyone
+	 * Sends playerReady info to everyone. This method runs in a new thread
 	 * 
 	 * @param userReady the user who is ready
 	 */
@@ -196,6 +226,13 @@ public class Lobby implements Identifiable {
 				.start();
 	}
 
+	/**
+	 * Sends packet data of a user to everyone except himself. This method runs in a
+	 * new thread
+	 * 
+	 * @param fromUserId the user to sent the data of
+	 * @param packet     the data to be sent
+	 */
 	public void sendRealtimePacket(int fromUserId, RealTimeNetworkPacket packet) {
 		new Thread(() -> users.parallelStream().forEach(user -> {
 			if (user.getId() != fromUserId) {
@@ -206,5 +243,12 @@ public class Lobby implements Identifiable {
 
 	public LobbyPacketData getAsPacket() {
 		return new LobbyPacketData(id, name, password, isPublic, owner.getUsername(), users.size(), playerLimit);
+	}
+
+	public PlayerListPacketData getPlayersAsPacket() {
+		PlayerListPacketData playerList = new PlayerListPacketData();
+		users.forEach(user -> playerList.add(user.getAsPacket()));
+
+		return playerList;
 	}
 }

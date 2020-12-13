@@ -12,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LobbyOwner extends User {
+	
 	public LobbyOwner(User user) {
 		super(user);
 	}

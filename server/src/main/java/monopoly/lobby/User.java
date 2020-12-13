@@ -8,7 +8,7 @@ import monopoly.network.packet.important.PacketType;
 import monopoly.network.packet.important.packet_data.PlayerPacketData;
 
 /**
- * A General User
+ * A General User who can create, join or leave a lobby
  * 
  * @author Javid Baghirov
  * @version Nov 29, 2020
@@ -29,6 +29,11 @@ public class User implements Identifiable {
 //	private LobbyOwner lobbyOwnerInstance;
 //	private GamePlayer gamePlayerInstance;
 
+	/**
+	 * Copy constructor for the user class
+	 * 
+	 * @param user the object to copied from
+	 */
 	public User(User user) {
 		id = user.id;
 		username = user.username;
@@ -55,6 +60,12 @@ public class User implements Identifiable {
 		camOpen = false;
 	}
 
+	/**
+	 * Changes the state of being ready
+	 * 
+	 * @param ready the new state to be set to
+	 * @throws MonopolyException when the user is not in a lobby
+	 */
 	public void setReady(boolean ready) throws MonopolyException {
 		if (lobby == null) {
 			throw new MonopolyException(PacketType.ERR_NOT_IN_LOBYY);
@@ -64,6 +75,16 @@ public class User implements Identifiable {
 		lobby.userReadyChange(this, ready);
 	}
 
+	/**
+	 * Join a specified lobby
+	 * 
+	 * @param lobby    the lobby to be joined
+	 * @param password the specified pass code
+	 * 
+	 * @throws MonopolyException when user is already in the specified lobby, the
+	 *                           lobby do not exist, the user is banned, the lobby
+	 *                           is full or the passwords do not match
+	 */
 	public void joinLobby(Lobby lobby, String password) throws MonopolyException {
 		if (this.lobby != null) {
 			throw new MonopolyException(PacketType.ERR_ALREADY_IN_LOBBY);
@@ -80,6 +101,11 @@ public class User implements Identifiable {
 		camOpen = false;
 	}
 
+	/**
+	 * Leaves the lobby
+	 * 
+	 * @throws MonopolyException when the lobby does not exist
+	 */
 	public void leaveLobby() throws MonopolyException {
 		if (lobby == null) {
 			throw new MonopolyException(PacketType.ERR_NOT_IN_LOBYY);
@@ -89,6 +115,11 @@ public class User implements Identifiable {
 		lobby = null;
 	}
 
+	/**
+	 * Returns the object as a packet type
+	 * 
+	 * @return PlayerPacketData the player data to be returned
+	 */
 	public PlayerPacketData getAsPacket() {
 		return new PlayerPacketData(id, username, this instanceof LobbyOwner, ready);
 	}

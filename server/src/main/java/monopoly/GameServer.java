@@ -72,6 +72,9 @@ public class GameServer extends Server {
 		} else if (packet.getType() == PacketType.JOIN_LOBBY) {
 			handleJoin(connectionID, packet);
 
+		} else if (packet.getType() == PacketType.GET_USERS_IN_LOBBY) {
+			handleGetUsers(connectionID, packet);
+
 		} else if (packet.getType() == PacketType.LEAVE_LOBBY) {
 			handleLeave(connectionID);
 
@@ -136,10 +139,8 @@ public class GameServer extends Server {
 			model.createLobby(name, limit, isPublic, password, connectionID);
 		} catch (MonopolyException e) {
 			sendImportantPacket(e.getAsPacket(), connectionID);
-			return;
 		}
 
-		sendImportantPacket(new ImportantNetworkPacket(PacketType.LOBBY_CREATED), connectionID);
 	}
 
 	/**
@@ -158,11 +159,26 @@ public class GameServer extends Server {
 
 		try {
 			user.joinLobby(lobby, password);
-			sendImportantPacket(new ImportantNetworkPacket(PacketType.JOIN_SUCCESS), connectionID);
 		} catch (MonopolyException e) {
 			sendImportantPacket(e.getAsPacket(), connectionID);
 		}
 
+	}
+
+	/**
+	 * Handles the get users request from server side
+	 * 
+	 * @param connectionID the id of the user
+	 * @param packet       the received network packet
+	 */
+	private void handleGetUsers(int connectionID, ImportantNetworkPacket packet) {
+		LobbyPacketData lobbyData = (LobbyPacketData) packet.getData().get(0);
+		int lobbyId = lobbyData.getLobbyId();
+
+		Lobby lobby = model.getLobbyByID(lobbyId);
+
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.USERS_IN_LOBBY, lobby.getPlayersAsPacket()),
+				connectionID);
 	}
 
 	/**
@@ -204,6 +220,15 @@ public class GameServer extends Server {
 	public void sendPlayerJoinNotification(User userJoined, User userToNotify) {
 		sendImportantPacket(new ImportantNetworkPacket(PacketType.PLAYER_JOIN, userJoined.getAsPacket()),
 				userToNotify.getId());
+	}
+	
+	/**
+	 * Sends join success notification to the client
+	 * 
+	 * @param userJoined the user to be notified
+	 */
+	public void sendSuccessfulJoinNotification(User userJoined) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.JOIN_SUCCESS), userJoined.getId());
 	}
 
 	/**
