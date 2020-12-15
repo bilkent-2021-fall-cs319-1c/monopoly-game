@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+<?import monopoly.ui.UIUtil?>
+<?import monopoly.ui.gameplay.SideTile?>
+<?import javafx.scene.image.ImageView?>
+
+<fx:root xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml" type="MigPane" layout=""
+         cols="0[13%]0[74%]0[13%]0" rows="0[13%]push[13%]push[13%]push[13%]0"
+         MigPane.cc="grow" style="-fx-background-color: rgb(215, 255, 201);">
+
+    <ImageView fx:id="freeParking" MigPane.cc="cell 0 0" >
+        <image>
+            <UIUtil fx:constant="FREE_PARKING" />
+        </image>
+    </ImageView>
+    <ImageView fx:id="go" MigPane.cc="cell 2 3" >
+        <image>
+            <UIUtil fx:constant="GO" />
+        </image>
+    </ImageView>
+    <ImageView fx:id="visitJail" MigPane.cc="cell 0 3">
+        <image>
+            <UIUtil fx:constant="JUST_VISITING" />
+        </image>
+    </ImageView>
+    <ImageView fx:id="gotoJail" MigPane.cc="cell 2 0">
+        <image>
+            <UIUtil fx:constant="GOTO_JAIL" />
+        </image>
+    </ImageView>
+
+    <MigPane fx:id="topCenter" MigPane.cc="grow, cell 1 0"
+             layout="fill" style="-fx-rotate: 180"
+             cols="0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0"
+             rows="0[100%]0" />
+
+    <MigPane fx:id="leftMiddle" MigPane.cc="grow, cell 1 1"
+             layout="fill"
+             style=" -fx-rotate: 90"
+             cols="0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0"
+             rows="0[100%]0" />
+
+    <MigPane fx:id="rightMiddle" MigPane.cc="grow, cell 1 2"
+             layout="fill"
+             style="-fx-rotate: -90"
+             cols="0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0"
+             rows="0[100%]0" />
+
+    <MigPane fx:id="bottomCenter" MigPane.cc="grow, cell 1 3"
+             layout="fill" style=""
+             cols="0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0[grow]0"
+             rows="0[100%]0" />
+</fx:root>

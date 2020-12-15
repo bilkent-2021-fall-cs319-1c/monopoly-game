@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+<?import monopoly.ui.UIUtil?>
+<?import javafx.scene.image.ImageView?>
+
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
+
+<fx:root fx:id="root"
+         xmlns="http://javafx.com/javafx/15.0.1"
+         xmlns:fx="http://javafx.com/fxml" type="MigPane"
+         rows="0[25%!, fill, grow]0[27%]0[grow]0[7%, center]0" cols="0[grow, fill]0"
+         layout="wrap" style="-fx-border-color: black; -fx-border-width: 3px 0 3px 3px;">
+
+    <MigPane fx:id="topWrapper" rows="0[0:]0"
+             cols="4%[fill]4%[fill]4%[fill]4%[fill]4%" layout="fill" />
+
+    <!--<Label fx:id="tileTitle" alignment="CENTER"
+           MigPane.cc="top, wrap, center" />-->
+
+    <TextFlow textAlignment="CENTER" >
+        <Text fx:id="tileTitle" />
+    </TextFlow>
+
+    <MigPane fx:id="pawns" rows="[][][]" cols="[][]" visible="false"/>
+
+    <Label fx:id="tileValue" MigPane.cc="bottom, right" textAlignment="CENTER"/>
+
+</fx:root>

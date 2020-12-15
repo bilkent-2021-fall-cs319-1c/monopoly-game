@@ -41,7 +41,7 @@ public class GameplayController implements MonopolyUIController {
 	@FXML
 	private MigPane playersRight;
 	@FXML
-	private ImageView board;
+	private MigPane board;
 	@FXML
 	private ImageView rotateCWIcon;
 	@FXML
@@ -199,8 +199,8 @@ public class GameplayController implements MonopolyUIController {
 	@Override
 	public void sizeChanged(double width, double height) {
 		double boardSize = Math.min(width * 0.5, height * 0.9);
-		board.setFitWidth(boardSize);
-		board.setFitHeight(boardSize);
+		board.setMaxWidth(boardSize);
+		board.setMaxHeight(boardSize);
 
 		double iconWidth = width * 0.025;
 		chatIcon.setFitWidth(iconWidth);

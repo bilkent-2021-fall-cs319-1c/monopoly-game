@@ -10,7 +10,7 @@ import javafx.scene.text.Text;
 /**
  * Contains utility methods for working with UI. Loads resources such as images
  * and CSS, and holds them in the static constant fields.
- * 
+ *
  * @author Ziya Mukhtarov
  * @version Dec 8, 2020
  */
@@ -33,6 +33,13 @@ public class UIUtil {
 	public static final Image WEBCAM_CROSSED_ICON = loadImage("images/CameraCross.png");
 	public static final Image MICROPHONE_ICON = loadImage("images/Microphone.png");
 	public static final Image MICROPHONE_CROSSED_ICON = loadImage("images/MicrophoneCross.png");
+	public static final Image FREE_PARKING = loadImage("images/freeParking.png");
+	public static final Image GOTO_JAIL = loadImage("images/goToJail.png");
+	public static final Image GO = loadImage("images/go.png");
+	public static final Image JUST_VISITING = loadImage("images/justVisiting.png");
+	public static final Image TRAIN = loadImage("images/train.png");
+	public static final Image CHEST = loadImage("images/chest.png");
+	public static final Image QUESTION_MARK = loadImage("images/questionMark.png");
 
 	public static final String COMMON_CSS = loadStylesheet("css/common.css");
 	public static final String MAIN_SCREEN_CSS = loadStylesheet("css/mainScreen.css");

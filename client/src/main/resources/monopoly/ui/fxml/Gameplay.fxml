@@ -8,9 +8,10 @@
 <?import monopoly.ui.gameplay.PlayerPane?>
 <?import monopoly.ui.UIUtil?>
 
+<?import monopoly.ui.gameplay.Board?>
 <StackPane xmlns="http://javafx.com/javafx/15.0.1"
-	xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
-	fx:controller="monopoly.ui.gameplay.GameplayController">
+		   xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
+		   fx:controller="monopoly.ui.gameplay.GameplayController">
 
 	<!-- Main Gameplay View -->
 	<MigPane layout="fill" rows="0[grow, fill] [:5%:5%]"
@@ -32,12 +33,14 @@
 			MigPane.cc="grow" fx:id="playersLeft" />
 
 		<!-- Board -->
-		<ImageView fx:id="board" scaleX="0" scaleY="0"
+		<!--<ImageView fx:id="board" scaleX="0" scaleY="0"
 			fitHeight="10" fitWidth="10">
 			<image>
 				<UIUtil fx:constant="BOARD" />
 			</image>
-		</ImageView>
+		</ImageView>-->
+
+		<Board fx:id="board" MigPane.cc="grow" layout="debug"></Board>
 
 		<!-- Players on the right side -->
 		<MigPane layout="fill, flowy" cols="0[fill]0"
