@@ -4,8 +4,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import monopoly.Identifiable;
 import monopoly.MonopolyException;
+import monopoly.gameplay.GamePlayer;
 import monopoly.network.packet.important.PacketType;
-import monopoly.network.packet.important.packet_data.PlayerPacketData;
+import monopoly.network.packet.important.packet_data.UserPacketData;
 
 /**
  * A General User who can create, join or leave a lobby
@@ -27,7 +28,7 @@ public class User implements Identifiable {
 
 //	Uncomment if required (TA suggestion)
 //	private LobbyOwner lobbyOwnerInstance;
-//	private GamePlayer gamePlayerInstance;
+	private GamePlayer gamePlayerInstance;
 
 	/**
 	 * Copy constructor for the user class
@@ -50,8 +51,8 @@ public class User implements Identifiable {
 	 * @param name         the specified user name
 	 * @param connectionID the connection address of the user
 	 */
-	public User(String name, int connectionId) {
-		id = connectionId;
+	public User(String name, int connectionID) {
+		id = connectionID;
 		username = name;
 
 		lobby = null;
@@ -115,12 +116,20 @@ public class User implements Identifiable {
 		lobby = null;
 	}
 
+	public void setGamePlayerInstance(GamePlayer gamePlayerInstance) {
+		this.gamePlayerInstance = gamePlayerInstance;
+	}
+
+	public GamePlayer asPlayer() {
+		return gamePlayerInstance;
+	}
+
 	/**
 	 * Returns the object as a packet type
 	 * 
 	 * @return PlayerPacketData the player data to be returned
 	 */
-	public PlayerPacketData getAsPacket() {
-		return new PlayerPacketData(id, username, this instanceof LobbyOwner, ready);
+	public UserPacketData getAsPacket() {
+		return new UserPacketData(id, username, this instanceof LobbyOwner, ready);
 	}
 }

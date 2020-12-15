@@ -83,7 +83,7 @@ public abstract class Server {
 	 * client
 	 * 
 	 * @param connectionID the server assigned unique connection ID
-	 * @param object       the received object
+	 * @param packet       the received packet
 	 */
 	public abstract void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet);
 

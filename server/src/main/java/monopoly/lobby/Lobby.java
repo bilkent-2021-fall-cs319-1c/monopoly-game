@@ -1,5 +1,6 @@
 package monopoly.lobby;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,11 +8,12 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import monopoly.GameServer;
 import monopoly.Identifiable;
 import monopoly.MonopolyException;
+import monopoly.gameplay.Game;
+import monopoly.network.GameServer;
 import monopoly.network.packet.important.PacketType;
-import monopoly.network.packet.important.packet_data.PlayerListPacketData;
+import monopoly.network.packet.important.packet_data.UserListPacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 
@@ -39,12 +41,13 @@ public class Lobby implements Identifiable {
 
 	@Getter
 	private boolean inGame;
+	@Getter
+	private Game game;
 
+	@Getter
 	private List<User> users;
 	private List<User> bannedUsers;
 	private LobbyOwner owner;
-
-	private GameServer server;
 
 	/**
 	 * Creates a lobby
@@ -53,14 +56,11 @@ public class Lobby implements Identifiable {
 	 * @param limit    limit on the number of maximum players
 	 * @param isPublic status of being either public or private
 	 * @param password specified pass code
-	 * @param server   the game server
 	 * 
 	 * @throws MonopolyException when the specified limit is out of bounds of
 	 *                           minimum or maximum limits
 	 */
-	public Lobby(String title, int limit, boolean isPublic, String password, GameServer server)
-			throws MonopolyException {
-		this.server = server;
+	public Lobby(String title, int limit, boolean isPublic, String password) throws MonopolyException {
 
 		users = Collections.synchronizedList(new ArrayList<User>());
 		bannedUsers = Collections.synchronizedList(new ArrayList<User>());
@@ -72,6 +72,7 @@ public class Lobby implements Identifiable {
 		this.password = password;
 		inGame = false;
 		owner = null;
+		game = null;
 	}
 
 	/**
@@ -94,7 +95,6 @@ public class Lobby implements Identifiable {
 	 * 
 	 * @param userJoining      the joining user
 	 * @param providedPassword the pass code specified by the user
-	 * 
 	 * @throws MonopolyException when either the user is banned, the lobby is full,
 	 *                           the passwords do not match or the user is already
 	 *                           in the lobby
@@ -119,8 +119,8 @@ public class Lobby implements Identifiable {
 			owner = new LobbyOwner(userJoining);
 		}
 
-		//Send join success notification to the joining user
-		server.sendSuccessfulJoinNotification(userJoining);
+		// Send join success notification to the joining user
+		GameServer.getInstance().sendSuccessfulJoinNotification(userJoining);
 
 		// Send join notification to everyone in the lobby
 		sendJoinedNotification(userJoining);
@@ -134,6 +134,7 @@ public class Lobby implements Identifiable {
 	 * 
 	 * @param user  the user to be notified
 	 * @param ready new state of the user
+	 * @throws NoSuchAlgorithmException 
 	 */
 	void userReadyChange(User user, boolean ready) {
 		sendReadyNotification(user);
@@ -172,18 +173,23 @@ public class Lobby implements Identifiable {
 	/**
 	 * The game is initiated for the current lobby and the users are notified. This
 	 * method runs in a new thread
+	 * @throws NoSuchAlgorithmException 
 	 * 
 	 */
-	public void startGame() {
+	public Game startGame() {
 		inGame = true;
 
-		new Thread(() -> {
-			for (int i = 0; i < users.size(); i++) {
-				server.sendGameStartNotification(users.get(i));
-			}
-		}).start();
+		game = new Game( this);
+		
+		//Notify everyone that the game started
+		new Thread(
+				() -> users.parallelStream().forEach(user -> GameServer.getInstance().sendGameStartNotification(user)))
+						.start();
+		
+		//Notify everyone about the turn order
+		game.sendTurnOrderToPlayers();
 
-		// To be implemented in later versions
+		return game;
 	}
 
 	public void checkGameStart() {
@@ -194,6 +200,10 @@ public class Lobby implements Identifiable {
 		startGame();
 	}
 
+	public boolean checkLobbyClose() {
+		return getPlayerCount() == 0;
+	}
+
 	/**
 	 * Sends playerJoined info to everyone except himself. This method runs in a new
 	 * thread
@@ -201,8 +211,8 @@ public class Lobby implements Identifiable {
 	 * @param userJoined the user who joined
 	 */
 	public void sendJoinedNotification(User userJoined) {
-		new Thread(() -> users.parallelStream().forEach(user -> server.sendPlayerJoinNotification(userJoined, user)))
-				.start();
+		new Thread(() -> users.parallelStream()
+				.forEach(user -> GameServer.getInstance().sendPlayerJoinNotification(userJoined, user))).start();
 	}
 
 	/**
@@ -212,8 +222,8 @@ public class Lobby implements Identifiable {
 	 * @param userLeft the user who left
 	 */
 	public void sendLeftNotification(User userLeft) {
-		new Thread(() -> users.parallelStream().forEach(user -> server.sendPlayerLeaveNotification(userLeft, user)))
-				.start();
+		new Thread(() -> users.parallelStream()
+				.forEach(user -> GameServer.getInstance().sendPlayerLeaveNotification(userLeft, user))).start();
 	}
 
 	/**
@@ -222,8 +232,8 @@ public class Lobby implements Identifiable {
 	 * @param userReady the user who is ready
 	 */
 	public void sendReadyNotification(User userReady) {
-		new Thread(() -> users.parallelStream().forEach(user -> server.sendPlayerReadyNotification(userReady, user)))
-				.start();
+		new Thread(() -> users.parallelStream()
+				.forEach(user -> GameServer.getInstance().sendPlayerReadyNotification(userReady, user))).start();
 	}
 
 	/**
@@ -236,7 +246,7 @@ public class Lobby implements Identifiable {
 	public void sendRealtimePacket(int fromUserId, RealTimeNetworkPacket packet) {
 		new Thread(() -> users.parallelStream().forEach(user -> {
 			if (user.getId() != fromUserId) {
-				server.sendRealTimePacket(packet, user.getId());
+				GameServer.getInstance().sendRealTimePacket(packet, user.getId());
 			}
 		})).start();
 	}
@@ -245,10 +255,15 @@ public class Lobby implements Identifiable {
 		return new LobbyPacketData(id, name, password, isPublic, owner.getUsername(), users.size(), playerLimit);
 	}
 
-	public PlayerListPacketData getPlayersAsPacket() {
-		PlayerListPacketData playerList = new PlayerListPacketData();
-		users.forEach(user -> playerList.add(user.getAsPacket()));
+	/**
+	 * Creates a player list packet data for the players in the lobby
+	 * 
+	 * @return the player list data
+	 */
+	public UserListPacketData getPlayersAsPacket() {
+		UserListPacketData userList = new UserListPacketData();
+		users.forEach(user -> userList.add(user.getAsPacket()));
 
-		return playerList;
+		return userList;
 	}
 }

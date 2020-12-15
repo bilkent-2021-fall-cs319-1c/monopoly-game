@@ -7,6 +7,7 @@ import java.util.List;
 
 import monopoly.lobby.Lobby;
 import monopoly.lobby.User;
+import monopoly.network.GameServer;
 
 /**
  * The game model that establishes connection between classes and server side
@@ -22,8 +23,6 @@ public class Model {
 	// TODO Make it functional
 	private List<Lobby> waitingLobbies;
 
-	private GameServer server;
-	
 	/**
 	 * Creates a model object
 	 * 
@@ -34,8 +33,9 @@ public class Model {
 		users = new EntitiesWithId<>();
 
 		waitingLobbies = Collections.synchronizedList(new ArrayList<Lobby>());
-
-		server = new GameServer(this);
+		
+		//Creates a game server
+		GameServer.getInstance();
 	}
 
 	/**
@@ -64,11 +64,11 @@ public class Model {
 	public void createLobby(String name, int limit, boolean isPublic, String password, int userId)
 			throws MonopolyException {
 		User user = getUserByID(userId);
-		Lobby lobby = new Lobby(name, limit, isPublic, password, server);
+		Lobby lobby = new Lobby(name, limit, isPublic, password);
 		user.joinLobby(lobby, password);
 		registerNewLobby(lobby);
 	}
-
+	
 	private void registerNewLobby(Lobby lobby) {
 		lobbies.add(lobby);
 		waitingLobbies.add(lobby);
@@ -123,15 +123,17 @@ public class Model {
 	public int getLobbyCount() {
 		return lobbies.size();
 	}
-	
+
 	/**
 	 * Finds a lobby by using id
 	 * 
-	 * @param userId the specified id to be searched with
+	 * @param id the specified id to be searched with
 	 * 
 	 * @return Lobby if found one, null if not
 	 */
 	public Lobby getLobbyByID(int id) {
 		return lobbies.getByID(id);
 	}
+	
+	
 }
