@@ -2,6 +2,8 @@ package monopoly.gameplay;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -26,6 +28,14 @@ public class Board {
         for (int i = 0; i < 6; i++)
             tokenLocations[i] = -1; //-1 means that the token slot for the player is empty
         tiles = new ArrayList<>();
+
+        JSONObject obj = new JSONObject("tile_data");
+        JSONArray arr = obj.getJSONArray("tiles");
+        for (int i = 0; i < arr.length(); i++) {
+            String tileName = arr.getJSONObject(i).getString("tile_name");
+            String tileDesc = arr.getJSONObject(i).getString("tile_description");
+            tiles.add(new Tile(tileName,tileDesc));
+        }
     }
 
     /**
@@ -56,7 +66,13 @@ public class Board {
      */
     private void initialize()
     {
-        tiles.add(new GoTile("",""));
-        //TODO: Add the rest of the tiles
+        // Duplicate for now
+        JSONObject obj = new JSONObject("tile_data");
+        JSONArray arr = obj.getJSONArray("tiles");
+        for (int i = 0; i < arr.length(); i++) {
+            String tileName = arr.getJSONObject(i).getString("tile_name");
+            String tileDesc = arr.getJSONObject(i).getString("tile_description");
+            tiles.add(new Tile(tileName,tileDesc));
+        }
     }
 }
