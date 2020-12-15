@@ -1,4 +1,4 @@
-package monopoly.ui.gameplay;
+package monopoly.ui.controller.gameplay;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;

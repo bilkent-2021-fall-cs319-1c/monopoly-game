@@ -5,12 +5,12 @@
 <?import javafx.scene.layout.*?>
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 
-<?import monopoly.ui.gameplay.PlayerPane?>
+<?import monopoly.ui.controller.gameplay.PlayerPane?>
 <?import monopoly.ui.UIUtil?>
 
 <StackPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
-	fx:controller="monopoly.ui.gameplay.GameplayController">
+	fx:controller="monopoly.ui.controller.gameplay.GameplayController">
 
 	<!-- Main Gameplay View -->
 	<MigPane layout="fill" rows="0[grow, fill] [:5%:5%]"

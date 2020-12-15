@@ -21,6 +21,9 @@ import lombok.Getter;
 import monopoly.Error;
 import monopoly.ErrorListener;
 import monopoly.network.NetworkManager;
+import monopoly.network.packet.important.PacketType;
+import monopoly.ui.controller.MonopolyUIController;
+import monopoly.ui.controller.Overlay;
 
 /**
  * JavaFX Application class for Monopoly.
@@ -85,7 +88,7 @@ public class ClientApplication extends Application implements ErrorListener {
 
 		stage.setWidth(1280);
 		stage.setHeight(720);
-		stage.setFullScreen(true);
+//		stage.setFullScreen(true);
 
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		stage.show();
@@ -97,9 +100,16 @@ public class ClientApplication extends Application implements ErrorListener {
 	 * @param resourcePath The path to the resource (mainly, FXML file) to switch to
 	 * @throws IOException If the resource cannot be found
 	 */
-	public void switchToView(String resourcePath) throws IOException {
+	public void switchToView(String resourcePath) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
-		Parent root = loader.load();
+		Parent root;
+		try {
+			root = loader.load();
+		} catch (IOException | IllegalStateException e) {
+			e.printStackTrace();
+			displayError(new Error(PacketType.ERR_UNKNOWN));
+			return;
+		}
 
 		MonopolyUIController controller = (MonopolyUIController) loader.getController();
 		controller.setApp(this);

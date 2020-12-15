@@ -1,4 +1,4 @@
-package monopoly.ui;
+package monopoly.ui.controller;
 
 import java.io.IOException;
 
@@ -16,6 +16,8 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import lombok.Setter;
 import monopoly.Error;
+import monopoly.ui.ClientApplication;
+import monopoly.ui.UIUtil;
 
 /**
  * An overlay pane. Can be used to display errors or notifications.

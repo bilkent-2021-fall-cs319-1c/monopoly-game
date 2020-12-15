@@ -3,88 +3,95 @@
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.control.cell.*?>
 <?import monopoly.ui.*?>
-<?import monopoly.ui.join_lobby.*?>
+<?import monopoly.ui.controller.join_lobby.*?>
 
-<StackPane fx:id="rootPane" xmlns:fx="http://javafx.com/fxml"
-	fx:controller="monopoly.ui.join_lobby.JoinLobbyController">
+<MigPane xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" fx:id="mainPane"
+	layout="fill, center" rows="[fill]"
+	cols="[::39%, fill, grow]2%[::59%, fill, grow]"
+	fx:controller="monopoly.ui.controller.join_lobby.JoinLobbyController">
 
 	<stylesheets>
 		<UIUtil fx:constant="COMMON_CSS" />
 		<UIUtil fx:constant="JOIN_LOBBY_CSS" />
 	</stylesheets>
 
-	<MigPane fx:id="mainPane" layout="fill, center" rows="[fill]"
-		cols="[::39%, fill, grow]2%[::59%, fill, grow]">
+	<MigPane fx:id="leftPane" layout="wrap, gap 5%"
+		rows="10[15%, top]push[15%]push[7%, fill][7%, fill]push[5%]0"
+		cols="10[right]2%[left, grow, fill]0" MigPane.cc="grow">
 
-		<MigPane fx:id="leftPane" layout="wrap"
-			rows="13%[15%]5%[10%]0[10%]2%[10%]5%[10%, top]5%"
-			cols="5%[left]2%[left]" MigPane.cc="grow">
+		<ImageView preserveRatio="true" fx:id="backIcon"
+			pickOnBounds="true" onMouseClicked="#back"
+			MigPane.cc="span 2, split 2, gapright 5:::push">
+			<image>
+				<UIUtil fx:constant="BACK_ICON" />
+			</image>
+		</ImageView>
 
-			<Text fx:id="mainTitle" MigPane.cc="span 2">Join Lobby</Text>
+		<Text fx:id="mainTitle">Join Lobby</Text>
 
+		<TextFlow MigPane.cc="span 2, left">
 			<Text fx:id="promptText"
-				MigPane.cc="span 2, split 2,left, wrap, bottom">Choose a room to join</Text>
+				text="Choose a room to join.&#10;You can also search for a room by entering&#10;its name or by the player." />
+		</TextFlow>
 
-			<Text fx:id="infoText" MigPane.cc="span 2, left">
-				You can also search for a room
-				by entering its name or by the player.
-			</Text>
+		<Text fx:id="roomTitle">Room Name:</Text>
+		<TextField fx:id="roomName" text="" disable="true" />
 
-			<Text fx:id="roomTitle">Room Name:</Text>
-			<TextField fx:id="roomName" text="" disable="true" />
+		<Text fx:id="passwordTitle">Password:</Text>
+		<TextField fx:id="passwordValue" text="" disable="true" />
 
-			<Text fx:id="passwordTitle">Password:</Text>
-			<TextField fx:id="passwordValue" text="" disable="true" />
-
-			<Button fx:id="joinButton" mnemonicParsing="false" text="Join"
-				MigPane.cc="span 2, center" onAction="#joinLobby" />
-		</MigPane>
-
-		<MigPane layout="fill, flowy" rows="0[90%]0[10%]0"
-			fx:id="rightPane" MigPane.cc="grow">
-			<TableView fx:id="lobbyTable" MigPane.cc="grow">
-				<columns>
-					<TableColumn text="Owner" sortable="false"
-						prefWidth="${lobbyTable.width * 0.2}">
-						<cellValueFactory>
-							<PropertyValueFactory property="owner" />
-						</cellValueFactory>
-					</TableColumn>
-
-					<TableColumn text="Lobby Name" sortable="false"
-						prefWidth="${lobbyTable.width * 0.58}">
-						<cellValueFactory>
-							<PropertyValueFactory property="name" />
-						</cellValueFactory>
-					</TableColumn>
-
-					<TableColumn style="-fx-alignment: CENTER;"
-						text="Private?" sortable="false"
-						prefWidth="${lobbyTable.width * 0.1}">
-						<cellValueFactory>
-							<PropertyValueFactory property="isPrivate" />
-						</cellValueFactory>
-						<cellFactory>
-							<LobbyIsPrivateTableCellFactory />
-						</cellFactory>
-					</TableColumn>
-
-					<TableColumn style="-fx-alignment: CENTER;"
-						text="Players" sortable="false"
-						prefWidth="${lobbyTable.width * 0.1}">
-						<cellValueFactory>
-							<PropertyValueFactory
-								property="fullnessRatio" />
-						</cellValueFactory>
-					</TableColumn>
-				</columns>
-			</TableView>
-
-			<Pagination fx:id="lobbyTablePagination" MigPane.cc="grow" />
-		</MigPane>
+		<Button fx:id="joinButton" mnemonicParsing="false" text="Join"
+			MigPane.cc="span 2, grow, wmax 75%, center" onAction="#joinLobby"
+			styleClass="buttonRegular, joinButton" />
 	</MigPane>
-</StackPane>
+
+	<MigPane layout="fill, flowy, gap 0" rows="[95%][5%, fill]"
+		fx:id="rightPane" MigPane.cc="grow">
+		<TableView fx:id="lobbyTable" MigPane.cc="grow">
+			<columns>
+				<TableColumn style="-fx-alignment: CENTER;" text="Owner"
+					sortable="false" prefWidth="${lobbyTable.width * 0.2}">
+					<cellValueFactory>
+						<PropertyValueFactory property="owner" />
+					</cellValueFactory>
+				</TableColumn>
+
+				<TableColumn style="-fx-alignment: CENTER-LEFT;"
+					text="Lobby Name" sortable="false"
+					prefWidth="${lobbyTable.width * 0.5}">
+					<cellValueFactory>
+						<PropertyValueFactory property="name" />
+					</cellValueFactory>
+				</TableColumn>
+
+				<TableColumn style="-fx-alignment: CENTER;"
+					text="Private?" sortable="false"
+					prefWidth="${lobbyTable.width * 0.15}">
+					<cellValueFactory>
+						<PropertyValueFactory property="isPrivate" />
+					</cellValueFactory>
+					<cellFactory>
+						<LobbyIsPrivateTableCellFactory />
+					</cellFactory>
+				</TableColumn>
+
+				<TableColumn style="-fx-alignment: CENTER;"
+					text="Players" sortable="false"
+					prefWidth="${lobbyTable.width * 0.15}">
+					<cellValueFactory>
+						<PropertyValueFactory
+							property="fullnessRatio" />
+					</cellValueFactory>
+				</TableColumn>
+			</columns>
+		</TableView>
+
+		<Pagination fx:id="lobbyTablePagination" MigPane.cc="grow" />
+	</MigPane>
+</MigPane>

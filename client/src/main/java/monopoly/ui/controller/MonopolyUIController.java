@@ -1,4 +1,6 @@
-package monopoly.ui;
+package monopoly.ui.controller;
+
+import monopoly.ui.ClientApplication;
 
 /**
  * All the high-level monopoly controllers should implement this interface to be

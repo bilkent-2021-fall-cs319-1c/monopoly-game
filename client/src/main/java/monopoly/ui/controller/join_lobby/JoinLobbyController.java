@@ -1,6 +1,4 @@
-package monopoly.ui.join_lobby;
-
-import java.io.IOException;
+package monopoly.ui.controller.join_lobby;
 
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
@@ -15,14 +13,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.StackPane;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import lombok.Setter;
 import monopoly.Error;
 import monopoly.network.packet.important.packet_data.LobbyPacketData;
 import monopoly.ui.ClientApplication;
-import monopoly.ui.MonopolyUIController;
 import monopoly.ui.UIUtil;
+import monopoly.ui.controller.MonopolyUIController;
 
 /**
  * Controls the join lobby UI
@@ -40,9 +39,9 @@ public class JoinLobbyController implements MonopolyUIController {
 	private ClientApplication app;
 
 	@FXML
-	private StackPane rootPane;
-	@FXML
 	private MigPane mainPane;
+	@FXML
+	private ImageView backIcon;
 	@FXML
 	private MigPane rightPane;
 	@FXML
@@ -51,8 +50,6 @@ public class JoinLobbyController implements MonopolyUIController {
 	private Text mainTitle;
 	@FXML
 	private Text promptText;
-	@FXML
-	private Text infoText;
 	@FXML
 	private Text roomTitle;
 	@FXML
@@ -83,8 +80,6 @@ public class JoinLobbyController implements MonopolyUIController {
 				.bind(Bindings.divide(Bindings.add(lobbyCount, ROWS_PER_PAGE - 1), ROWS_PER_PAGE));
 		lobbyTablePagination.setPageFactory(this::createPage);
 
-		joinButton.getStyleClass().add("buttonRegular");
-		joinButton.getStyleClass().add("joinButton");
 		updateLobbyCount();
 
 		lobbyTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -109,9 +104,8 @@ public class JoinLobbyController implements MonopolyUIController {
 	 * Creates the lobby page for the given page index. The data for that page is
 	 * taken from the server.
 	 * 
-	 * @param pageIndex
-	 * @return An empty meaningless node. It is returned for correct JavaFX paging
-	 *         API.
+	 * @return An empty meaningless component. It is returned for correct JavaFX
+	 *         paging API.
 	 */
 	private Node createPage(int pageIndex) {
 		updateLobbyCount();
@@ -122,11 +116,11 @@ public class JoinLobbyController implements MonopolyUIController {
 		app.getNetworkManager().getLobbies(fromIndex, toIndex)
 				.forEach(lobby -> lobbies.add(new LobbyDisplayData(lobby)));
 
-		return new Text("");
+		return new Pane();
 	}
 
 	@FXML
-	private void joinLobby() throws IOException {
+	private void joinLobby() {
 		LobbyDisplayData lobby = lobbyTable.getSelectionModel().getSelectedItem();
 		if (lobby == null) {
 			app.displayError(
@@ -142,13 +136,21 @@ public class JoinLobbyController implements MonopolyUIController {
 		}
 	}
 
+	@FXML
+	private void back() {
+		app.switchToView("fxml/MainMenu.fxml");
+	}
+
 	@Override
 	public void sizeChanged(double width, double height) {
-		joinButton.setPrefWidth(width * 0.08);
-		joinButton.setPrefHeight(height * 0.04);
+		backIcon.setFitWidth(width * 0.04);
+		backIcon.setFitHeight(height * 0.15);
 
-		setFontSizes(height, width);
-		lobbyTable.setFixedCellSize(height * 0.86 / 10);
+		lobbyTable.setFixedCellSize((height * 0.9 - 50) / ROWS_PER_PAGE);
+
+		lobbyTablePagination.setStyle("-fx-min-width_:" + width * 0.04 + ";-fx-min-height_:" + height * 0.04);
+
+		setFontSizes(width, height);
 	}
 
 	/**
@@ -158,15 +160,20 @@ public class JoinLobbyController implements MonopolyUIController {
 	 * @param width  The total width of this container
 	 * @param height The total height of this container
 	 */
-	private void setFontSizes(double height, double width) {
-		UIUtil.fitFont(mainTitle, width * 0.18, height);
-		UIUtil.fitFont(promptText, width * 0.12, height);
-		UIUtil.fitFont(infoText, width * 0.35, height);
-		UIUtil.fitFont(roomTitle, width * 0.10, height);
-		UIUtil.fitFont(passwordTitle, width * 0.075, height);
-//		UIUtil.fitFont(roomName, width * 0.10, height);
-//		UIUtil.fitFont(passwordValue, width * 0.10, height);
-//		UIUtil.fitFont(joinButton, width * 0.10, height);
-	}
+	private void setFontSizes(double width, double height) {
+		UIUtil.fitFont(mainTitle, width * 0.27, height * 0.15);
+		UIUtil.fitFont(promptText, width * 0.35, height * 0.14);
 
+		UIUtil.fitFont(roomTitle, width * 0.15, height * 0.07);
+		passwordTitle.setFont(roomTitle.getFont());
+		UIUtil.fitFont(passwordValue, Double.MAX_VALUE, height * 0.04);
+
+		UIUtil.fitFont(joinButton, width * 0.3, height * 0.05);
+
+		Node paginationControlBox = lobbyTablePagination.lookup(".control-box");
+		if (paginationControlBox != null)
+			paginationControlBox.setStyle("-fx-font-size:" + height * 0.02);
+		
+		lobbyTable.setStyle("-fx-font-size: " + lobbyTable.getFixedCellSize() * 0.25);
+	}
 }

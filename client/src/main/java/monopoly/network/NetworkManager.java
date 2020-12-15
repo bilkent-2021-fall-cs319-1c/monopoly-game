@@ -20,8 +20,8 @@ import monopoly.network.packet.important.packet_data.LobbyPacketData;
 import monopoly.network.packet.important.packet_data.PlayerPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.ui.ClientApplication;
-import monopoly.ui.gameplay.GameplayController;
-import monopoly.ui.in_lobby.LobbyController;
+import monopoly.ui.controller.gameplay.GameplayController;
+import monopoly.ui.controller.in_lobby.LobbyController;
 
 /**
  * Manages network communication for monopoly client
@@ -170,7 +170,7 @@ public class NetworkManager {
 	public boolean createLobby(String lobbyName, boolean isPublic, String password, int playerLimit) {
 		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.CREATE_LOBBY,
 				new LobbyPacketData(0, lobbyName, password, isPublic, "", 0, playerLimit));
-		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.JOIN_SUCCESS);
+		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.LOBBY_CREATED); // JOIN_SUCCESS
 
 		return response != null;
 	}

@@ -1,4 +1,4 @@
-package monopoly.ui.gameplay;
+package monopoly.ui.controller.gameplay;
 
 import java.util.ArrayList;
 import java.util.Collections;

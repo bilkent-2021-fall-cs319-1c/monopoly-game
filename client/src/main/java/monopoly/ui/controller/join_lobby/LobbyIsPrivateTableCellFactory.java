@@ -1,4 +1,4 @@
-package monopoly.ui.join_lobby;
+package monopoly.ui.controller.join_lobby;
 
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -31,5 +31,4 @@ public class LobbyIsPrivateTableCellFactory
 			}
 		};
 	}
-
 }

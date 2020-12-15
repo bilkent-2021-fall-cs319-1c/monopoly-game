@@ -1,4 +1,4 @@
-package monopoly.ui.gameplay;
+package monopoly.ui.controller.gameplay;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -27,8 +27,8 @@ import monopoly.network.packet.realtime.BufferedImagePacket;
 import monopoly.network.packet.realtime.MicSoundPacket;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.ui.ClientApplication;
-import monopoly.ui.MonopolyUIController;
-import monopoly.ui.in_lobby.PlayerLobbyPane;
+import monopoly.ui.controller.MonopolyUIController;
+import monopoly.ui.controller.in_lobby.PlayerLobbyPane;
 
 /**
  * Controls the base gameplay screen

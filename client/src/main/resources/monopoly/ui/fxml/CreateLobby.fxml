@@ -3,6 +3,7 @@
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 <?import javafx.scene.control.*?>
 <?import monopoly.ui.UIUtil?>
@@ -10,9 +11,9 @@
 <MigPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" fx:id="root"
 	layout="wrap, center, gap 5%"
-	rows="[20%][5%, fill][5%, fill][5%, fill][5%, top, fill]"
-	cols="[right]2%[left, fill]"
-	fx:controller="monopoly.ui.CreateLobbyController">
+	rows="push[15%]10%[5%, fill][5%, fill][5%, fill]10%[5%, top, fill]push"
+	cols="10%[right]2%[left, fill]10%"
+	fx:controller="monopoly.ui.controller.CreateLobbyController">
 	<!--<background> <Background> <images> <BackgroundImage> <image> <UIUtil 
 		fx:constant="BACKGROUND_IMAGE4" /> </image> </BackgroundImage> </images> 
 		</Background> </background> -->
@@ -21,6 +22,13 @@
 		<UIUtil fx:constant="COMMON_CSS" />
 		<UIUtil fx:constant="CREATE_LOBBY_CSS" />
 	</stylesheets>
+
+	<ImageView fx:id="backIcon" pickOnBounds="true"
+		onMouseClicked="#back" MigPane.cc="pos 10 10">
+		<image>
+			<UIUtil fx:constant="BACK_ICON" />
+		</image>
+	</ImageView>
 
 	<Text fx:id="mainTitle" MigPane.cc="span 2, center">Create Lobby</Text>
 

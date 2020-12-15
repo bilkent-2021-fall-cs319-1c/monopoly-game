@@ -1,6 +1,5 @@
-package monopoly.ui.in_lobby;
+package monopoly.ui.controller.in_lobby;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,9 +14,9 @@ import lombok.Getter;
 import lombok.Setter;
 import monopoly.network.packet.important.packet_data.PlayerPacketData;
 import monopoly.ui.ClientApplication;
-import monopoly.ui.MonopolyUIController;
 import monopoly.ui.UIUtil;
-import monopoly.ui.gameplay.GameplayController;
+import monopoly.ui.controller.MonopolyUIController;
+import monopoly.ui.controller.gameplay.GameplayController;
 
 /**
  * Controls the lobby UI (the screen after joining a lobby and waiting for the
@@ -93,12 +92,8 @@ public class LobbyController implements MonopolyUIController {
 	 */
 	public void gameStart() {
 		Platform.runLater(() -> {
-			try {
-				app.switchToView("fxml/Gameplay.fxml");
-				((GameplayController) app.getMainController()).addPlayers(playerMap.values());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			app.switchToView("fxml/Gameplay.fxml");
+			((GameplayController) app.getMainController()).addPlayers(playerMap.values());
 		});
 	}
 

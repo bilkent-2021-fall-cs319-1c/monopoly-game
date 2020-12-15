@@ -27,7 +27,8 @@ public class UIUtil {
 	public static final Image BOARD = loadImage("images/Board.png");
 	public static final Image CURVED_ARROW_CW = loadImage("images/CurvedArrowCW.png");
 	public static final Image CURVED_ARROW_CCW = loadImage("images/CurvedArrowCCW.png");
-
+	public static final Image BACK_ICON = loadImage("images/BackIcon.png");
+	
 	public static final Image CHAT_ICON = loadImage("images/ChatIcon.png");
 	public static final Image WEBCAM_ICON = loadImage("images/Camera.png");
 	public static final Image WEBCAM_CROSSED_ICON = loadImage("images/CameraCross.png");

@@ -1,4 +1,4 @@
-package monopoly.ui.gameplay;
+package monopoly.ui.controller.gameplay;
 
 import java.io.IOException;
 import java.util.stream.Stream;

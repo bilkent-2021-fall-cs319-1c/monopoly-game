@@ -1,4 +1,4 @@
-package monopoly.ui.join_lobby;
+package monopoly.ui.controller.join_lobby;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;

@@ -10,7 +10,7 @@
 	xmlns:fx="http://javafx.com/fxml" fx:id="mainMigPane"
 	layout="flowy, center, gap 5:5%" cols="33%[center, fill]33%"
 	rows="push[]5:15%[][][][]push"
-	fx:controller="monopoly.ui.MainMenuController">
+	fx:controller="monopoly.ui.controller.MainMenuController">
 	<!--<background> <Background> <images> <BackgroundImage> <image> <UIUtil 
 		fx:constant="BACKGROUND_IMAGE4" /> </image> </BackgroundImage> </images> 
 		</Background> </background> -->

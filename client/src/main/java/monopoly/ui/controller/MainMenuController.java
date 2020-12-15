@@ -1,6 +1,4 @@
-package monopoly.ui;
-
-import java.io.IOException;
+package monopoly.ui.controller;
 
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
@@ -9,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import lombok.Setter;
+import monopoly.ui.ClientApplication;
+import monopoly.ui.UIUtil;
 
 /**
  * Controls the main menu UI
@@ -44,17 +44,17 @@ public class MainMenuController implements MonopolyUIController {
 	}
 
 	@FXML
-	public void switchToCreateGameScreen() throws IOException {
+	public void switchToCreateGameScreen() {
 		app.switchToView("fxml/CreateLobby.fxml");
 	}
 
 	@FXML
-	public void switchToJoinLobbyScreen() throws IOException {
+	public void switchToJoinLobbyScreen() {
 		app.switchToView("fxml/JoinLobby.fxml");
 	}
 
 	@FXML
-	public void switchToHelpScreen() throws IOException {
+	public void switchToHelpScreen() {
 		app.switchToView("fxml/Help.fxml");
 	}
 
