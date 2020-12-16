@@ -5,12 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
 import monopoly.MonopolyException;
 import monopoly.lobby.Lobby;
 import monopoly.network.GameServer;
 import monopoly.network.packet.important.PacketType;
 import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerListPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.TilePacketData;
 
 /**
  * The main game class with all the gameplay functionalities
@@ -23,8 +25,9 @@ public class Game {
 	private Lobby lobby;
 
 	private Dice dice;
+	@Getter
 	private Board board;
-	
+
 	private List<GamePlayer> playersByTurn;
 	private int turnNumber;
 
@@ -68,31 +71,52 @@ public class Game {
 	private boolean isPlayerTurn(GamePlayer player) {
 		return getCurrentPlayer().equals(player);
 	}
-	
+
 	public DicePacketData rollDice(GamePlayer player) throws MonopolyException {
 		if (!isPlayerTurn(player)) {
 			// TODO ERR_NOT_PLAYER_TURN
 			throw new MonopolyException(PacketType.ERR_UNKNOWN);
 		}
-		
+
 		dice.roll();
-		
-		//Move token
-		//Send token moved
-		
-		completeTurn();
+		playTurn();
 
 		return dice.getDiceAsPacket();
 	}
-	
+
+	public GamePlayer move(GamePlayer player) throws MonopolyException {
+		if (!isPlayerTurn(player)) {
+			// TODO ERR_NOT_PLAYER_TURN
+			throw new MonopolyException(PacketType.ERR_UNKNOWN);
+		}
+
+		board.move(player, dice.getResult());
+		player.updateTile();
+
+		return player;
+	}
+
+	/**
+	 * The main method to handle turn operations. It is called every time the dice
+	 * are rolled
+	 */
+	public void playTurn() {
+		TilePacketData tileData = getCurrentPlayer().move();
+
+		// Notify everyone about the token move
+		sendTokenMoveToPlayers(getCurrentPlayer(), tileData);
+
+		completeTurn();
+	}
+
 	public void completeTurn() {
-		//Notify everyone about turn complete status
+		// Notify everyone about turn complete status
 		sendTurnCompleteToPlayers();
-		
+
 		nextTurn();
-		
-		//Notify everyone about who is playing next
-		sendPlayerTurnToPlayers();	
+
+		// Notify everyone about who is playing next
+		sendPlayerTurnToPlayers();
 	}
 
 	public PlayerListPacketData getPlayersAsPacket() {
@@ -111,12 +135,17 @@ public class Game {
 		new Thread(() -> playersByTurn.parallelStream()
 				.forEach(player -> GameServer.getInstance().sendPlayerTurnNotification(player))).start();
 	}
-	
-	public void sendDiceResultToPlayers( DicePacketData data) {
+
+	public void sendDiceResultToPlayers(DicePacketData data) {
 		new Thread(() -> playersByTurn.parallelStream()
-				.forEach(player -> GameServer.getInstance().sendDiceRollNotification( player, data))).start();
+				.forEach(player -> GameServer.getInstance().sendDiceRollNotification(player, data))).start();
 	}
-	
+
+	public void sendTokenMoveToPlayers(GamePlayer playerMoved, TilePacketData tileData) {
+		new Thread(() -> playersByTurn.parallelStream()
+				.forEach(p -> GameServer.getInstance().sendTokenMovedNotification(playerMoved, tileData, p))).start();
+	}
+
 	public void sendTurnCompleteToPlayers() {
 		new Thread(() -> playersByTurn.parallelStream()
 				.forEach(player -> GameServer.getInstance().sendTurnCompleteNotification(player))).start();

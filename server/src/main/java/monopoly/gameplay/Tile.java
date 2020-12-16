@@ -16,11 +16,13 @@ public class Tile implements Actionable{
 
     private String name;
     private String description;
+    private int index;
 
-    public Tile(String name, String description)
+    public Tile(String name, String description, int index)
     {
         this.name = name;
         this.description = description;
+        this.index = index;
     }
 
     /**
