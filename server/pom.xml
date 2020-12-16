@@ -16,6 +16,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<javadocOutputDir>server</javadocOutputDir>
 	</properties>
 
 	<dependencies>
@@ -24,5 +25,12 @@
 			<artifactId>common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20201115</version>
+		</dependency>
+
 	</dependencies>
 </project>

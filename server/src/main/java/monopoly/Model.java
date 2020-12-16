@@ -36,6 +36,7 @@ public class Model {
 		
 		//Creates a game server
 		GameServer.getInstance();
+		GameServer.getInstance().setModel( this);
 	}
 
 	/**

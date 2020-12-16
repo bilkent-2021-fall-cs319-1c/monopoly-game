@@ -1,9 +1,11 @@
 package monopoly.gameplay;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import monopoly.MonopolyException;
 import monopoly.lobby.User;
+import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
 
 /**
@@ -15,10 +17,14 @@ import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
 
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = false)
 public class GamePlayer extends User {
 	private static final int START_BALANCE = 1500;
 	
 	private int balance;
+	private int tileIndex;
+	private Tile tile;
+	
 	//private Game game;
 
 	public GamePlayer(User user) {
@@ -30,7 +36,7 @@ public class GamePlayer extends User {
 		//this.game = game;
 	}
 	
-	public DiceData rollDice() throws MonopolyException {
+	public DicePacketData rollDice() throws MonopolyException {
 		return getLobby().getGame().rollDice( this);
 	}
 	

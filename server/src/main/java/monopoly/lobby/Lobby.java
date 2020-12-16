@@ -134,7 +134,7 @@ public class Lobby implements Identifiable {
 	 * 
 	 * @param user  the user to be notified
 	 * @param ready new state of the user
-	 * @throws NoSuchAlgorithmException 
+	 * @throws NoSuchAlgorithmException
 	 */
 	void userReadyChange(User user, boolean ready) {
 		sendReadyNotification(user);
@@ -173,21 +173,23 @@ public class Lobby implements Identifiable {
 	/**
 	 * The game is initiated for the current lobby and the users are notified. This
 	 * method runs in a new thread
-	 * @throws NoSuchAlgorithmException 
+	 * 
+	 * @throws NoSuchAlgorithmException
 	 * 
 	 */
 	public Game startGame() {
 		inGame = true;
 
-		game = new Game( this);
-		
-		//Notify everyone that the game started
+		game = new Game(this);
+
+		// Notify everyone that the game started
 		new Thread(
 				() -> users.parallelStream().forEach(user -> GameServer.getInstance().sendGameStartNotification(user)))
 						.start();
-		
-		//Notify everyone about the turn order
+
+		// Notify everyone about the turn order and the player who is starting
 		game.sendTurnOrderToPlayers();
+		game.sendPlayerTurnToPlayers();
 
 		return game;
 	}

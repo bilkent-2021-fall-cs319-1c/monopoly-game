@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 
 import lombok.Getter;
 import lombok.Setter;
+import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
 
 /**
  * Dice with a roll functionality
@@ -36,8 +37,8 @@ public class Dice {
 		return result;
 	}
 
-	public DiceData getDiceData() {
-		return new DiceData(getFirstDieValue(), getSecondDieValue());
+	public DicePacketData getDiceAsPacket() {
+		return new DicePacketData(getFirstDieValue(), getSecondDieValue());
 	}
 
 	public int getFirstDieValue() {
