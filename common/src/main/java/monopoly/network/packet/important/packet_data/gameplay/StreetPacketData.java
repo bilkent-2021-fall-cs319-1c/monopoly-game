@@ -5,6 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Street data holder that extends the property packet data
+ * 
+ * @author Javid Baghirov
+ * @version Dec 13, 2020
+ */
+
 @Getter
 @Setter
 @NoArgsConstructor

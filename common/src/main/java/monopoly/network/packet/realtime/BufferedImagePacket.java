@@ -52,7 +52,7 @@ public class BufferedImagePacket extends RealTimeNetworkPacket {
 	}
 
 	/**
-	 * Custom Deserialization
+	 * Custom deserialization
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();

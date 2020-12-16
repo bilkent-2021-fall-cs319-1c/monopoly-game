@@ -35,6 +35,11 @@ public class ImportantNetworkPacket implements Serializable {
 		this.data.addAll(Arrays.asList(data));
 	}
 
+	/**
+	 * Checks if the data type is an error or not
+	 * 
+	 * @return true if error type, false if not
+	 */
 	public boolean isErrorPacket() {
 		return type.name().indexOf("ERR_") == 0;
 	}

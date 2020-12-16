@@ -1,15 +1,23 @@
-package monopoly.network.packet.important.packet_data;
+package monopoly.network.packet.important.packet_data.gameplay;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.ToString;
+import monopoly.network.packet.important.packet_data.PacketData;
+
+/**
+ * Player list data holder that extends the generic packet data
+ * 
+ * @author Javid Baghirov
+ * @version Dec 13, 2020
+ */
 
 @Getter
 @ToString
 public class PlayerListPacketData extends PacketData {
-	private static final long serialVersionUID = -5426017285982696364L;
+	private static final long serialVersionUID = 8041786114593360155L;
 	
 	private List<PlayerPacketData> players;
 	
