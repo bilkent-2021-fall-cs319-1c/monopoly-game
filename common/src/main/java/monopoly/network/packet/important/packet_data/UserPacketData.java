@@ -18,7 +18,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class PlayerPacketData extends PacketData {
+public class UserPacketData extends PacketData {
 	private static final long serialVersionUID = 4417160076301413745L;
 
 	private int connectionId;
