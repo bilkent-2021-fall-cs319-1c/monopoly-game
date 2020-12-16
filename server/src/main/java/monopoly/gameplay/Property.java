@@ -11,18 +11,18 @@ import monopoly.gameplay.tiles.PropertyTile;
  * @version Dec 16, 2020
  */
 
-public class Property implements Auctionable,Tradeable{
+@Getter
+@Setter
+public abstract class Property implements Auctionable,Tradeable{
 
-    @Getter
-    @Setter
     private PropertyTile tile;
     private GamePlayer owner;
     private boolean mortgaged;
-    protected TitleDeedData titleDeed;
+    private TitleDeedData titleDeed;
     private ColorSet colorSet   ;
 
 
-    public Property(PropertyTile tile, GamePlayer owner, TitleDeedData titleDeed, ColorSet colorSet)
+    Property(PropertyTile tile, GamePlayer owner, TitleDeedData titleDeed, ColorSet colorSet)
     {
         this.tile = tile;
         this.owner = owner;

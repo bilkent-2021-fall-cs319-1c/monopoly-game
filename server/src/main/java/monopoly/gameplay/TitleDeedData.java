@@ -3,6 +3,7 @@ package monopoly.gameplay;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -11,16 +12,16 @@ import java.util.HashMap;
  * @author Alper Sari
  * @version Dec 16, 2020
  */
+@Getter
+@Setter
+public abstract class TitleDeedData {
 
-public class TitleDeedData {
-    @Getter
-    @Setter
     private Property property;
     private int buyCost;
     private int mortgageCost;
-    private HashMap<Integer, Integer> rentPrice;
+    private ArrayList<Integer> rentPrice;
 
-    public TitleDeedData(int buyCost, int mortgageCost, HashMap<Integer,Integer> rentPrice)
+    TitleDeedData(int buyCost, int mortgageCost, ArrayList<Integer> rentPrice)
     {
         this.buyCost = buyCost;
         this.mortgageCost = mortgageCost;

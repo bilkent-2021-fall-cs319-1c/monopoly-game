@@ -10,15 +10,14 @@ import monopoly.gameplay.GamePlayer;
  * @author Alper Sari
  * @version Dec 15, 2020
  */
-
+@Getter
+@Setter
 public class TaxTile extends Tile{
-    @Getter
-    @Setter
 
     private int amount;
 
-    public TaxTile(String name, String description, int amount) {
-        super(name, description);
+    public TaxTile(String name, String description,int index, int amount) {
+        super(name, description, index);
         this.amount = amount;
     }
 

@@ -1,5 +1,6 @@
 package monopoly.gameplay;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -10,7 +11,7 @@ import java.util.HashMap;
  */
 
 public class UtilityTitleDeedData extends TitleDeedData{
-    public UtilityTitleDeedData(int buyCost, int mortgageCost, HashMap<Integer,Integer> rentPrice) {
+    public UtilityTitleDeedData(int buyCost, int mortgageCost, ArrayList<Integer> rentPrice) {
         super(buyCost, mortgageCost, rentPrice);
     }
 

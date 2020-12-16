@@ -8,8 +8,8 @@ package monopoly.gameplay.tiles;
  */
 
 public class CardTile extends Tile{
-    public CardTile(String name, String description) {
-        super(name, description);
+    public CardTile(String name, String description, int index) {
+        super(name, description, index);
     }
     //Card system currently non-functional
 }

@@ -10,8 +10,8 @@ import monopoly.gameplay.GamePlayer;
  */
 
 public class GoToJailTile extends Tile{
-    public GoToJailTile(String name, String description) {
-        super(name, description);
+    public GoToJailTile(String name, String description, int index) {
+        super(name, description, index);
     }
 
     @Override

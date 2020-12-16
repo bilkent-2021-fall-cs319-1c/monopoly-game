@@ -13,7 +13,7 @@ public class JailTile extends Tile{
     @Getter
     private final int TILE_POSITION = 10;
 
-    public JailTile(String name, String description) {
-        super(name, description);
+    public JailTile(String name, String description, int index) {
+        super(name, description, index);
     }
 }

@@ -9,13 +9,13 @@ import monopoly.gameplay.GamePlayer;
  * @author Alper Sari
  * @version Dec 15, 2020
  */
-
+@Getter
 public class GoTile extends Tile{
-    @Getter
+
     private final int MONEY_GAIN = 200;
 
-    public GoTile(String name, String description) {
-        super(name, description);
+    public GoTile(String name, String description, int index) {
+        super(name, description, index);
     }
 
     @Override

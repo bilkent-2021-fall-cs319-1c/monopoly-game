@@ -11,14 +11,14 @@ import monopoly.gameplay.Property;
  * @author Alper Sari
  * @version Dec 15, 2020
  */
+@Getter
+@Setter
 public class PropertyTile extends Tile{
-    @Getter
-    @Setter
 
     private Property property;
 
-    public PropertyTile(String name, String description, Property property) {
-        super(name, description);
+    public PropertyTile(String name, String description, int index, Property property) {
+        super(name, description, index);
         this.property = property;
     }
 

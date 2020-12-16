@@ -12,15 +12,14 @@ import java.util.ArrayList;
  * @author Alper Sari
  * @version Dec 16, 2020
  */
-
+@Getter
+@Setter
 public class Street extends Property{
-    @Getter
-    @Setter
 
     private int houseCount;
     private int hotelCount;
 
-    public Street(PropertyTile tile, GamePlayer owner, TitleDeedData titleDeed, ColorSet colorSet) {
+    public Street(PropertyTile tile, GamePlayer owner, StreetTitleDeedData titleDeed, ColorSet colorSet) {
         super(tile, owner, titleDeed, colorSet);
         houseCount = 0;
         hotelCount = 0;
@@ -30,11 +29,35 @@ public class Street extends Property{
     public int getRentCost() {
         if(hotelCount == 0 && houseCount < 5)
         {
-            return titleDeed.getRentTier(houseCount);
+            return getTitleDeed().getRentTier(houseCount);
         }
         else if(hotelCount != 0)
-            return titleDeed.getRentTier(5); //5th tier is for hotels
+            return getTitleDeed().getRentTier(5); //5th tier is for hotels
         else
             return -1; //Owned buildings do not conform to monopoly rules
+    }
+
+    public boolean buildHouse()
+    {
+        if(houseCount < 5)
+        {
+            houseCount++;
+            getOwner().setBalance(getOwner().getBalance() - ((StreetTitleDeedData) getTitleDeed()).getHouseCost());
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public boolean buildHotel()
+    {
+        if (houseCount == 4 && hotelCount == 0)
+        {
+            hotelCount++;
+            getOwner().setBalance(getOwner().getBalance() - ((StreetTitleDeedData)getTitleDeed()).getHotelCost());
+            return true;
+        }
+        else
+            return false;
     }
 }

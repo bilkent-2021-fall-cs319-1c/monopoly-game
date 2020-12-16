@@ -10,7 +10,7 @@ import monopoly.gameplay.tiles.PropertyTile;
  */
 
 public class Railroad extends Property{
-    public Railroad(PropertyTile tile, GamePlayer owner, TitleDeedData titleDeed, ColorSet colorSet) {
+    public Railroad(PropertyTile tile, GamePlayer owner, RailroadTitleDeedData titleDeed, ColorSet colorSet) {
         super(tile, owner, titleDeed, colorSet);
     }
 
@@ -18,14 +18,14 @@ public class Railroad extends Property{
     public int getRentCost() {
         int ownedRailroads = 0;
 
-        for (int i = 0; i < getOwner().properties.size(); i++)
+        for (int i = 0; i < getOwner().getProperties().size(); i++)
         {
-            if (getOwner().properties.get(i) instanceof Railroad)
+            if (getOwner().getProperties().get(i) instanceof Railroad)
                 ownedRailroads++;
         }
 
         if (ownedRailroads < 5)
-            return titleDeed.getRentTier(ownedRailroads);
+            return getTitleDeed().getRentTier(ownedRailroads);
         else
             return -1; //Can't own more than 4 railroads
     }

@@ -11,7 +11,6 @@ import monopoly.gameplay.GamePlayer;
  * @author Alper Sari
  * @version Dec 15, 2020
  */
-
 @Getter
 @Setter
 public class Tile implements Actionable{
