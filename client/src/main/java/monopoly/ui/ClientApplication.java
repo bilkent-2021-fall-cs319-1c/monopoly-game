@@ -21,7 +21,6 @@ import lombok.Getter;
 import monopoly.Error;
 import monopoly.ErrorListener;
 import monopoly.NetworkManager;
-import monopoly.ui.gameplay.Board;
 
 /**
  * Singleton JavaFX Application class for Monopoly.
@@ -74,15 +73,14 @@ public class ClientApplication extends Application implements ErrorListener {
 		rootPane.heightProperty().addListener(sizeListener);
 
 		switchToView("fxml/Gameplay.fxml");
-		//Node node = new Board();
-		//rootPane.getChildren().add(node);
 
 		stage.setTitle("Monopoly");
 		stage.setScene(scene);
 		stage.centerOnScreen();
 
-		stage.setWidth(930);
-		stage.setHeight(1000);
+		stage.setWidth(1600);
+		stage.setHeight(900);
+		stage.setMaximized(true);
 //		stage.setFullScreen(true);
 
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);

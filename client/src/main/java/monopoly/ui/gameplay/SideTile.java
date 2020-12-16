@@ -3,117 +3,112 @@ package monopoly.ui.gameplay;
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.beans.NamedArg;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import monopoly.ui.UIUtil;
 
 /**
  * Models a tile in Monopoly.
  *
  * @author Ziya Mukhtarov, Ege Kaan Gürkan
- * @version Dec 13, 2020
+ * @version Dec 16, 2020
  */
 
 public class SideTile extends MigPane {
+	@FXML
+	private MigPane topWrapper;
+	@FXML
+	private Text tileTitle;
+	@FXML
+	private Text tileValue;
+	@FXML
+	private MigPane pawns;
 
-    @FXML
-    private MigPane root;
-    @FXML
-    private MigPane topWrapper;
-    @FXML
-    private Text tileTitle;
-    @FXML
-    private Label tileValue;
-    @FXML
-    private MigPane pawns;
-    private String tileColor;
-    private String tileTitleString;
-    private String tileValueString;
-    private TileType tileType;
-    public SideTile(@NamedArg("tileColor") String tileColor, @NamedArg("tileTitle") String tileTitle,
-                    @NamedArg("tileValue") String tileValue, @NamedArg("tileType") TileType tileType) {
-        FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/SideTile.fxml"));
-        loader.setController(this);
-        loader.setRoot(this);
+	private String tileColor;
+	private String tileTitleString;
+	private String tileValueString;
+	private String tileType;
 
-        this.tileColor = tileColor;
-        this.tileTitleString = tileTitle;
-        this.tileValueString = tileValue;
-        this.tileType = tileType;
+	private int tileTitleLineCount;
 
-        try {
-            loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+	public SideTile(@NamedArg("tileColor") String tileColor, @NamedArg("tileTitle") String tileTitle,
+			@NamedArg("tileValue") String tileValue, @NamedArg("tileType") String tileType) {
+		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/SideTile.fxml"));
+		loader.setController(this);
+		loader.setRoot(this);
 
-        Stream.of(widthProperty(), heightProperty())
-                .forEach(p -> p.addListener((observable, oldVal, newVal) -> adjustSize()));
+		this.tileColor = (tileColor != null ? tileColor : "red");
+		this.tileTitleString = tileTitle;
+		this.tileValueString = tileValue;
+		this.tileType = tileType;
 
-    }
+		tileTitleLineCount = tileTitleString.split("\n").length;
 
-    @FXML
-    public void initialize() {
-        topWrapper.setStyle("-fx-background-color: " + tileColor + "; -fx-border-color: black; -fx-border-width: 0px 0px 3px 0px;");
-        tileTitle.setText(tileTitleString);
-        //tileTitle.setFont(Font.font(tileTitle.getFont().getFamily(), FontWeight.BOLD, 20));
-        tileValue.setText(tileValueString);
+		try {
+			loader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-        if (tileType == TileType.RAILROAD) {
-            remove(topWrapper);
-            setRows("7%[20%]7%[fill]push[5%, center]0");
-            pawns.setVisible(true);
-            //pawns.setStyle("-fx-background-color: #b50404");
-            pawns.setBackground(new Background(new BackgroundImage(UIUtil.TRAIN, BackgroundRepeat.NO_REPEAT,
-                    BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+		Stream.of(widthProperty(), heightProperty())
+				.forEach(p -> p.addListener((observable, oldVal, newVal) -> adjustSize()));
+	}
 
-        } else if (tileType == TileType.UTILITY) {
-            remove(topWrapper);
-            pawns.setVisible(true);
-            pawns.setStyle("-fx-background-color: deepskyblue");
-            setRows("7%[20%]7%[fill, grow]push[5%, center]0");
+	@FXML
+	public void initialize() {
+		if (!"".equals(tileColor))
+			topWrapper.setBackground(new Background(new BackgroundFill(Color.valueOf(tileColor), null, null)));
+		tileTitle.setText(tileTitleString);
+		tileValue.setText(tileValueString);
 
-        } else if (tileType == TileType.CHANCE_CHEST) {
-            remove(topWrapper);
-            remove(tileValue);
-            setRows("7%[20%]7%[fill, grow]0");
-            pawns.setVisible(true);
-            //pawns.setStyle("-fx-background-color: darkolivegreen");
-            pawns.setBackground(new Background(new BackgroundImage("CHANCE".equals(tileTitleString) ? UIUtil.QUESTION_MARK : UIUtil.CHEST, BackgroundRepeat.NO_REPEAT,
-                    BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
-                    new BackgroundSize(0.7, 0.8, true,
-                            true, false, false))));
-        }
+		if ("RAILROAD".equals(tileType)) {
+			topWrapper.setVisible(false);
+			setComponentConstraints(pawns, "spany 2");
+			setTileIcon(UIUtil.TRAIN);
 
-        if ("KENTUCKY\nAVENUE".equals(tileTitleString) || "PACIFIC\nAVENUE".equals(tileTitleString) || "ST. CHARLES\nPLACE".equals(tileTitleString)) {
-            root.setStyle("-fx-border-width: 3px 3px 3px 3px; -fx-border-color: black");
-        }
-    }
+		} else if ("UTILITY".equals(tileType)) {
+			topWrapper.setVisible(false);
+			setComponentConstraints(pawns, "spany 2");
+			setTileIcon(UIUtil.QUESTION_MARK);
 
-    private void adjustSize() {
-        double width = getWidth();
-        double height = getHeight();
-        System.out.println("title length: " + tileTitleString.length());
-        /*if (tileTitleString.length() < 10) {
-            tileTitle.setFont(Font.font(20));
-            //UIUtil.fitFont(tileTitle, width, height * 0.1);
-        } else {
-            UIUtil.fitFont(tileTitle, width, height * 0.2);
-        }*/
-        //UIUtil.fitFont(tileTitle, width, height * 0.2);
-        tileTitle.setFont(Font.font(5));
-        tileValue.setFont(Font.font(5));
-        //UIUtil.fitFont(tileValue, width, height * 0.11);
-    }
+		} else if ("CHANCE_CHEST".equals(tileType)) {
+			topWrapper.setVisible(false);
+			tileValue.setVisible(false);
+			setComponentConstraints(pawns, "spany 3");
+			setTileIcon("CHANCE".equals(tileTitleString) ? UIUtil.QUESTION_MARK : UIUtil.CHEST);
+		}
+	}
 
-    enum TileType {STREET, RAILROAD, UTILITY, CHANCE_CHEST}
+	private void setTileIcon(Image icon) {
+		pawns.setBackground(
+				new Background(new BackgroundImage(icon, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+						BackgroundPosition.CENTER, new BackgroundSize(0.7, 0.8, true, true, false, false))));
+	}
+
+	private void adjustSize() {
+		double width = getWidth();
+		double height = getHeight();
+
+		if (tileTitleLineCount == 1)
+			UIUtil.fitFont(tileTitle, width * 0.8, height * 0.24);
+		else if (tileTitleLineCount == 2)
+			UIUtil.fitFont(tileTitle, width - 5, height * 0.24);
+		else
+			UIUtil.fitFont(tileTitle, width - 5, height * 0.36);
+
+		if (tileValue.isVisible())
+			UIUtil.fitFont(tileValue, width, height * 0.15);
+	}
 }

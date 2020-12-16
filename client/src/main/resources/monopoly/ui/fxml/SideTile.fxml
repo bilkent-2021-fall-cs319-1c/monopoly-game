@@ -12,24 +12,20 @@
 <?import javafx.scene.text.TextFlow?>
 <?import javafx.scene.text.Text?>
 
-<fx:root fx:id="root"
-         xmlns="http://javafx.com/javafx/15.0.1"
-         xmlns:fx="http://javafx.com/fxml" type="MigPane"
-         rows="0[25%!, fill, grow]0[27%]0[grow]0[7%, center]0" cols="0[grow, fill]0"
-         layout="wrap" style="-fx-border-color: black; -fx-border-width: 3px 0 3px 3px;">
+<fx:root xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane"
+	layout="wrap, gap 0 0, fill, hidemode 3" cols="0[fill, grow]0"
+	rows="0[0:20%, fill][0:20%, fill][0:, grow, fill][0:15%, center]0"
+	style="-fx-border-color: black; -fx-border-width: 2px 1px 2px 1px; -fx-background-color: rgb(215, 255, 201);">
 
-    <MigPane fx:id="topWrapper" rows="0[0:]0"
-             cols="4%[fill]4%[fill]4%[fill]4%[fill]4%" layout="fill" />
+	<MigPane fx:id="topWrapper"
+		style="-fx-border-color: black; -fx-border-width: 0px 0px 2px 0px;"
+		MigPane.cc="hmax 20%" />
 
-    <!--<Label fx:id="tileTitle" alignment="CENTER"
-           MigPane.cc="top, wrap, center" />-->
+	<Text fx:id="tileTitle" MigPane.cc="center, hmax 20%"
+		lineSpacing="0" textAlignment="CENTER" />
 
-    <TextFlow textAlignment="CENTER" >
-        <Text fx:id="tileTitle" />
-    </TextFlow>
+	<MigPane fx:id="pawns" />
 
-    <MigPane fx:id="pawns" rows="[][][]" cols="[][]" visible="false"/>
-
-    <Label fx:id="tileValue" MigPane.cc="bottom, right" textAlignment="CENTER"/>
-
+	<Text fx:id="tileValue" MigPane.cc="center, hmax 15%" />
 </fx:root>

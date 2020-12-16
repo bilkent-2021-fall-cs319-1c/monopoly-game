@@ -18,6 +18,7 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.scene.CacheHint;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
@@ -69,7 +70,7 @@ public class GameplayController implements MonopolyUIController {
 
 		currentBoardAngle = 0;
 		chatOpen = false;
-		boardRotating = true;
+		boardRotating = false;
 
 		openChatPane = new TranslateTransition(Duration.millis(500));
 		openChatPane.setToX(0);
@@ -79,11 +80,14 @@ public class GameplayController implements MonopolyUIController {
 		closeChatPane.setOnFinished(e -> chatOpen = false);
 
 		boardRotateTransition = new RotateTransition(Duration.millis(1000));
+		boardRotateTransition.setOnFinished(e -> board.setCacheHint(CacheHint.DEFAULT));
+
 		boardScaleTransition = new ScaleTransition(Duration.millis(500));
 		boardScaleTransition.setCycleCount(2);
 		boardScaleTransition.setAutoReverse(true);
 		boardScaleTransition.setToX(0.65);
 		boardScaleTransition.setToY(0.65);
+
 		boardRoateAndScaleTransition = new ParallelTransition(boardRotateTransition, boardScaleTransition);
 		boardRoateAndScaleTransition.setOnFinished(e -> boardRotating = false);
 	}
@@ -147,6 +151,12 @@ public class GameplayController implements MonopolyUIController {
 	}
 
 	private void boardRotateAndEnter() {
+		if (boardRotating)
+			return;
+		boardRotating = true;
+
+		board.setCacheHint(CacheHint.SPEED);
+
 		RotateTransition rotate = new RotateTransition(Duration.seconds(1), board);
 		ScaleTransition scale = new ScaleTransition(Duration.seconds(1), board);
 		scale.setToX(0.8);
@@ -161,7 +171,10 @@ public class GameplayController implements MonopolyUIController {
 		ParallelTransition rotateAndScale = new ParallelTransition(rotate, scale);
 		PauseTransition pause = new PauseTransition(Duration.millis(500));
 		SequentialTransition boardEntranceEffect = new SequentialTransition(rotateAndScale, pause, scaleToDefault);
-		boardEntranceEffect.setOnFinished(e -> boardRotating = false);
+		boardEntranceEffect.setOnFinished(e -> {
+			boardRotating = false;
+			board.setCacheHint(CacheHint.DEFAULT);
+		});
 		boardEntranceEffect.play();
 	}
 
@@ -179,6 +192,7 @@ public class GameplayController implements MonopolyUIController {
 		if (boardRotating)
 			return;
 
+		board.setCacheHint(CacheHint.SPEED);
 		boardRotating = true;
 		currentBoardAngle = currentBoardAngle + 90;
 		boardRotateTransition.setToAngle(currentBoardAngle);
@@ -190,6 +204,7 @@ public class GameplayController implements MonopolyUIController {
 		if (boardRotating)
 			return;
 
+		board.setCacheHint(CacheHint.SPEED);
 		boardRotating = true;
 		currentBoardAngle = currentBoardAngle - 90;
 		boardRotateTransition.setToAngle(currentBoardAngle);
@@ -198,7 +213,11 @@ public class GameplayController implements MonopolyUIController {
 
 	@Override
 	public void sizeChanged(double width, double height) {
-		double boardSize = Math.min(width * 0.5, height * 0.9);
+		int boardSize = ((int) Math.min(width * 0.5, height * 0.9) - 6) / 12 * 12 + 6;
+		board.setMinWidth(boardSize);
+		board.setMinHeight(boardSize);
+		board.setPrefWidth(boardSize);
+		board.setPrefHeight(boardSize);
 		board.setMaxWidth(boardSize);
 		board.setMaxHeight(boardSize);
 
