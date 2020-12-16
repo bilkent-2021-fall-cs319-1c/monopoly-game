@@ -1,7 +1,9 @@
-package monopoly.gameplay;
+package monopoly.gameplay.tiles;
 
 import lombok.Getter;
 import lombok.Setter;
+import monopoly.gameplay.Actionable;
+import monopoly.gameplay.GamePlayer;
 
 /**
  * Tile parent class

@@ -1,7 +1,9 @@
-package monopoly.gameplay;
+package monopoly.gameplay.tiles;
 
 import lombok.Getter;
 import lombok.Setter;
+import monopoly.gameplay.GamePlayer;
+import monopoly.gameplay.Property;
 
 /**
  * Tile with property
@@ -17,6 +19,7 @@ public class PropertyTile extends Tile{
 
     public PropertyTile(String name, String description, Property property) {
         super(name, description);
+        this.property = property;
     }
 
     @Override
