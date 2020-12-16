@@ -1,4 +1,6 @@
-package monopoly.gameplay;
+package monopoly.gameplay.tiles;
+
+import monopoly.gameplay.GamePlayer;
 
 /**
  * Tile that sends player to jail

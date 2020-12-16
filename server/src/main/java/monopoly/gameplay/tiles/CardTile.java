@@ -1,4 +1,4 @@
-package monopoly.gameplay;
+package monopoly.gameplay.tiles;
 
 /**
  * Card tile

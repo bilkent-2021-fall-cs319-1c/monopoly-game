@@ -2,10 +2,10 @@ package monopoly.gameplay;
 
 import lombok.Getter;
 import lombok.Setter;
+import monopoly.gameplay.tiles.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
