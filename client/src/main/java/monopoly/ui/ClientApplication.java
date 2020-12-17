@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -40,7 +41,7 @@ public class ClientApplication extends Application implements ErrorListener {
 	@Getter
 	private NetworkManager networkManager;
 
-	private ChangeListener<Number> sizeListener;
+	private ChangeListener<Bounds> sizeListener;
 
 	private GaussianBlur baseNodeBlur;
 
@@ -60,7 +61,7 @@ public class ClientApplication extends Application implements ErrorListener {
 			synchronized (controllers) {
 				for (MonopolyUIController controller : controllers) {
 					if (controller != null) {
-						controller.sizeChanged(rootPane.getWidth(), rootPane.getHeight());
+						Platform.runLater(() -> controller.sizeChanged(rootPane.getWidth(), rootPane.getHeight()));
 					}
 				}
 			}
@@ -77,21 +78,21 @@ public class ClientApplication extends Application implements ErrorListener {
 
 		rootPane.maxHeightProperty().bind(stage.heightProperty());
 		rootPane.maxWidthProperty().bind(stage.widthProperty());
-		rootPane.widthProperty().addListener(sizeListener);
-		rootPane.heightProperty().addListener(sizeListener);
 
-		switchToView("fxml/MainMenu.fxml");
+		switchToView("fxml/Gameplay.fxml");
 
 		stage.setTitle("Monopoly");
 		stage.setScene(scene);
 		stage.centerOnScreen();
 
-		stage.setWidth(1280);
-		stage.setHeight(720);
-//		stage.setFullScreen(true);
+		stage.setWidth(1600);
+		stage.setHeight(900);
+		stage.setMaximized(true);
 
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		stage.show();
+
+		rootPane.layoutBoundsProperty().addListener(sizeListener);
 	}
 
 	/**
