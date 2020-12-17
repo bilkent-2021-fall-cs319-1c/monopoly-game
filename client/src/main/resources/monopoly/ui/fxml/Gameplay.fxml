@@ -33,7 +33,8 @@
 			MigPane.cc="grow" fx:id="playersLeft" />
 
 		<!-- Board -->
-		<Board fx:id="board" MigPane.cc="grow" cache="true" />
+		<Board fx:id="board" visible="false" MigPane.cc="grow"
+			cache="true" />
 
 		<!-- Players on the right side -->
 		<MigPane layout="fill, flowy" cols="0[fill]0"

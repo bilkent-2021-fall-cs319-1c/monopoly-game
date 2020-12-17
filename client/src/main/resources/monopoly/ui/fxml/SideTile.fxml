@@ -5,8 +5,10 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 <?import monopoly.ui.UIUtil?>
+<?import monopoly.ui.gameplay.*?>
 <?import javafx.scene.image.ImageView?>
 
 <?import javafx.scene.text.TextFlow?>
@@ -25,7 +27,8 @@
 	<Text fx:id="tileTitle" MigPane.cc="center, hmax 20%"
 		lineSpacing="0" textAlignment="CENTER" />
 
-	<MigPane fx:id="pawns" />
+	<MigPane layout="wrap" rows="push[]push[]push"
+		cols="push[]push[]push[]push" fx:id="tokens" />
 
 	<Text fx:id="tileValue" MigPane.cc="center, hmax 15%" />
 </fx:root>

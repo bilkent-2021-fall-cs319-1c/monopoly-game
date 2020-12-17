@@ -1,12 +1,16 @@
 package monopoly.ui.gameplay;
 
 import java.io.IOException;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import monopoly.ui.UIUtil;
 
 /**
@@ -15,24 +19,124 @@ import monopoly.ui.UIUtil;
  * @author Ziya Mukhtarov, Ege Kaan Gürkan
  * @version Dec 13, 2020
  */
-
 public class Board extends MigPane {
 	@FXML
-	private MigPane topCenter;
+	private MigPane topSideTiles;
 	@FXML
-	private MigPane leftMiddle;
+	private MigPane leftSideTiles;
 	@FXML
-	private MigPane bottomCenter;
+	private MigPane bottomSideTiles;
 	@FXML
-	private MigPane rightMiddle;
+	private MigPane rightSideTiles;
 	@FXML
 	private CornerTile freeParking;
 	@FXML
 	private CornerTile go;
 	@FXML
-	private CornerTile visitJail;
+	private CornerTile jail;
 	@FXML
 	private CornerTile gotoJail;
+
+	private List<Tile> tiles;
+	private List<Token> tokens;
+
+	/**
+	 * Constructs a Board object
+	 */
+	public Board() {
+		tiles = new ArrayList<>();
+		tokens = new ArrayList<>();
+
+		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/Board.fxml"));
+		loader.setController(this);
+		loader.setRoot(this);
+		try {
+			loader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
+	private void initialize() {
+		loadTestData();
+		addTiles();
+
+		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));
+	}
+
+	private void addTiles() {
+		for (int i = tiles.size() - 1; i >= 0; i--) {
+			if (i > 0 && i < 10)
+				bottomSideTiles.add((Node) tiles.get(i));
+			else if (i > 10 && i < 20)
+				leftSideTiles.add((Node) tiles.get(i));
+			else if (i > 20 && i < 30)
+				topSideTiles.add((Node) tiles.get(i));
+			else if (i > 30)
+				rightSideTiles.add((Node) tiles.get(i));
+		}
+	}
+
+	public Tile getNextTile(Tile tile) {
+		int index = (tiles.indexOf(tile) + 1) % tiles.size();
+		return tiles.get(index);
+	}
+
+	/**
+	 * Makes certain objects like labels and images responsive.
+	 */
+	private void adjustSize() {
+		double width = getWidth();
+		double height = getHeight();
+
+		leftSideTiles.setTranslateX(-width * 0.87 / 2);
+		leftSideTiles.setTranslateY(height * (0.13 / 2 + 0.08));
+		rightSideTiles.setTranslateX(width * 0.87 / 2);
+		rightSideTiles.setTranslateY(-height * (0.13 / 2 + 0.08));
+
+		new Thread(() -> tokens.forEach(token -> Platform.runLater(() -> {
+			token.fixPosition();
+			token.setRadius(width * 0.74 * 0.11 * 0.1);
+		}))).start();
+	}
+
+	// JUST FOR TESTING. EVERYTHING BELOW WILL BE DELETED
+	private void loadTestData() {
+		tiles.add(go);
+		for (int i = 0; i < bottomTileTitles.length; i++) {
+			tiles.add(new SideTile(bottomTileColours[i], bottomTileTitles[i], bottomTileValues[i], bottomTileTypes[i]));
+		}
+		tiles.add(jail);
+		for (int i = 0; i < leftTileTitles.length; i++) {
+			tiles.add(new SideTile(leftTileColours[i], leftTileTitles[i], leftTileValues[i], leftTileTypes[i]));
+		}
+		tiles.add(freeParking);
+		for (int i = 0; i < topTileTitles.length; i++) {
+			tiles.add(new SideTile(topTileColours[i], topTileTitles[i], topTileValues[i], topTileTypes[i]));
+		}
+		tiles.add(gotoJail);
+		for (int i = 0; i < rightTileTitles.length; i++) {
+			tiles.add(new SideTile(rightTileColours[i], rightTileTitles[i], rightTileValues[i], rightTileTypes[i]));
+		}
+
+		tokens.add(new Token(Color.RED));
+		tokens.add(new Token(Color.GREEN));
+		tokens.add(new Token(Color.BLUE));
+		tokens.add(new Token(Color.ORANGE));
+		tokens.add(new Token(Color.YELLOW));
+		tokens.add(new Token(Color.GRAY));
+
+		for (int i = 0; i < tokens.size(); i++) {
+			Token token = tokens.get(i);
+			token.setBoard(this);
+			go.add(token);
+			go.getTileTokens()[i] = token;
+			token.setCurrentTile(go);
+
+			token.setOnMouseClicked(e -> token.moveToNext());
+		}
+	}
 
 	String regularTile = "STREET";
 	String stationTile = "RAILROAD";
@@ -71,50 +175,4 @@ public class Board extends MigPane {
 			chanceChestTile, regularTile, regularTile };
 	String[] rightTileColours = { "#0076C1", "", "#0076C1", "", "", "darkgreen", "", "darkgreen", "darkgreen" };
 	String[] rightTileValues = { "M400", "PAY M100", "M350", "", "M200", "M320", "", "M300", "M300" };
-
-	/**
-	 * Constructs a Board object
-	 */
-	public Board() {
-		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/Board.fxml"));
-		loader.setController(this);
-		loader.setRoot(this);
-		try {
-			loader.load();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		Stream.of(widthProperty(), heightProperty())
-				.forEach(p -> p.addListener((observable, oldVal, newVal) -> adjustSize()));
-	}
-
-	@FXML
-	private void initialize() {
-		for (int i = 0; i < bottomTileTitles.length; i++) {
-			topCenter.add(new SideTile(topTileColours[i], topTileTitles[i], topTileValues[i], topTileTypes[i]), "grow");
-			bottomCenter.add(
-					new SideTile(bottomTileColours[i], bottomTileTitles[i], bottomTileValues[i], bottomTileTypes[i]),
-					"grow");
-			rightMiddle.add(
-					new SideTile(rightTileColours[i], rightTileTitles[i], rightTileValues[i], rightTileTypes[i]),
-					"grow");
-			leftMiddle.add(new SideTile(leftTileColours[i], leftTileTitles[i], leftTileValues[i], leftTileTypes[i]),
-					"grow");
-		}
-
-	}
-
-	/**
-	 * Makes certain objects like labels and images responsive.
-	 */
-	private void adjustSize() {
-		double width = getWidth();
-		double height = getHeight();
-
-		leftMiddle.setTranslateX(-width * 0.87 / 2);
-		leftMiddle.setTranslateY(height * (0.13 / 2 + 0.08));
-		rightMiddle.setTranslateX(width * 0.87 / 2);
-		rightMiddle.setTranslateY(-height * (0.13 / 2 + 0.08));
-	}
 }

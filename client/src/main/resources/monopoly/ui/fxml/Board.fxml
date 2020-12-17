@@ -13,37 +13,35 @@
 <fx:root xmlns="http://javafx.com/javafx"
 	xmlns:fx="http://javafx.com/fxml" type="MigPane"
 	cols="0[13%!]0[74%!]0[13%!]0"
-	rows="0[13%!]push[13%!]push[13%!]push[13%!]0" MigPane.cc="grow"
+	rows="0[13%!]push[13%!]push[13%!]push[13%!]0"
 	style="-fx-background-color: rgb(215, 255, 201);">
 
-	<CornerTile type="PARKING" fx:id="freeParking"
-		MigPane.cc="grow, cell 0 0" />
-	<CornerTile type="GO" fx:id="go" MigPane.cc="grow, cell 2 3" />
-	<CornerTile type="JAIL" fx:id="visitJail"
-		MigPane.cc="grow, cell 0 3" />
-	<CornerTile type="GO_TO_JAIL" fx:id="gotoJail"
-		MigPane.cc="grow, cell 2 0" />
-
-	<MigPane fx:id="topCenter"
+	<MigPane fx:id="topSideTiles"
 		MigPane.cc="grow, cell 1 0, wmax 74%, hmax 13%, hmin 0"
-		style="-fx-rotate: 180"
-		cols="0[11%!]0[11%!]0[11%!]0[11%!]0[12%!]0[11%!]0[11%!]0[11%!]0[11%!]0"
-		rows="0[100%]0" />
+		style="-fx-rotate: 180" rows="0[100%, fill]0"
+		cols="0[11%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0[12%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0" />
 
-	<MigPane fx:id="leftMiddle"
+	<MigPane fx:id="leftSideTiles"
 		MigPane.cc="grow, cell 1 1, wmax 74%, hmax 13%, hmin 0"
-		style=" -fx-rotate: 90"
-		cols="0[11%!]0[11%!]0[11%!]0[11%!]0[12%!]0[11%!]0[11%!]0[11%!]0[11%!]0"
-		rows="0[100%]0" />
+		style=" -fx-rotate: 90" rows="0[100%, fill]0"
+		cols="0[11%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0[12%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0" />
 
-	<MigPane fx:id="rightMiddle"
+	<MigPane fx:id="rightSideTiles"
 		MigPane.cc="grow, cell 1 2, wmax 74%, hmax 13%, hmin 0"
-		style="-fx-rotate: -90"
-		cols="0[11%!]0[11%!]0[11%!]0[11%!]0[12%!]0[11%!]0[11%!]0[11%!]0[11%!]0"
-		rows="0[100%]0" />
+		style="-fx-rotate: -90" rows="0[100%, fill]0"
+		cols="0[11%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0[12%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0" />
 
-	<MigPane fx:id="bottomCenter"
+	<MigPane fx:id="bottomSideTiles"
 		MigPane.cc="grow, cell 1 3, wmax 74%, hmax 13%, hmin 0"
-		cols="0[11%!]0[11%!]0[11%!]0[11%!]0[12%!]0[11%!]0[11%!]0[11%!]0[11%!]0"
-		rows="0[100%]0" />
+		rows="0[100%, fill]0"
+		cols="0[11%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0[12%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0" />
+
+	<CornerTile type="PARKING" fx:id="freeParking"
+		MigPane.cc="grow, cell 0 0, width 0::13%, height 0::13%" />
+	<CornerTile type="JAIL" fx:id="jail"
+		MigPane.cc="grow, cell 0 3, width 0::13%, height 0::13%" />
+	<CornerTile type="GO_TO_JAIL" fx:id="gotoJail"
+		MigPane.cc="grow, cell 2 0, width 0::13%, height 0::13%" />
+	<CornerTile type="GO" fx:id="go"
+		MigPane.cc="grow, cell 2 3, width 0::13%, height 0::13%" />
 </fx:root>

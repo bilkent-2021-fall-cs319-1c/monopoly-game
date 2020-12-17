@@ -61,14 +61,12 @@ public class GameplayController implements MonopolyUIController {
 
 	private boolean chatOpen;
 	private boolean boardRotating;
-	private int currentBoardAngle;
 
 	private Map<Integer, PlayerPane> playerMap;
 
 	public GameplayController() {
 		playerMap = Collections.synchronizedMap(new HashMap<Integer, PlayerPane>());
 
-		currentBoardAngle = 0;
 		chatOpen = false;
 		boardRotating = false;
 
@@ -147,7 +145,16 @@ public class GameplayController implements MonopolyUIController {
 		closeChatPane.setNode(chatPane);
 		boardRoateAndScaleTransition.setNode(board);
 
-		new Thread(this::boardRotateAndEnter).start();
+		sizeChanged(stackPane.getWidth(), stackPane.getHeight());
+		new Thread(() -> {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				Thread.currentThread().interrupt();
+			}
+			Platform.runLater(this::boardRotateAndEnter);
+		}).start();
 	}
 
 	private void boardRotateAndEnter() {
@@ -158,11 +165,13 @@ public class GameplayController implements MonopolyUIController {
 		board.setCacheHint(CacheHint.SPEED);
 
 		RotateTransition rotate = new RotateTransition(Duration.seconds(1), board);
-		ScaleTransition scale = new ScaleTransition(Duration.seconds(1), board);
-		scale.setToX(0.8);
-		scale.setToY(0.8);
 		rotate.setFromAngle(-720);
 		rotate.setToAngle(0);
+		ScaleTransition scale = new ScaleTransition(Duration.seconds(1), board);
+		scale.setFromX(0);
+		scale.setFromY(0);
+		scale.setToX(0.8);
+		scale.setToY(0.8);
 
 		ScaleTransition scaleToDefault = new ScaleTransition(Duration.millis(500), board);
 		scaleToDefault.setToX(1);
@@ -175,6 +184,7 @@ public class GameplayController implements MonopolyUIController {
 			boardRotating = false;
 			board.setCacheHint(CacheHint.DEFAULT);
 		});
+		board.setVisible(true);
 		boardEntranceEffect.play();
 	}
 
@@ -194,8 +204,7 @@ public class GameplayController implements MonopolyUIController {
 
 		board.setCacheHint(CacheHint.SPEED);
 		boardRotating = true;
-		currentBoardAngle = currentBoardAngle + 90;
-		boardRotateTransition.setToAngle(currentBoardAngle);
+		boardRotateTransition.setByAngle(90);
 		boardRoateAndScaleTransition.play();
 	}
 
@@ -206,8 +215,7 @@ public class GameplayController implements MonopolyUIController {
 
 		board.setCacheHint(CacheHint.SPEED);
 		boardRotating = true;
-		currentBoardAngle = currentBoardAngle - 90;
-		boardRotateTransition.setToAngle(currentBoardAngle);
+		boardRotateTransition.setByAngle(-90);
 		boardRoateAndScaleTransition.play();
 	}
 

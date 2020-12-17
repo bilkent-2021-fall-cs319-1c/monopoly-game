@@ -14,5 +14,6 @@
 
 <fx:root xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" type="MigPane"
-	style="-fx-border-color: black; -fx-border-width: 2px 2px 2px 2px;">
+	style="-fx-border-color: black; -fx-border-width: 2px 2px 2px 2px;"
+	layout="wrap" rows="push[]push[]push" cols="push[]push[]push[]push">
 </fx:root>
