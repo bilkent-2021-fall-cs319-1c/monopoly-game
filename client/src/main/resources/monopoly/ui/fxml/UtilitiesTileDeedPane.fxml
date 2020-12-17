@@ -24,11 +24,11 @@
     <Text fx:id="utilityTitle" MigPane.cc="center, grow"/>
 
     <TextFlow textAlignment="CENTER" MigPane.cc="gap 30 30">
-        <Text fx:id="firstPar" text="If one utility is owned, rent is 4 times amount shown on dice."/>
+        <Text fx:id="firstPar"/>
     </TextFlow>
 
     <TextFlow textAlignment="CENTER" MigPane.cc="gap 30 30">
-        <Text fx:id="secondPar" text="If both utilities are owned, rent is 10 time amount shown on dice."/>
+        <Text fx:id="secondPar"/>
     </TextFlow>
 
 </fx:root>

@@ -82,13 +82,12 @@ public class ClientApplication extends Application implements ErrorListener {
 		rootPane.widthProperty().addListener(sizeListener);
 		rootPane.heightProperty().addListener(sizeListener);
 
-		//switchToView("fxml/MainMenu.fxml");
-		Node node = new StreetTitleDeedPane("red", "KENTUCKY\nAVENUE", "M18", "M36",
-				"M90", "M250", "M700", "M875", "M1050",
-				"M150 each", "M150 each");
-		Node node2 = new UtilitiesTileDeedPane(UtilitiesTileDeedPane.UtilityType.ELECTRIC_COMPANY);
-		//rootPane.getChildren().add(node);
+		// switchToView("fxml/MainMenu.fxml");
+		Node node = new StreetTitleDeedPane("red", "KENTUCKY\nAVENUE", "M18", "M36", "M90", "M250", "M700", "M875",
+				"M1050", "M150 each", "M150 each");
+		Node node2 = new UtilitiesTileDeedPane(UtilitiesTileDeedPane.UtilityType.WATER_WORKS);
 		rootPane.getChildren().add(node2);
+//		rootPane.getChildren().add(node2);
 
 		stage.setTitle("Monopoly");
 		stage.setScene(scene);
