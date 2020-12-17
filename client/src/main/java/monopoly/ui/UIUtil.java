@@ -10,7 +10,7 @@ import javafx.scene.text.Text;
 /**
  * Contains utility methods for working with UI. Loads resources such as images
  * and CSS, and holds them in the static constant fields.
- * 
+ *
  * @author Ziya Mukhtarov
  * @version Dec 8, 2020
  */
@@ -28,12 +28,19 @@ public class UIUtil {
 	public static final Image CURVED_ARROW_CW = loadImage("images/CurvedArrowCW.png");
 	public static final Image CURVED_ARROW_CCW = loadImage("images/CurvedArrowCCW.png");
 	public static final Image BACK_ICON = loadImage("images/BackIcon.png");
-	
+
 	public static final Image CHAT_ICON = loadImage("images/ChatIcon.png");
 	public static final Image WEBCAM_ICON = loadImage("images/Camera.png");
 	public static final Image WEBCAM_CROSSED_ICON = loadImage("images/CameraCross.png");
 	public static final Image MICROPHONE_ICON = loadImage("images/Microphone.png");
 	public static final Image MICROPHONE_CROSSED_ICON = loadImage("images/MicrophoneCross.png");
+	public static final Image FAUCET = loadImage("images/Faucet.png");
+	public static final Image LIGHTBULB = loadImage("images/LightBulb.png");
+	public static final Image ONEHOUSE = loadImage("images/OneHouse.png");
+	public static final Image TWOHOUSES = loadImage("images/TwoHouses.png");
+	public static final Image THREEHOUSES = loadImage("images/ThreeHouses.png");
+	public static final Image FOURHOUSES = loadImage("images/FourHouses.png");
+	public static final Image HOTEL = loadImage("images/Hotel.png");
 
 	public static final String COMMON_CSS = loadStylesheet("css/common.css");
 	public static final String MAIN_SCREEN_CSS = loadStylesheet("css/mainScreen.css");

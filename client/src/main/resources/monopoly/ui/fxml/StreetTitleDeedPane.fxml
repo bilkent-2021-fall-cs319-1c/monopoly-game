@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
+
+<?import javafx.scene.image.ImageView?>
+<?import monopoly.ui.UIUtil?>
+<fx:root fx:id="root"
+         xmlns="http://javafx.com/javafx/15.0.1"
+         xmlns:fx="http://javafx.com/fxml" type="MigPane"
+         rows="0[25%!, fill, grow]0[grow, fill]0[35%, center]0" cols="0[grow, fill]0"
+         layout="wrap" style="-fx-border-color: black; -fx-border-width: 3px 0 3px 3px;">
+
+    <MigPane fx:id="topWrapper" rows="0[0:]0[0:]0"
+             cols="0[fill]0" layout="fill" MigPane.cc="gap 8 8 8 8">
+        <Text fx:id="titleDeedText" text="TITLE DEED" textAlignment="CENTER" MigPane.cc="wrap, center"/>
+        <TextFlow textAlignment="CENTER">
+            <Text fx:id="tileTitle"/>
+        </TextFlow>
+    </MigPane>
+
+    <!--<Label fx:id="tileTitle" alignment="CENTER"
+           MigPane.cc="top, wrap, center" />-->
+
+    <MigPane fx:id="costsWrapper" layout="" MigPane.cc="" cols="3%[20%, fill][fill, grow]3%">
+        <Text fx:id="rent" text="Rent" MigPane.cc="cell 0 0"/>
+        <Text fx:id="rentValue" text="M2000" MigPane.cc="right, cell 1 0"/>
+        <Text fx:id="colourSetRent" text="Rent with colour set" MigPane.cc="cell 0 1"/>
+        <Text fx:id="colourSetRentValue" text="M20" MigPane.cc="right, cell 1 1"/>
+        <Text fx:id="oneHouseRent" text="Rent with " MigPane.cc="cell 0 2"/>
+        <ImageView fx:id="oneHouse" MigPane.cc="cell 0 2, left" preserveRatio="true"><image>
+            <UIUtil fx:constant="ONEHOUSE"/></image></ImageView>
+        <Text fx:id="oneHouseRentValue" text="M20" MigPane.cc="right, cell 1 2"/>
+        <Text fx:id="twoHouseRent" text="Rent with " MigPane.cc="cell 0 3"/>
+        <ImageView fx:id="twoHouses" MigPane.cc="cell 0 3, left" preserveRatio="true"><image>
+            <UIUtil fx:constant="TWOHOUSES"/></image></ImageView>
+        <Text fx:id="twoHouseRentValue" text="M20" MigPane.cc="right, cell 1 3"/>
+        <Text fx:id="threeHouseRent" text="Rent with " MigPane.cc="cell 0 4"/>
+        <ImageView fx:id="threeHouses" MigPane.cc="cell 0 4, left" preserveRatio="true"><image>
+            <UIUtil fx:constant="THREEHOUSES"/></image></ImageView>
+        <Text fx:id="threeHouseRentValue" text="M20" MigPane.cc="right, cell 1 4"/>
+        <Text fx:id="fourHouseRent" text="Rent with " MigPane.cc="cell 0 5"/>
+        <ImageView fx:id="fourHouses" MigPane.cc="cell 0 5, left" preserveRatio="true"><image>
+            <UIUtil fx:constant="FOURHOUSES"/></image></ImageView>
+        <Text fx:id="fourHouseRentValue" text="M20" MigPane.cc="right, cell 1 5"/>
+        <Text fx:id="hotelRent" text="Rent with " MigPane.cc="cell 0 6"/>
+        <ImageView fx:id="hotel" MigPane.cc="cell 0 6, left" preserveRatio="true"><image>
+            <UIUtil fx:constant="HOTEL"/></image></ImageView>
+        <Text fx:id="hotelRentValue" text="M20" MigPane.cc="right, cell 1 6"/>
+
+    </MigPane>
+
+
+    <MigPane fx:id="bottomWrapper" cols="3%[70%, fill][fill, grow]3%" layout="">
+        <Text fx:id="housesCost" text="Houses Cost" MigPane.cc="cell 0 0"/>
+        <Text fx:id="housesCostValue" MigPane.cc="right, cell 1 0"/>
+        <Text fx:id="hotelsCost" text="Hotels Cost" MigPane.cc="cell 0 1"/>
+        <Text fx:id="hotelsCostValue" MigPane.cc="right, cell 1 1"/>
+        <Text fx:id="plusFourHousesText" text="(plus 4 houses)" MigPane.cc="right, top, cell 1 2"/>
+    </MigPane>
+
+</fx:root>
+

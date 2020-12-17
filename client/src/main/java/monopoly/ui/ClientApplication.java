@@ -24,6 +24,8 @@ import monopoly.network.NetworkManager;
 import monopoly.network.packet.important.PacketType;
 import monopoly.ui.controller.MonopolyUIController;
 import monopoly.ui.controller.Overlay;
+import monopoly.ui.controller.gameplay.StreetTitleDeedPane;
+import monopoly.ui.controller.gameplay.UtilitiesTileDeedPane;
 
 /**
  * JavaFX Application class for Monopoly.
@@ -46,7 +48,7 @@ public class ClientApplication extends Application implements ErrorListener {
 
 	/**
 	 * Creates a new client application and connects it to the server
-	 * 
+	 *
 	 * @throws IOException if an I/O error occurs when connecting to the server
 	 */
 	public ClientApplication() throws IOException {
@@ -80,14 +82,20 @@ public class ClientApplication extends Application implements ErrorListener {
 		rootPane.widthProperty().addListener(sizeListener);
 		rootPane.heightProperty().addListener(sizeListener);
 
-		switchToView("fxml/MainMenu.fxml");
+		//switchToView("fxml/MainMenu.fxml");
+		Node node = new StreetTitleDeedPane("red", "KENTUCKY\nAVENUE", "M18", "M36",
+				"M90", "M250", "M700", "M875", "M1050",
+				"M150 each", "M150 each");
+		Node node2 = new UtilitiesTileDeedPane(UtilitiesTileDeedPane.UtilityType.ELECTRIC_COMPANY);
+		//rootPane.getChildren().add(node);
+		rootPane.getChildren().add(node2);
 
 		stage.setTitle("Monopoly");
 		stage.setScene(scene);
 		stage.centerOnScreen();
 
-		stage.setWidth(1280);
-		stage.setHeight(720);
+		stage.setWidth(300);
+		stage.setHeight(500);
 //		stage.setFullScreen(true);
 
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
@@ -129,7 +137,7 @@ public class ClientApplication extends Application implements ErrorListener {
 	/**
 	 * Displays an error overlay showing the given error details. Blurs the base
 	 * node that is displayed under the overlay.
-	 * 
+	 *
 	 * @param error The error to display
 	 */
 	public void displayError(Error error) {
