@@ -46,15 +46,13 @@ public abstract class Property implements Auctionable,Tradeable{
 
     @Override
     public void give(GamePlayer player) {
-
+        owner = player;
     }
 
     @Override
     public void trade(GamePlayer from, GamePlayer to) {
-
+        if (from.equals(owner))
+            give(to);
     }
 
-    public GamePlayer getOwner() {
-        return owner;
-    }
 }
