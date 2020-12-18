@@ -50,6 +50,8 @@ public class UIUtil {
 	public static final String PLAYER_PANE_CSS = loadStylesheet("css/playerPane.css");
 	public static final String JOIN_LOBBY_CSS = loadStylesheet("css/joinLobby.css");
 
+	public static final Image[][] DICE = loadDice();
+
 	/**
 	 * Utility classes should not have instances
 	 */
@@ -143,5 +145,19 @@ public class UIUtil {
 
 	private static void loadFont(String path) {
 		Font.loadFont(UIUtil.class.getResourceAsStream(path), 20);
+	}
+
+	private static Image[][] loadDice() {
+		Image[][] dice = new Image[9][16];
+		dice[0][0] = loadImage("images/dice/dice_1_0.png");
+		dice[8][0] = loadImage("images/dice/dice_8_0.png");
+
+		for (int i = 1; i < 8; i++) {
+			for (int j = 0; j < 16; j++) {
+				dice[i][j] = loadImage("images/dice/dice_" + i + "_" + j + ".png");
+			}
+		}
+
+		return dice;
 	}
 }
