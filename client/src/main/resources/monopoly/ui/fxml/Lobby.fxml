@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.*?>
 <?import monopoly.ui.UIUtil?>
-<?import monopoly.ui.controller.in_lobby.PlayerLobbyPane?>
+<?import monopoly.ui.controller.in_lobby.UserLobbyPane?>
 
 <MigPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" layout="fill, wrap"
@@ -32,9 +32,10 @@
 			Waiting for players...
 		</Text>
 
-		<Button styleClass="buttonRegular" text="Make Public" />
+		<Button styleClass="buttonRegular" text="Make Public"
+			disable="true" />
 		<Button styleClass="buttonRegular" text="Ready"
-			onAction="#iAmReady" fx:id="readyButton" />
+			onAction="#changeReady" fx:id="readyButton" />
 	</MigPane>
 
 	<MigPane layout="fill, wrap" cols="5%[fill]5%"

@@ -19,6 +19,10 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import lombok.Getter;
+import monopoly.network.packet.important.packet_data.gameplay.property.StreetTitleDeedPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
+import monopoly.network.packet.important.packet_data.gameplay.property.TitleDeedPacketData;
 import monopoly.ui.UIUtil;
 
 /**
@@ -40,7 +44,7 @@ public class SideTile extends MigPane implements Tile {
 	private String tileColor;
 	private String tileTitleString;
 	private String tileValueString;
-	private String tileType;
+	private TileType tileType;
 
 	private int tileTitleLineCount;
 
@@ -48,7 +52,7 @@ public class SideTile extends MigPane implements Tile {
 	private Token[] tileTokens;
 
 	public SideTile(@NamedArg("tileColor") String tileColor, @NamedArg("tileTitle") String tileTitle,
-			@NamedArg("tileValue") String tileValue, @NamedArg("tileType") String tileType) {
+			@NamedArg("tileValue") String tileValue, @NamedArg("tileType") TileType tileType) {
 		this.tileColor = (tileColor != null ? tileColor : "red");
 		this.tileTitleString = tileTitle;
 		this.tileValueString = tileValue;
@@ -69,24 +73,32 @@ public class SideTile extends MigPane implements Tile {
 		}
 	}
 
+	public SideTile(TilePacketData tileData) {
+		this("", tileData.getTitle(), tileData.getDescription(), tileData.getType());
+
+		TitleDeedPacketData titleDeed = tileData.getTitleDeed();
+		if (titleDeed instanceof StreetTitleDeedPacketData) {
+			tileColor = ((StreetTitleDeedPacketData) titleDeed).getColor();
+			topWrapper.setBackground(new Background(new BackgroundFill(Color.valueOf(tileColor), null, null)));
+		}
+	}
+
 	@FXML
 	public void initialize() {
-		if (!"".equals(tileColor))
-			topWrapper.setBackground(new Background(new BackgroundFill(Color.valueOf(tileColor), null, null)));
 		tileTitle.setText(tileTitleString);
 		tileValue.setText(tileValueString);
 
-		if ("RAILROAD".equals(tileType)) {
+		if (tileType == TileType.RAILROAD) {
 			topWrapper.setVisible(false);
 			setComponentConstraints(tokens, "spany 2");
 			setTileIcon(UIUtil.TRAIN);
 
-		} else if ("UTILITY".equals(tileType)) {
+		} else if (tileType == TileType.UTILITY) {
 			topWrapper.setVisible(false);
 			setComponentConstraints(tokens, "spany 2");
 			setTileIcon(UIUtil.QUESTION_MARK);
 
-		} else if ("CHANCE_CHEST".equals(tileType)) {
+		} else if (tileType == TileType.CHANCE || tileType == TileType.COMMUNITY_CHEST) {
 			topWrapper.setVisible(false);
 			tileValue.setVisible(false);
 			setComponentConstraints(tokens, "spany 3");

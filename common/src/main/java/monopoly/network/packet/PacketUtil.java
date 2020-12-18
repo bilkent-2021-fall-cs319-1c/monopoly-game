@@ -21,6 +21,7 @@ import monopoly.network.packet.important.packet_data.gameplay.property.PropertyP
 import monopoly.network.packet.important.packet_data.gameplay.property.StreetPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.StreetTitleDeedPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 import monopoly.network.packet.important.packet_data.gameplay.property.TitleDeedPacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyListPacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
@@ -49,25 +50,30 @@ public class PacketUtil {
 		kryo.register(byte[].class);
 		kryo.register(MicSoundPacket.class);
 
-		kryo.register(ArrayList.class);
-		kryo.register(PacketType.class);
-		kryo.register(IntegerPacketData.class);
-		kryo.register(LobbyPacketData.class);
-		kryo.register(LobbyListPacketData.class);
-		kryo.register(StringPacketData.class);
-		kryo.register(BooleanPacketData.class);
-		kryo.register(UserPacketData.class);
-		kryo.register(UserListPacketData.class);
 		kryo.register(ImportantNetworkPacket.class);
-		kryo.register(BankPacketData.class);
+		kryo.register(PacketType.class);
+		kryo.register(ArrayList.class);
+
 		kryo.register(PropertyPacketData.class);
 		kryo.register(StreetPacketData.class);
-		kryo.register(TitleDeedPacketData.class);
 		kryo.register(StreetTitleDeedPacketData.class);
-		kryo.register(PlayerPacketData.class);
-		kryo.register(PlayerListPacketData.class);
 		kryo.register(TilePacketData.class);
+		kryo.register(TileType.class);
+		kryo.register(TitleDeedPacketData.class);
+
+		kryo.register(BankPacketData.class);
 		kryo.register(BoardPacketData.class);
 		kryo.register(DicePacketData.class);
+		kryo.register(PlayerListPacketData.class);
+		kryo.register(PlayerPacketData.class);
+
+		kryo.register(LobbyPacketData.class);
+		kryo.register(LobbyListPacketData.class);
+
+		kryo.register(BooleanPacketData.class);
+		kryo.register(IntegerPacketData.class);
+		kryo.register(StringPacketData.class);
+		kryo.register(UserListPacketData.class);
+		kryo.register(UserPacketData.class);
 	}
 }

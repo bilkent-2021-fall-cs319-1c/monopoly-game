@@ -18,17 +18,17 @@ import monopoly.network.packet.important.packet_data.PacketData;
 @AllArgsConstructor
 public class PlayerListPacketData implements PacketData {
 	private static final long serialVersionUID = 8041786114593360155L;
-	
+
 	private List<PlayerPacketData> players;
-	
+
 	public PlayerListPacketData() {
 		players = new ArrayList<>();
 	}
-	
+
 	public void add(PlayerPacketData playerPacketData) {
 		players.add(playerPacketData);
 	}
-	
+
 	public void remove(PlayerPacketData playerPacketData) {
 		players.remove(playerPacketData);
 	}

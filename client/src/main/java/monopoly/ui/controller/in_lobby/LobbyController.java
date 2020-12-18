@@ -12,11 +12,11 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import lombok.Getter;
 import lombok.Setter;
+import monopoly.network.packet.important.packet_data.UserListPacketData;
 import monopoly.network.packet.important.packet_data.UserPacketData;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.UIUtil;
 import monopoly.ui.controller.MonopolyUIController;
-import monopoly.ui.controller.gameplay.GameplayController;
 
 /**
  * Controls the lobby UI (the screen after joining a lobby and waiting for the
@@ -49,10 +49,18 @@ public class LobbyController implements MonopolyUIController {
 	private Button readyButton;
 
 	@Getter
-	private Map<Integer, PlayerLobbyPane> playerMap;
+	private Map<Integer, UserLobbyPane> userMap;
 
 	public LobbyController() {
-		playerMap = Collections.synchronizedMap(new HashMap<Integer, PlayerLobbyPane>());
+		userMap = Collections.synchronizedMap(new HashMap<Integer, UserLobbyPane>());
+	}
+
+	@FXML
+	private void initialize() {
+		UserListPacketData users = app.getNetworkManager().getUsersInLobby();
+		if (users != null) {
+			users.getUsers().forEach(this::userJoined);
+		}
 	}
 
 	/**
@@ -62,11 +70,11 @@ public class LobbyController implements MonopolyUIController {
 	 */
 	public void userJoined(UserPacketData user) {
 		Platform.runLater(() -> {
-			PlayerLobbyPane playerPane = new PlayerLobbyPane(user.isOwner() ? "admin" : "other", user.getUsername());
+			UserLobbyPane playerPane = new UserLobbyPane(user.isOwner() ? "admin" : "other", user.getUsername());
 			playerPane.setUserData(user);
 			MigPane.setCc(playerPane, "grow, hmax 16%, wmax 100%");
 			players.getChildren().add(playerPane);
-			playerMap.put(user.getConnectionId(), playerPane);
+			userMap.put(user.getConnectionId(), playerPane);
 		});
 	}
 
@@ -77,23 +85,27 @@ public class LobbyController implements MonopolyUIController {
 	 *             readiness to set
 	 */
 	public void userReadyChange(UserPacketData user) {
-		playerMap.get(user.getConnectionId()).changeReady(user.isReady());
+		userMap.get(user.getConnectionId()).changeReady(user.isReady());
 	}
 
 	@FXML
-	private void iAmReady() {
-		readyButton.setDisable(true);
-		app.getNetworkManager().setReady(true);
+	private void changeReady() {
+		if (readyButton.getText().equals("Ready")) {
+			readyButton.setText("Not Ready");
+			readyButton.getStyleClass().set(1, "buttonDanger");
+			app.getNetworkManager().setReady(true);
+		} else {
+			readyButton.setText("Ready");
+			readyButton.getStyleClass().set(1, "buttonRegular");
+			app.getNetworkManager().setReady(false);
+		}
 	}
 
 	/**
 	 * Switches the screen to gameplay screen
 	 */
 	public void gameStart() {
-		Platform.runLater(() -> {
-			app.switchToView("fxml/Gameplay.fxml");
-			((GameplayController) app.getMainController()).addPlayers(playerMap.values());
-		});
+		Platform.runLater(() -> app.switchToView("fxml/Gameplay.fxml"));
 	}
 
 	@Override

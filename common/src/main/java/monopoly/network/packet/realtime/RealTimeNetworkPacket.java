@@ -3,6 +3,7 @@ package monopoly.network.packet.realtime;
 import java.io.Serializable;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * A generic network packet to be sent over the network for real-time
@@ -15,6 +16,7 @@ import lombok.Data;
  */
 
 @Data
+@NoArgsConstructor
 public class RealTimeNetworkPacket implements Serializable {
 	private static final long serialVersionUID = 4336363027314300293L;
 

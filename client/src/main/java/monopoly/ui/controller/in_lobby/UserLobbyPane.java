@@ -20,7 +20,7 @@ import monopoly.ui.UIUtil;
  * @author Ziya Mukhtarov
  * @version Nov 30, 2020
  */
-public class PlayerLobbyPane extends MigPane {
+public class UserLobbyPane extends MigPane {
 	@FXML
 	private ImageView playerImage;
 	@FXML
@@ -41,11 +41,11 @@ public class PlayerLobbyPane extends MigPane {
 	 *                 view
 	 * @param name     username to display
 	 */
-	public PlayerLobbyPane(@NamedArg("userType") String userType, @NamedArg("name") String name) {
+	public UserLobbyPane(@NamedArg("userType") String userType, @NamedArg("name") String name) {
 		this.userType = userType;
 		this.name = name;
 
-		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/PlayerLobbyPane.fxml"));
+		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/UserLobbyPane.fxml"));
 		loader.setController(this);
 		loader.setRoot(this);
 		try {

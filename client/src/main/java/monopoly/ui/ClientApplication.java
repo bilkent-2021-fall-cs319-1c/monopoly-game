@@ -104,6 +104,13 @@ public class ClientApplication extends Application implements ErrorListener {
 	public void switchToView(String resourcePath) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
 		Parent root;
+		loader.setLoadListener(new MonopolyFXMLLoadListener() {
+			@Override
+			public void endElement(Object value) {
+				MonopolyUIController controller = (MonopolyUIController) loader.getController();
+				controller.setApp(ClientApplication.this);
+			}
+		});
 		try {
 			root = loader.load();
 		} catch (IOException | IllegalStateException e) {
@@ -113,7 +120,6 @@ public class ClientApplication extends Application implements ErrorListener {
 		}
 
 		MonopolyUIController controller = (MonopolyUIController) loader.getController();
-		controller.setApp(this);
 		controllers.clear();
 		controllers.add(controller);
 

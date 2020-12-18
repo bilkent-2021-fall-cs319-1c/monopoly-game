@@ -15,7 +15,10 @@ import monopoly.network.packet.important.ImportantNetworkPacket;
 import monopoly.network.packet.important.PacketType;
 import monopoly.network.packet.important.packet_data.BooleanPacketData;
 import monopoly.network.packet.important.packet_data.IntegerPacketData;
+import monopoly.network.packet.important.packet_data.UserListPacketData;
 import monopoly.network.packet.important.packet_data.UserPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.BoardPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.PlayerListPacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyListPacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
@@ -110,19 +113,18 @@ public class NetworkManager {
 	 * 
 	 * @param from The starting index of the lobbies to request, inclusive
 	 * @param to   The ending index of the lobbies to request, exclusive
-	 * @return The list of requested lobbies, or an empty list if an error packet is
-	 *         received. Note that the return value of empty list does not guarantee
-	 *         that an error packet is received
+	 * @return The list of requested lobbies, or null if an error packet is
+	 *         received.
 	 */
-	public List<LobbyPacketData> getLobbies(int from, int to) {
+	public LobbyListPacketData getLobbies(int from, int to) {
 		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.GET_LOBBIES, new IntegerPacketData(from),
 				new IntegerPacketData(to));
 		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.LOBBY_LIST);
 
 		if (response == null) {
-			return Collections.emptyList();
+			return null;
 		}
-		return ((LobbyListPacketData) response.getData().get(0)).getLobbies();
+		return (LobbyListPacketData) response.getData().get(0);
 	}
 
 	/**
@@ -140,6 +142,24 @@ public class NetworkManager {
 		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.JOIN_SUCCESS);
 
 		return response != null;
+	}
+
+	/**
+	 * Queries the server for the users in the lobby this player is in. This method
+	 * blocks until the response is received, or an error packet is received, in
+	 * which case the error listeners are notified. Note that, this method may
+	 * return before all the listeners have been notified.
+	 * 
+	 * @return The list of requested users, or null if an error packet is received.
+	 */
+	public UserListPacketData getUsersInLobby() {
+		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.GET_USERS_IN_LOBBY);
+		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.USERS_IN_LOBBY);
+
+		if (response == null) {
+			return null;
+		}
+		return ((UserListPacketData) response.getData().get(0));
 	}
 
 	/**
@@ -190,6 +210,28 @@ public class NetworkManager {
 		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.SET_READY_SUCCESS);
 
 		return response != null;
+	}
+
+	/**
+	 * Queries the server for the open and not-in-game lobbies in the given range.
+	 * This method blocks until the response is received, or an error packet is
+	 * received, in which case the error listeners are notified. Note that, this
+	 * method may return before all the listeners have been notified.
+	 * 
+	 * @param from The starting index of the lobbies to request, inclusive
+	 * @param to   The ending index of the lobbies to request, exclusive
+	 * @return The list of requested lobbies, or null if an error packet is
+	 *         received.
+	 */
+	public GameData getGameData() {
+		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.GET_GAME_DATA);
+		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.GAME_DATA);
+
+		if (response == null) {
+			return null;
+		}
+		return new GameData((PlayerListPacketData) response.getData().get(0),
+				(BoardPacketData) response.getData().get(1));
 	}
 
 	/**
@@ -300,7 +342,7 @@ public class NetworkManager {
 				LobbyController lobbyController = (LobbyController) uiController;
 				lobbyController.userJoined(user);
 			} else {
-				logger.error("Wrong controller. Expected LobbyController, displaying {}", uiController);
+				logger.warn("Wrong controller. Expected LobbyController, displaying {}", uiController);
 			}
 		}
 

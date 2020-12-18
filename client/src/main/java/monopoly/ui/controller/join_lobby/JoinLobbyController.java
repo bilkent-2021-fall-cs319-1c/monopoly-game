@@ -18,6 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import lombok.Setter;
 import monopoly.Error;
+import monopoly.network.packet.important.packet_data.lobby.LobbyListPacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.UIUtil;
@@ -115,8 +116,10 @@ public class JoinLobbyController implements MonopolyUIController {
 		int fromIndex = pageIndex * ROWS_PER_PAGE;
 		int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, lobbyCount.get());
 		lobbies.clear();
-		app.getNetworkManager().getLobbies(fromIndex, toIndex)
-				.forEach(lobby -> lobbies.add(new LobbyDisplayData(lobby)));
+
+		LobbyListPacketData lobbyDatas = app.getNetworkManager().getLobbies(fromIndex, toIndex);
+		if (lobbyDatas != null)
+			lobbyDatas.getLobbies().forEach(lobby -> lobbies.add(new LobbyDisplayData(lobby)));
 
 		return new Pane();
 	}

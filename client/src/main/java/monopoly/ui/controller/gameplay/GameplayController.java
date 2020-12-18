@@ -1,8 +1,8 @@
 package monopoly.ui.controller.gameplay;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -23,13 +23,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import lombok.Setter;
+import monopoly.network.GameData;
 import monopoly.network.packet.important.packet_data.UserPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
 import monopoly.network.packet.realtime.BufferedImagePacket;
 import monopoly.network.packet.realtime.MicSoundPacket;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.controller.MonopolyUIController;
-import monopoly.ui.controller.in_lobby.PlayerLobbyPane;
+import monopoly.ui.controller.gameplay.board.Board;
 
 /**
  * Controls the base gameplay screen
@@ -48,7 +50,7 @@ public class GameplayController implements MonopolyUIController {
 	@FXML
 	private MigPane playersRight;
 	@FXML
-	private MigPane board;
+	private Board board;
 	@FXML
 	private ImageView rotateCWIcon;
 	@FXML
@@ -68,6 +70,7 @@ public class GameplayController implements MonopolyUIController {
 	private boolean chatOpen;
 	private boolean boardRotating;
 
+	private GameplayDataHolder data;
 	private Map<Integer, PlayerPane> playerMap;
 
 	public GameplayController() {
@@ -96,43 +99,66 @@ public class GameplayController implements MonopolyUIController {
 		boardRoateAndScaleTransition.setOnFinished(e -> boardRotating = false);
 	}
 
+	@FXML
+	public void initialize() {
+		openChatPane.setNode(chatPane);
+		closeChatPane.setNode(chatPane);
+		boardRoateAndScaleTransition.setNode(board);
+
+		data = new GameplayDataHolder();
+		GameData gameData = app.getNetworkManager().getGameData();
+		addPlayers(gameData.getPlayerData().getPlayers());
+		board.buildBoard(gameData.getBoardData());
+
+		sizeChanged(stackPane.getWidth(), stackPane.getHeight());
+		Platform.runLater(this::boardRotateAndEnter);
+	}
+
 	/**
 	 * Adds the players in this lobby to this view. Creates a new audio channel per
 	 * each player for voice chat
 	 * 
 	 * @param playerCollection The players to add
 	 */
-	public void addPlayers(Collection<PlayerLobbyPane> playerCollection) {
-		Platform.runLater(() -> {
-			PlayerLobbyPane[] players = playerCollection.toArray(new PlayerLobbyPane[0]);
-			for (int i = 0; i < players.length; i++) {
-				int connectionId = ((UserPacketData) players[i].getUserData()).getConnectionId();
+	private void addPlayers(List<PlayerPacketData> players) {
+		int playerCount = players.size();
+		for (int i = 0; i < playerCount / 2; i++) {
+			addPlayerToPane(false, players.get(i));
+		}
+		for (int i = playerCount - 1; i >= playerCount / 2; i--) {
+			addPlayerToPane(true, players.get(i));
+		}
+	}
 
-				boolean self = false;
-				if (connectionId == app.getNetworkManager().getSelfConnectionId()) {
-					self = true;
-				}
+	private void addPlayerToPane(boolean toLeft, PlayerPacketData player) {
+		UserPacketData userData = player.getUserData();
+		int connectionId = userData.getConnectionId();
 
-				PlayerPane playerPane;
-				if (i % 2 == 0) {
-					playerPane = new PlayerPane(true, self, players[i].getName(), app);
-					playersLeft.add(playerPane, "grow, hmax 30%, wmax 100%");
-				} else {
-					playerPane = new PlayerPane(false, self, players[i].getName(), app);
-					playersRight.add(playerPane, "grow, hmax 30%, wmax 100%");
-				}
+		boolean self = false;
+		if (connectionId == app.getNetworkManager().getSelfConnectionId()) {
+			self = true;
+		}
 
-				AudioChannel audioChannel = null;
-				try {
-					audioChannel = new AudioChannel();
-				} catch (LineUnavailableException e) {
-					e.printStackTrace();
-				}
-				playerPane.setUserData(audioChannel);
+		MigPane container;
+		PlayerPane playerPane;
+		if (toLeft) {
+			container = playersLeft;
+			playerPane = new PlayerPane(true, self, userData.getUsername(), app);
+		} else {
+			container = playersRight;
+			playerPane = new PlayerPane(false, self, userData.getUsername(), app);
+		}
+		Platform.runLater(() -> container.add(playerPane, "grow, hmax 30%, wmax 100%"));
 
-				playerMap.put(connectionId, playerPane);
-			}
-		});
+		AudioChannel audioChannel = null;
+		try {
+			audioChannel = new AudioChannel();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+		playerPane.setUserData(audioChannel);
+
+		playerMap.put(connectionId, playerPane);
 	}
 
 	/**
@@ -154,24 +180,6 @@ public class GameplayController implements MonopolyUIController {
 			Platform.runLater(() -> pane.getPlayerImage()
 					.setImage(SwingFXUtils.toFXImage(((BufferedImagePacket) packet).getImg(), null)));
 		}
-	}
-
-	@FXML
-	public void initialize() {
-		openChatPane.setNode(chatPane);
-		closeChatPane.setNode(chatPane);
-		boardRoateAndScaleTransition.setNode(board);
-
-		sizeChanged(stackPane.getWidth(), stackPane.getHeight());
-		new Thread(() -> {
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				Thread.currentThread().interrupt();
-			}
-			Platform.runLater(this::boardRotateAndEnter);
-		}).start();
 	}
 
 	/**
