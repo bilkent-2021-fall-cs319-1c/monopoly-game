@@ -12,7 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import lombok.Getter;
 import lombok.Setter;
-import monopoly.network.packet.important.packet_data.PlayerPacketData;
+import monopoly.network.packet.important.packet_data.UserPacketData;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.UIUtil;
 import monopoly.ui.controller.MonopolyUIController;
@@ -58,27 +58,26 @@ public class LobbyController implements MonopolyUIController {
 	/**
 	 * Displays a new player that joined this lobby
 	 * 
-	 * @param player The player joining this lobby
+	 * @param user The player joining this lobby
 	 */
-	public void playerJoined(PlayerPacketData player) {
+	public void userJoined(UserPacketData user) {
 		Platform.runLater(() -> {
-			PlayerLobbyPane playerPane = new PlayerLobbyPane(player.isAdmin() ? "admin" : "other",
-					player.getUsername());
-			playerPane.setUserData(player);
+			PlayerLobbyPane playerPane = new PlayerLobbyPane(user.isOwner() ? "admin" : "other", user.getUsername());
+			playerPane.setUserData(user);
 			MigPane.setCc(playerPane, "grow, hmax 16%, wmax 100%");
 			players.getChildren().add(playerPane);
-			playerMap.put(player.getConnectionId(), playerPane);
+			playerMap.put(user.getConnectionId(), playerPane);
 		});
 	}
 
 	/**
 	 * Changes the player's readiness status
 	 * 
-	 * @param player The player data that identifies the player and contains the
-	 *               readiness to set
+	 * @param user The player data that identifies the player and contains the
+	 *             readiness to set
 	 */
-	public void playerReady(PlayerPacketData player) {
-		Platform.runLater(() -> playerMap.get(player.getConnectionId()).setStyle("-fx-background-color: lightgreen"));
+	public void userReadyChange(UserPacketData user) {
+		playerMap.get(user.getConnectionId()).changeReady(user.isReady());
 	}
 
 	@FXML

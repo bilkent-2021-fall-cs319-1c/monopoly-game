@@ -41,10 +41,12 @@
 		</TextFlow>
 
 		<Text fx:id="roomTitle">Room Name:</Text>
-		<TextField fx:id="roomName" text="" disable="true" />
+		<TextField fx:id="roomName" disable="true"
+			promptText="Disabled" />
 
 		<Text fx:id="passwordTitle">Password:</Text>
-		<TextField fx:id="passwordValue" text="" disable="true" />
+		<TextField fx:id="passwordValue" disable="true"
+			promptText="Select Lobby" />
 
 		<Button fx:id="joinButton" mnemonicParsing="false" text="Join"
 			MigPane.cc="span 2, grow, wmax 75%, center" onAction="#joinLobby"

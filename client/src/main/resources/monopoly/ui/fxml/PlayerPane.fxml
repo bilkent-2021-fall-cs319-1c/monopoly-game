@@ -8,7 +8,7 @@
 <?import monopoly.ui.UIUtil?>
 
 <fx:root xmlns="http://javafx.com/javafx/15.0.1"
-	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill, debug"
 	rows="0[]:1%:1%[]:1%:1%" styleClass="bordered"
 	style="-fx-background-color: white">
 
@@ -19,12 +19,11 @@
 
 	<!-- Player's Name -->
 	<Group MigPane.cc="spany 2" fx:id="playerNameLabelWrapper">
-		<Label text="Player 1" style="-fx-rotate: -90"
-			fx:id="playerNameLabel" />
+		<Label style="-fx-rotate: -90" fx:id="playerNameLabel" />
 	</Group>
 
 	<!-- Player's Image or Webcam -->
-	<ImageView preserveRatio="true" MigPane.cc="wrap, top, left"
+	<ImageView preserveRatio="true" MigPane.cc="wrap, top"
 		fx:id="playerImage" />
 
 	<!-- Player's Status Bar -->

@@ -7,7 +7,7 @@
 
 <?import monopoly.ui.controller.gameplay.PlayerPane?>
 <?import monopoly.ui.UIUtil?>
-<?import monopoly.ui.gameplay.Board?>
+<?import monopoly.ui.controller.gameplay.board.Board?>
 
 <StackPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
@@ -30,7 +30,7 @@
 
 		<!-- Players on the left side -->
 		<MigPane layout="fill, flowy" cols="0[fill]0"
-			MigPane.cc="grow" fx:id="playersLeft" />
+			MigPane.cc="grow, wmax 24%" fx:id="playersLeft" />
 
 		<!-- Board -->
 		<Board fx:id="board" visible="false" MigPane.cc="grow"
@@ -38,7 +38,7 @@
 
 		<!-- Players on the right side -->
 		<MigPane layout="fill, flowy" cols="0[fill]0"
-			MigPane.cc="grow, wrap" fx:id="playersRight" />
+			MigPane.cc="grow, wrap, wmax 24%" fx:id="playersRight" />
 
 		<!-- Rotation Icons -->
 		<MigPane MigPane.cc="skip 1, grow" cols="[]push[]" rows="0[]0">

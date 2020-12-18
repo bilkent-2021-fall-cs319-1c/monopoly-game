@@ -1,10 +1,10 @@
 package monopoly.ui.controller.in_lobby;
 
 import java.io.IOException;
-import java.util.stream.Stream;
 
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
+import javafx.application.Platform;
 import javafx.beans.NamedArg;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -53,9 +53,6 @@ public class PlayerLobbyPane extends MigPane {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		Stream.of(widthProperty(), heightProperty())
-				.forEach(p -> p.addListener((observable, oldVal, newVal) -> adjustSize()));
 	}
 
 	@FXML
@@ -68,6 +65,12 @@ public class PlayerLobbyPane extends MigPane {
 		} else {
 			buttonGroup.setVisible(true);
 		}
+
+		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));
+	}
+
+	public void changeReady(boolean ready) {
+		Platform.runLater(() -> setStyle("-fx-background-color:" + (ready ? "lightgreen" : "indianred")));
 	}
 
 	/**

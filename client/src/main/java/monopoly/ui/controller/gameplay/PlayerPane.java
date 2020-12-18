@@ -1,7 +1,6 @@
 package monopoly.ui.controller.gameplay;
 
 import java.io.IOException;
-import java.util.stream.Stream;
 
 import javax.sound.sampled.LineUnavailableException;
 
@@ -86,9 +85,6 @@ public class PlayerPane extends MigPane {
 			e.printStackTrace();
 		}
 
-		Stream.of(widthProperty(), heightProperty())
-				.forEach(p -> p.addListener((observable, oldVal, newVal) -> adjustSize()));
-
 		if (self) {
 			Client client = app.getNetworkManager().getClient();
 			webcamSender = new WebcamSender(client, Webcam.getDefault());
@@ -123,40 +119,12 @@ public class PlayerPane extends MigPane {
 		}
 	}
 
-	/**
-	 * Adjusts the size of inner components based on the outer bounds
-	 */
-	private void adjustSize() {
-		double width = getWidth();
-		double height = getHeight();
-
-		UIUtil.fitFont(playerNameLabel, height, width * 0.09);
-		UIUtil.fitFont(moneyLabel, width * 0.84 * 0.49, height * 0.14);
-		UIUtil.fitFont(tradeButton, width * 0.84 * 0.49 - 10, height * 0.14 - 10);
-
-		playerImage.setFitHeight(height * 0.84);
-		playerImage.setFitWidth(width * 0.89);
-
-		double webcamMicIconSize = Math.min(height * 0.14, width * 0.88 * 0.49 / 2);
-		webcamIcon.setFitHeight(webcamMicIconSize);
-		webcamIcon.setFitWidth(webcamMicIconSize);
-		micIcon.setFitHeight(webcamMicIconSize);
-		micIcon.setFitWidth(webcamMicIconSize);
-
-		Image playerIconImg = (nameOnLeft ? UIUtil.DEFAULT_PLAYER_IMAGE : UIUtil.DEFAULT_PLAYER_IMAGE_LOOKING_LEFT);
-		playerImage.setImage(playerIconImg);
-
-		tradeButton.getStyleClass().add("buttonRegular");
-		tradeButton.getStyleClass().add("tradeButton");
-		playerNameLabel.getStyleClass().add("playerNameLabel");
-	}
-
 	@FXML
 	private void initialize() {
 		if (nameOnLeft)
-			setCols("0[10%:10%:10%]1%:1%:1%[grow]0");
+			setCols("0[10%:10%:10%]1%:1%:1%[grow, right]0");
 		else {
-			setCols("0[grow]1%:1%:1%[10%:10%:10%]0");
+			setCols("0[grow, left]1%:1%:1%[10%:10%:10%]0");
 
 			remove(playerNameLabelWrapper);
 			add(playerNameLabelWrapper, "spany 2, cell 1 0");
@@ -175,11 +143,16 @@ public class PlayerPane extends MigPane {
 				webcamIcon.setDisable(true);
 				micIcon.setDisable(true);
 			} catch (RuntimeException e) {
-				// Running as a Java application
+				// Running as a Java Desktop application
 			}
 		}
 
 		playerNameLabel.setText(username);
+
+		Image playerIconImg = (nameOnLeft ? UIUtil.DEFAULT_PLAYER_IMAGE : UIUtil.DEFAULT_PLAYER_IMAGE_LOOKING_LEFT);
+		playerImage.setImage(playerIconImg);
+
+		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));
 	}
 
 	@FXML
@@ -208,5 +181,30 @@ public class PlayerPane extends MigPane {
 			webcamIcon.setImage(UIUtil.WEBCAM_CROSSED_ICON);
 			webcamSender.stop();
 		}
+	}
+
+	/**
+	 * Adjusts the size of inner components based on the outer bounds
+	 */
+	private void adjustSize() {
+		double width = getWidth();
+		double height = getHeight();
+
+		UIUtil.fitFont(playerNameLabel, height, width * 0.09);
+		UIUtil.fitFont(moneyLabel, width * 0.84 * 0.49, height * 0.14);
+		UIUtil.fitFont(tradeButton, width * 0.84 * 0.49 - 10, height * 0.14 - 10);
+
+		playerImage.setFitHeight(height * 0.84);
+		playerImage.setFitWidth(width * 0.89);
+
+		double webcamMicIconSize = Math.min(height * 0.14, width * 0.88 * 0.49 / 2);
+		webcamIcon.setFitHeight(webcamMicIconSize);
+		webcamIcon.setFitWidth(webcamMicIconSize);
+		micIcon.setFitHeight(webcamMicIconSize);
+		micIcon.setFitWidth(webcamMicIconSize);
+
+		tradeButton.getStyleClass().add("buttonRegular");
+		tradeButton.getStyleClass().add("tradeButton");
+		playerNameLabel.getStyleClass().add("playerNameLabel");
 	}
 }

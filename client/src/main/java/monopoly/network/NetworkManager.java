@@ -15,9 +15,9 @@ import monopoly.network.packet.important.ImportantNetworkPacket;
 import monopoly.network.packet.important.PacketType;
 import monopoly.network.packet.important.packet_data.BooleanPacketData;
 import monopoly.network.packet.important.packet_data.IntegerPacketData;
-import monopoly.network.packet.important.packet_data.LobbyListPacketData;
-import monopoly.network.packet.important.packet_data.LobbyPacketData;
-import monopoly.network.packet.important.packet_data.PlayerPacketData;
+import monopoly.network.packet.important.packet_data.UserPacketData;
+import monopoly.network.packet.important.packet_data.lobby.LobbyListPacketData;
+import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.controller.gameplay.GameplayController;
@@ -170,7 +170,7 @@ public class NetworkManager {
 	public boolean createLobby(String lobbyName, boolean isPublic, String password, int playerLimit) {
 		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.CREATE_LOBBY,
 				new LobbyPacketData(0, lobbyName, password, isPublic, "", 0, playerLimit));
-		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.LOBBY_CREATED); // JOIN_SUCCESS
+		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.JOIN_SUCCESS);
 
 		return response != null;
 	}
@@ -254,7 +254,7 @@ public class NetworkManager {
 
 		@Override
 		public void disconnected(int connectionID) {
-			notifyAllErrorListeners(new ImportantNetworkPacket(PacketType.ERR_UNKNOWN));
+			notifyAllErrorListeners(new ImportantNetworkPacket(PacketType.ERR_DISCONNECTED));
 		}
 
 		@Override
@@ -277,12 +277,14 @@ public class NetworkManager {
 			} else {
 				logger.debug("Received not as a response: {}", packet.getType());
 				if (type == PacketType.PLAYER_JOIN) {
-					handlePlayerJoin((PlayerPacketData) packet.getData().get(0));
+					handleUserJoin((UserPacketData) packet.getData().get(0));
+
 				} else if (type == PacketType.PLAYER_LEFT) {
-					handlePlayerLeft((PlayerPacketData) packet.getData().get(0));
+					handleUserLeft((UserPacketData) packet.getData().get(0));
+
 				} else if (type == PacketType.PLAYER_READY) {
-					handlePlayerReadyChange((PlayerPacketData) packet.getData().get(0),
-							((BooleanPacketData) packet.getData().get(1)).isData());
+					handleUserReadyChange((UserPacketData) packet.getData().get(0));
+
 				} else if (type == PacketType.GAME_START) {
 					handleGameStart();
 				}
@@ -290,40 +292,34 @@ public class NetworkManager {
 		}
 
 		/**
-		 * Handles a new player joining the lobby this client is in
-		 * 
-		 * @param player
+		 * Handles a new user joining the lobby this client is in
 		 */
-		private void handlePlayerJoin(PlayerPacketData player) {
+		private void handleUserJoin(UserPacketData user) {
 			Object uiController = app.getMainController();
 			if (uiController instanceof LobbyController) {
 				LobbyController lobbyController = (LobbyController) uiController;
-				lobbyController.playerJoined(player);
+				lobbyController.userJoined(user);
 			} else {
 				logger.error("Wrong controller. Expected LobbyController, displaying {}", uiController);
 			}
 		}
 
 		/**
-		 * Handles a player leaving the lobby this client is in
-		 * 
-		 * @param player
+		 * Handles a user leaving the lobby this client is in
 		 */
-		private void handlePlayerLeft(PlayerPacketData player) {
+		private void handleUserLeft(UserPacketData user) {
 			// TODO
+			logger.error("{} left, but it is not implemented", user);
 		}
 
 		/**
-		 * Handles a player changing his/her readiness status for starting the game
-		 * 
-		 * @param player
-		 * @param ready
+		 * Handles a user changing his/her readiness status for starting the game
 		 */
-		private void handlePlayerReadyChange(PlayerPacketData player, boolean ready) {
+		private void handleUserReadyChange(UserPacketData user) {
 			Object uiController = app.getMainController();
 			if (uiController instanceof LobbyController) {
 				LobbyController lobbyController = (LobbyController) uiController;
-				lobbyController.playerReady(player);
+				lobbyController.userReadyChange(user);
 			} else {
 				logger.error("Wrong controller. Expected LobbyController, displaying {}", uiController);
 			}

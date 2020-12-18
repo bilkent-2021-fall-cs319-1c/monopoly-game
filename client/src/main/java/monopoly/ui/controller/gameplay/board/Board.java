@@ -1,4 +1,4 @@
-package monopoly.ui.gameplay;
+package monopoly.ui.controller.gameplay.board;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -136,6 +136,28 @@ public class Board extends MigPane {
 
 			token.setOnMouseClicked(e -> token.moveToNext());
 		}
+
+		moveAllContinuosly();
+	}
+
+	private void moveAllContinuosly() {
+		new Thread(() -> {
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				e.printStackTrace();
+			}
+			while (true) {
+				tokens.forEach(Token::moveToNext);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 
 	String regularTile = "STREET";

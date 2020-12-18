@@ -18,7 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import lombok.Setter;
 import monopoly.Error;
-import monopoly.network.packet.important.packet_data.LobbyPacketData;
+import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.UIUtil;
 import monopoly.ui.controller.MonopolyUIController;
@@ -85,8 +85,10 @@ public class JoinLobbyController implements MonopolyUIController {
 		lobbyTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null && newValue.getIsPrivate()) {
 				passwordValue.setDisable(false);
+				passwordValue.setPromptText("Enter Password");
 			} else {
 				passwordValue.setDisable(true);
+				passwordValue.setPromptText("No Private Lobby Selected");
 				passwordValue.clear();
 			}
 		});
@@ -143,8 +145,8 @@ public class JoinLobbyController implements MonopolyUIController {
 
 	@Override
 	public void sizeChanged(double width, double height) {
-		backIcon.setFitWidth(width * 0.04);
-		backIcon.setFitHeight(height * 0.15);
+		backIcon.setFitWidth(width * 0.03);
+		backIcon.setFitHeight(height * 0.1);
 
 		lobbyTable.setFixedCellSize((height * 0.9 - 50) / ROWS_PER_PAGE);
 
@@ -167,13 +169,14 @@ public class JoinLobbyController implements MonopolyUIController {
 		UIUtil.fitFont(roomTitle, width * 0.15, height * 0.07);
 		passwordTitle.setFont(roomTitle.getFont());
 		UIUtil.fitFont(passwordValue, Double.MAX_VALUE, height * 0.04);
+		roomName.setFont(passwordValue.getFont());
 
 		UIUtil.fitFont(joinButton, width * 0.3, height * 0.05);
 
 		Node paginationControlBox = lobbyTablePagination.lookup(".control-box");
 		if (paginationControlBox != null)
 			paginationControlBox.setStyle("-fx-font-size:" + height * 0.02);
-		
+
 		lobbyTable.setStyle("-fx-font-size: " + lobbyTable.getFixedCellSize() * 0.25);
 	}
 }

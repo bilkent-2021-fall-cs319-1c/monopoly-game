@@ -13,13 +13,10 @@
 <fx:root xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill, wrap"
 	cols="[::19%]1%[::49%]1%[::30%]" rows="0[fill, grow]0"
-	style="-fx-border-color: rgba(0,0,0, 1);
-		        -fx-border-width: 5;
-		        -fx-border-insets: -5;
-		        -fx-background-color: indianred ">
+	style="-fx-background-color: indianred" styleClass="bordered">
 	<stylesheets>
 		<UIUtil fx:constant="COMMON_CSS" />
-		<UIUtil fx:constant="PLAYER_LOBBY_PANEL_SCREEN_CSS" />
+		<UIUtil fx:constant="PLAYER_LOBBY_PANE_SCREEN_CSS" />
 	</stylesheets>
 
 	<ImageView fx:id="playerImage" MigPane.cc="center"

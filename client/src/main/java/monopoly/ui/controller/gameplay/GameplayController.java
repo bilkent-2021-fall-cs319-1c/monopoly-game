@@ -23,7 +23,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import lombok.Setter;
-import monopoly.network.packet.important.packet_data.PlayerPacketData;
+import monopoly.network.packet.important.packet_data.UserPacketData;
 import monopoly.network.packet.realtime.BufferedImagePacket;
 import monopoly.network.packet.realtime.MicSoundPacket;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
@@ -106,7 +106,7 @@ public class GameplayController implements MonopolyUIController {
 		Platform.runLater(() -> {
 			PlayerLobbyPane[] players = playerCollection.toArray(new PlayerLobbyPane[0]);
 			for (int i = 0; i < players.length; i++) {
-				int connectionId = ((PlayerPacketData) players[i].getUserData()).getConnectionId();
+				int connectionId = ((UserPacketData) players[i].getUserData()).getConnectionId();
 
 				boolean self = false;
 				if (connectionId == app.getNetworkManager().getSelfConnectionId()) {

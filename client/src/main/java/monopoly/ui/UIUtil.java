@@ -28,7 +28,7 @@ public class UIUtil {
 	public static final Image CURVED_ARROW_CW = loadImage("images/CurvedArrowCW.png");
 	public static final Image CURVED_ARROW_CCW = loadImage("images/CurvedArrowCCW.png");
 	public static final Image BACK_ICON = loadImage("images/BackIcon.png");
-	
+
 	public static final Image CHAT_ICON = loadImage("images/ChatIcon.png");
 	public static final Image WEBCAM_ICON = loadImage("images/Camera.png");
 	public static final Image WEBCAM_CROSSED_ICON = loadImage("images/CameraCross.png");
@@ -45,7 +45,7 @@ public class UIUtil {
 
 	public static final String COMMON_CSS = loadStylesheet("css/common.css");
 	public static final String MAIN_SCREEN_CSS = loadStylesheet("css/mainScreen.css");
-	public static final String PLAYER_LOBBY_PANEL_SCREEN_CSS = loadStylesheet("css/playerLobbyPane.css");
+	public static final String PLAYER_LOBBY_PANE_SCREEN_CSS = loadStylesheet("css/playerLobbyPane.css");
 	public static final String CREATE_LOBBY_CSS = loadStylesheet("css/createLobby.css");
 	public static final String PLAYER_PANE_CSS = loadStylesheet("css/playerPane.css");
 	public static final String JOIN_LOBBY_CSS = loadStylesheet("css/joinLobby.css");

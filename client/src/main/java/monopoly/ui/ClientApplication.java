@@ -79,7 +79,7 @@ public class ClientApplication extends Application implements ErrorListener {
 		rootPane.maxHeightProperty().bind(stage.heightProperty());
 		rootPane.maxWidthProperty().bind(stage.widthProperty());
 
-		switchToView("fxml/Gameplay.fxml");
+		switchToView("fxml/MainMenu.fxml");
 
 		stage.setTitle("Monopoly");
 		stage.setScene(scene);
