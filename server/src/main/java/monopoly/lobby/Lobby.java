@@ -101,15 +101,13 @@ public class Lobby implements Identifiable {
 	 */
 	void userJoin(User userJoining, String providedPassword) throws MonopolyException {
 		if (bannedUsers.contains(userJoining)) {
-//			throw new MonopolyException(PacketType.ERR_BANNED);
-			throw new MonopolyException(PacketType.ERR_UNKNOWN);
+			throw new MonopolyException(PacketType.ERR_BANNED);
 		}
 		if (users.size() >= playerLimit) {
 			throw new MonopolyException(PacketType.ERR_LOBBY_FULL);
 		}
 		if (!isPublic && !password.equals(providedPassword)) {
-//			throw new MonopolyException(PacketType.ERR_WRONG_PASSWORD);
-			throw new MonopolyException(PacketType.ERR_UNKNOWN);
+			throw new MonopolyException(PacketType.ERR_WRONG_PASSWORD);
 		}
 		if (userJoining == null || users.contains(userJoining)) {
 			throw new MonopolyException(PacketType.ERR_ALREADY_IN_LOBBY);
@@ -119,13 +117,13 @@ public class Lobby implements Identifiable {
 			owner = new LobbyOwner(userJoining);
 		}
 
+		users.add(userJoining);
+
 		// Send join success notification to the joining user
 		GameServer.getInstance().sendSuccessfulJoinNotification(userJoining);
 
 		// Send join notification to everyone in the lobby
 		sendJoinedNotification(userJoining);
-
-		users.add(userJoining);
 	}
 
 	/**
@@ -177,21 +175,19 @@ public class Lobby implements Identifiable {
 	 * @throws NoSuchAlgorithmException
 	 * 
 	 */
-	public Game startGame() {
+	public void startGame() {
 		inGame = true;
-
 		game = new Game(this);
-
+		game.updatePlayerLocations();
+		
 		// Notify everyone that the game started
 		new Thread(
 				() -> users.parallelStream().forEach(user -> GameServer.getInstance().sendGameStartNotification(user)))
 						.start();
 
 		// Notify everyone about the turn order and the player who is starting
-		game.sendTurnOrderToPlayers();
-		game.sendPlayerTurnToPlayers();
-
-		return game;
+//		game.sendTurnOrderToPlayers();
+//		game.sendPlayerTurnToPlayers();
 	}
 
 	public void checkGameStart() {
@@ -207,23 +203,21 @@ public class Lobby implements Identifiable {
 	}
 
 	/**
-	 * Sends playerJoined info to everyone except himself. This method runs in a new
-	 * thread
+	 * Sends playerJoined info to everyone. This method runs in a new thread
 	 * 
 	 * @param userJoined the user who joined
 	 */
-	public void sendJoinedNotification(User userJoined) {
+	private void sendJoinedNotification(User userJoined) {
 		new Thread(() -> users.parallelStream()
 				.forEach(user -> GameServer.getInstance().sendPlayerJoinNotification(userJoined, user))).start();
 	}
 
 	/**
-	 * Sends playerLeft info to everyone except himself. This method runs in a new
-	 * thread
+	 * Sends playerLeft info to everyone. This method runs in a new thread
 	 * 
 	 * @param userLeft the user who left
 	 */
-	public void sendLeftNotification(User userLeft) {
+	private void sendLeftNotification(User userLeft) {
 		new Thread(() -> users.parallelStream()
 				.forEach(user -> GameServer.getInstance().sendPlayerLeaveNotification(userLeft, user))).start();
 	}
@@ -233,7 +227,7 @@ public class Lobby implements Identifiable {
 	 * 
 	 * @param userReady the user who is ready
 	 */
-	public void sendReadyNotification(User userReady) {
+	private void sendReadyNotification(User userReady) {
 		new Thread(() -> users.parallelStream()
 				.forEach(user -> GameServer.getInstance().sendPlayerReadyNotification(userReady, user))).start();
 	}
@@ -262,7 +256,7 @@ public class Lobby implements Identifiable {
 	 * 
 	 * @return the player list data
 	 */
-	public UserListPacketData getPlayersAsPacket() {
+	public UserListPacketData getUsersAsPacket() {
 		UserListPacketData userList = new UserListPacketData();
 		users.forEach(user -> userList.add(user.getAsPacket()));
 

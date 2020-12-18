@@ -10,8 +10,8 @@ import monopoly.gameplay.tiles.PropertyTile;
  */
 
 public class Utility extends Property{
-    public Utility(PropertyTile tile, GamePlayer owner, UtilityTitleDeedData titleDeed, ColorSet colorSet) {
-        super(tile, owner, titleDeed, colorSet);
+    public Utility(PropertyTile tile, TitleDeedData titleDeed, ColorSet colorSet) {
+        super(tile, titleDeed, colorSet);
     }
 
     @Override
@@ -24,9 +24,6 @@ public class Utility extends Property{
                 ownedUtilities++;
         }
 
-        if (ownedUtilities < 3)
-            return getTitleDeed().getRentTier(ownedUtilities);
-        else
-            return -1; //Can't own more than 2 utilities
+        return getTitleDeed().getRentTierPrice(ownedUtilities);
     }
 }

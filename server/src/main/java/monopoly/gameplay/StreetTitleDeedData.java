@@ -1,10 +1,9 @@
 package monopoly.gameplay;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import lombok.Getter;
+import monopoly.network.packet.important.packet_data.gameplay.property.StreetTitleDeedPacketData;
 
 /**
  * Deed Data class for properties that can have buildings on them
@@ -12,16 +11,24 @@ import java.util.HashMap;
  * @author Alper Sari
  * @version Dec 16, 2020
  */
+
 @Getter
-@Setter
 public class StreetTitleDeedData extends TitleDeedData{
 
     private int houseCost;
     private int hotelCost;
+    private String color;
 
-    public StreetTitleDeedData(int buyCost, int mortgageCost, ArrayList<Integer> rentPrice, int houseCost, int hotelCost) {
-        super(buyCost, mortgageCost, rentPrice);
+    public StreetTitleDeedData(String title, int buyCost, int mortgageCost, List<Integer> rentPrice, int houseCost, int hotelCost, String color) {
+        super(title, buyCost, mortgageCost, rentPrice);
+        this.color = color;
         this.houseCost = houseCost;
         this.hotelCost = hotelCost;
+    }
+    
+    @Override
+    public StreetTitleDeedPacketData getAsTitleDeedPacket() {
+		return new StreetTitleDeedPacketData(super.getTitle(), getBuyCost(), getMortgageCost(),
+				getRentPrice(), houseCost, hotelCost, color);
     }
 }

@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import monopoly.gameplay.Actionable;
 import monopoly.gameplay.GamePlayer;
+import monopoly.gameplay.TitleDeedData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 
 /**
  * Tile parent class
@@ -18,11 +21,15 @@ public class Tile implements Actionable{
     private String name;
     private String description;
     private int index;
+    
+    private TileType type;
+    private TitleDeedData titleDeed;
 
-    public Tile(String name, String description, int index)
-    {
+    public Tile(TitleDeedData titleDeed, String name, String description, TileType type, int index) {
+    	this.titleDeed = titleDeed;
         this.name = name;
         this.description = description;
+        this.type = type;
         this.index = index;
     }
 
@@ -34,5 +41,9 @@ public class Tile implements Actionable{
     @Override
     public void doAction(GamePlayer player) {
         //Do nothing in parent
+    }
+    
+    public TilePacketData getAsTilePacket() {
+    	return new TilePacketData( titleDeed.getAsTitleDeedPacket(), name, description, type, index);
     }
 }

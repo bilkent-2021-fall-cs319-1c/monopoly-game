@@ -1,10 +1,10 @@
 package monopoly.gameplay;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import monopoly.network.packet.important.packet_data.gameplay.property.TitleDeedPacketData;
 
 /**
  * Deed Data parent class which has a hashmap for different tiers of ownership that change rent value
@@ -14,26 +14,30 @@ import java.util.HashMap;
  */
 @Getter
 @Setter
-public abstract class TitleDeedData {
+public class TitleDeedData {
 
+	private String title;
     private Property property;
     private int buyCost;
     private int mortgageCost;
-    private ArrayList<Integer> rentPrice;
+    private List<Integer> rentPrice;
 
-    TitleDeedData(int buyCost, int mortgageCost, ArrayList<Integer> rentPrice)
+    TitleDeedData(String title, int buyCost, int mortgageCost, List<Integer> rentPrice)
     {
+    	this.title = title;
         this.buyCost = buyCost;
         this.mortgageCost = mortgageCost;
         //Property field is set in property instancing
 
-        //Must have a hashmap constructed from JSON file during tile instancing
-        //Maybe have a list of deed data objects?
         this.rentPrice = rentPrice;
     }
 
-    public int getRentTier(int tier)
+    public int getRentTierPrice(int tier)
     {
         return rentPrice.get(tier);
+    }
+    
+    public TitleDeedPacketData getAsTitleDeedPacket() {
+    	return new TitleDeedPacketData( title, buyCost, mortgageCost, rentPrice);
     }
 }

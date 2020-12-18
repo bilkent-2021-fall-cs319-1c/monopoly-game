@@ -8,13 +8,5 @@ package monopoly.gameplay;
  */
 
 public enum ColorSet {
-    BLUE,
-    BROWN,
-    GREEN,
-    LIGHT_BLUE,
-    ORANGE,
-    PURPLE,
-    RED,
-    YELLOW,
-    RAILROAD,
+	BLUE, BROWN, GREEN, LIGHT_BLUE, ORANGE, PURPLE, RED, YELLOW, RAILROAD
 }

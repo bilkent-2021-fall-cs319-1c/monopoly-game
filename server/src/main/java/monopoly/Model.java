@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import monopoly.gameplay.Game;
 import monopoly.lobby.Lobby;
 import monopoly.lobby.User;
 import monopoly.network.GameServer;
@@ -66,8 +67,8 @@ public class Model {
 			throws MonopolyException {
 		User user = getUserByID(userId);
 		Lobby lobby = new Lobby(name, limit, isPublic, password);
-		user.joinLobby(lobby, password);
 		registerNewLobby(lobby);
+		user.joinLobby(lobby, password);
 	}
 	
 	private void registerNewLobby(Lobby lobby) {
@@ -136,5 +137,8 @@ public class Model {
 		return lobbies.getByID(id);
 	}
 	
+	public Game getGameOfPlayer(int playerId) {
+		return getLobbyOfUser(playerId).getGame();
+	}
 	
 }

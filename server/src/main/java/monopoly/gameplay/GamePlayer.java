@@ -1,17 +1,18 @@
 package monopoly.gameplay;
 
+import java.util.ArrayList;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import monopoly.MonopolyException;
+import monopoly.gameplay.tiles.PropertyTile;
+import monopoly.gameplay.tiles.Tile;
 import monopoly.lobby.User;
-import monopoly.gameplay.tiles.*;
 import monopoly.network.GameServer;
 import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
-import monopoly.network.packet.important.packet_data.gameplay.TilePacketData;
-
-import java.util.ArrayList;
+import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 
 /**
  * A game player
@@ -32,6 +33,8 @@ public class GamePlayer extends User {
 	private ArrayList<Property> properties;
 	private boolean inJail;
 	private boolean rolledDouble;
+	private boolean micOpen;
+	private boolean camOpen;
 
 	// private Game game;
 
@@ -42,9 +45,11 @@ public class GamePlayer extends User {
 
 		balance = START_BALANCE;
 		tileIndex = 0;
-		updateTile();
+		tile = null;
 		properties = new ArrayList<>();
 		inJail = false;
+		micOpen = false;
+		camOpen = false;
 		// this.game = game;
 	}
 
@@ -56,10 +61,10 @@ public class GamePlayer extends User {
 		try {
 			getLobby().getGame().move(this);
 		} catch (MonopolyException e) {
-			GameServer.getInstance().sendImportantPacket( e.getAsPacket(), getId());
+			GameServer.getInstance().sendImportantPacket(e.getAsPacket(), getId());
 		}
 
-		return new TilePacketData(tile.getName(), tile.getDescription(), "", "", tileIndex);
+		return new TilePacketData(null, tile.getName(), tile.getDescription(), null, tile.getIndex());
 	}
 
 	public void updateTile() {
@@ -68,14 +73,8 @@ public class GamePlayer extends User {
 		tile = board.getTiles().get(tileIndex);
 	}
 
-	public PlayerPacketData getPlayerAsPacket() {
-		return new PlayerPacketData(getId(), getUsername(), balance);
-	}
-
-	public void goToJail()
-	{
-		if(!inJail)
-		{
+	public void goToJail() {
+		if (!inJail) {
 			Board board = getLobby().getGame().getBoard();
 			tile = board.getTiles().get(board.getJAIL_POSITION());
 			tileIndex = tile.getIndex();
@@ -84,58 +83,57 @@ public class GamePlayer extends User {
 	}
 
 	/*
-
-	//This functionality exists within the property tile's doAction method. Commented for now
-
-	public void payRent()
-	{
-		if(tile instanceof PropertyTile)
-			if(!((PropertyTile) tile).getProperty().getOwner().equals(this)
-					&& ((PropertyTile) tile).getProperty().getOwner() != null)
-			{
-				balance -= ((PropertyTile) tile).getProperty().getRentCost();
-			}
-	}
-	*/
-	public boolean buyProperty()
-	{
+	 * 
+	 * //This functionality exists within the property tile's doAction method.
+	 * Commented for now
+	 * 
+	 * public void payRent() { if(tile instanceof PropertyTile) if(!((PropertyTile)
+	 * tile).getProperty().getOwner().equals(this) && ((PropertyTile)
+	 * tile).getProperty().getOwner() != null) { balance -= ((PropertyTile)
+	 * tile).getProperty().getRentCost(); } }
+	 */
+	public boolean buyProperty() {
 		updateTile();
-		if(tile instanceof PropertyTile)
-			if(((PropertyTile) tile).getProperty().getTitleDeed().getBuyCost() <= balance
-				&& !properties.contains(((PropertyTile) tile).getProperty()))
-			{
+		if (tile instanceof PropertyTile) {
+			if (((PropertyTile) tile).getProperty().getTitleDeed().getBuyCost() <= balance
+					&& !properties.contains(((PropertyTile) tile).getProperty())) {
+
 				((PropertyTile) tile).getProperty().setOwner(this);
 				balance -= ((PropertyTile) tile).getProperty().getTitleDeed().getBuyCost();
 				return true;
-			}
-			else
+			} else {
 				return false;
-		else
+			}
+		} else {
 			return false;
+		}
 	}
 
-	public boolean buildHouse()
-	{
+	public boolean buildHouse() {
 		boolean flag = false;
-		if(tile instanceof PropertyTile)
-			if(((PropertyTile) tile).getProperty() instanceof Street)
-				if(((StreetTitleDeedData)(((PropertyTile) tile).getProperty().getTitleDeed())).getHouseCost() <= balance)
-				{
-					flag = ((Street)(((PropertyTile) tile).getProperty())).buildHouse();
+		if (tile instanceof PropertyTile) {
+			if (((PropertyTile) tile).getProperty() instanceof Street) {
+				if (((StreetTitleDeedData) (((PropertyTile) tile).getProperty().getTitleDeed()))
+						.getHouseCost() <= balance) {
+					flag = ((Street) (((PropertyTile) tile).getProperty())).buildHouse();
+				}
+			}
+		}
+		return flag;
+	}
+
+	public boolean buildHotel() {
+		boolean flag = false;
+		if (tile instanceof PropertyTile)
+			if (((PropertyTile) tile).getProperty() instanceof Street)
+				if (((StreetTitleDeedData) (((PropertyTile) tile).getProperty().getTitleDeed()))
+						.getHouseCost() <= balance) {
+					flag = ((Street) (((PropertyTile) tile).getProperty())).buildHotel();
 				}
 		return flag;
 	}
 
-	public boolean buildHotel()
-	{
-		boolean flag = false;
-		if(tile instanceof PropertyTile)
-			if(((PropertyTile) tile).getProperty() instanceof Street)
-				if(((StreetTitleDeedData)(((PropertyTile) tile).getProperty().getTitleDeed())).getHouseCost() <= balance)
-				{
-					flag = ((Street)(((PropertyTile) tile).getProperty())).buildHotel();
-				}
-		return flag;
+	public PlayerPacketData getAsPlayerPacket() {
+		return new PlayerPacketData(getAsPacket(), balance, tile.getAsTilePacket(), micOpen, camOpen);
 	}
-
 }

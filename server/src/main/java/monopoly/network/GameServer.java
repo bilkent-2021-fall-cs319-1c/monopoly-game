@@ -16,8 +16,7 @@ import monopoly.network.packet.important.packet_data.BooleanPacketData;
 import monopoly.network.packet.important.packet_data.IntegerPacketData;
 import monopoly.network.packet.important.packet_data.StringPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
-import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
-import monopoly.network.packet.important.packet_data.gameplay.TilePacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyListPacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
@@ -99,16 +98,22 @@ public class GameServer extends Server {
 			handleJoin(connectionID, packet);
 
 		} else if (packet.getType() == PacketType.GET_USERS_IN_LOBBY) {
-			handleGetUsers(connectionID, packet);
+			handleGetUsers(connectionID);
 
 		} else if (packet.getType() == PacketType.LEAVE_LOBBY) {
 			handleLeave(connectionID);
 
 		} else if (packet.getType() == PacketType.SET_READY) {
-			handleReady(connectionID);
+			handleReady(connectionID, packet);
+
+		} else if (packet.getType() == PacketType.GET_GAME_DATA) {
+			handleGameData(connectionID);
 
 		} else if (packet.getType() == PacketType.ROLL_DICE) {
 			handleDiceRoll(connectionID);
+
+		} else if (packet.getType() == PacketType.BUY_PROPERTY) {
+			handleBuyProperty(connectionID);
 		}
 	}
 
@@ -200,13 +205,10 @@ public class GameServer extends Server {
 	 * @param connectionID the id of the user
 	 * @param packet       the received network packet
 	 */
-	private void handleGetUsers(int connectionID, ImportantNetworkPacket packet) {
-		LobbyPacketData lobbyData = (LobbyPacketData) packet.getData().get(0);
-		int lobbyId = lobbyData.getLobbyId();
+	private void handleGetUsers(int connectionID) {
+		Lobby lobby = model.getLobbyOfUser(connectionID);
 
-		Lobby lobby = model.getLobbyByID(lobbyId);
-
-		sendImportantPacket(new ImportantNetworkPacket(PacketType.USERS_IN_LOBBY, lobby.getPlayersAsPacket()),
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.USERS_IN_LOBBY, lobby.getUsersAsPacket()),
 				connectionID);
 	}
 
@@ -231,14 +233,22 @@ public class GameServer extends Server {
 	 * 
 	 * @param connectionID the id of the user
 	 */
-	private void handleReady(int connectionID) {
+	private void handleReady(int connectionID, ImportantNetworkPacket packet) {
 		User user = model.getUserByID(connectionID);
+		boolean ready = ((BooleanPacketData) packet.getData().get(0)).isData();
+
 		try {
-			user.setReady(true);
+			user.setReady(ready);
 			sendImportantPacket(new ImportantNetworkPacket(PacketType.SET_READY_SUCCESS), connectionID);
 		} catch (MonopolyException e) {
 			sendImportantPacket(e.getAsPacket(), connectionID);
 		}
+	}
+
+	private void handleGameData(int connectionID) {
+		GamePlayer player = model.getUserByID( connectionID).asPlayer();
+		
+		sendGameDataNotification( player);
 	}
 
 	private void handleDiceRoll(int connectionID) {
@@ -252,6 +262,11 @@ public class GameServer extends Server {
 		} catch (MonopolyException e) {
 			sendImportantPacket(e.getAsPacket(), connectionID);
 		}
+	}
+
+	public void handleBuyProperty(int connectionID) {
+		Game game = model.getLobbyOfUser(connectionID).getGame();
+		GamePlayer player = game.getCurrentPlayer();
 	}
 
 	/**
@@ -271,7 +286,9 @@ public class GameServer extends Server {
 	 * @param userJoined the user to be notified
 	 */
 	public void sendSuccessfulJoinNotification(User userJoined) {
-		sendImportantPacket(new ImportantNetworkPacket(PacketType.JOIN_SUCCESS), userJoined.getId());
+		Lobby lobby = model.getLobbyOfUser(userJoined.getId());
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.JOIN_SUCCESS, lobby.getAsPacket()),
+				userJoined.getId());
 	}
 
 	/**
@@ -305,6 +322,13 @@ public class GameServer extends Server {
 		sendImportantPacket(new ImportantNetworkPacket(PacketType.GAME_START), user.getId());
 	}
 
+	private void sendGameDataNotification(GamePlayer player) {
+		Game game = model.getGameOfPlayer(player.getId());
+
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.GAME_DATA, game.getPlayersAsPacket(),
+				game.getBoard().getAsBoardPacket()), player.getId());
+	}
+
 	public void sendPlayersTurnOrderNotification(GamePlayer player) {
 		Game game = model.getLobbyOfUser(player.getId()).getGame();
 
@@ -313,10 +337,11 @@ public class GameServer extends Server {
 	}
 
 	public void sendPlayerTurnNotification(GamePlayer player) {
-		Game game = model.getLobbyOfUser(player.getId()).getGame();
-		PlayerPacketData playerData = game.getCurrentPlayer().getPlayerAsPacket();
+		Game game = model.getGameOfPlayer(player.getId());
 
-		sendImportantPacket(new ImportantNetworkPacket(PacketType.PLAYER_TURN, playerData), player.getId());
+		sendImportantPacket(
+				new ImportantNetworkPacket(PacketType.PLAYER_TURN, game.getCurrentPlayer().getAsPlayerPacket()),
+				player.getId());
 	}
 
 	public void sendDiceRollNotification(GamePlayer player, DicePacketData data) {

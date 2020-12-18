@@ -12,7 +12,7 @@ import monopoly.network.GameServer;
 import monopoly.network.packet.important.PacketType;
 import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerListPacketData;
-import monopoly.network.packet.important.packet_data.gameplay.TilePacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 
 /**
  * The main game class with all the gameplay functionalities
@@ -39,6 +39,9 @@ public class Game {
 	 *                                  available
 	 */
 	public Game(Lobby lobby) {
+		this.lobby = lobby;
+		turnNumber = 0;
+		
 		playersByTurn = lobby.getUsers().parallelStream().map(u -> u.asPlayer()).collect(Collectors.toList());
 		initializeGamePlayers();
 
@@ -47,9 +50,6 @@ public class Game {
 
 		dice = new Dice();
 		board = new Board();
-
-		this.lobby = lobby;
-		turnNumber = 0;
 	}
 
 	private void initializeGamePlayers() {
@@ -95,6 +95,15 @@ public class Game {
 
 		return player;
 	}
+	
+	public void updatePlayerLocations() {
+		new Thread(() -> playersByTurn.parallelStream()
+				.forEach(GamePlayer::updateTile)).start();
+	}
+	
+	public void buyProperty(GamePlayer player ) {
+		
+	}
 
 	/**
 	 * The main method to handle turn operations. It is called every time the dice
@@ -118,14 +127,12 @@ public class Game {
 		// Notify everyone about who is playing next
 		sendPlayerTurnToPlayers();
 	}
-
-	public PlayerListPacketData getPlayersAsPacket() {
-		PlayerListPacketData playerList = new PlayerListPacketData();
-		playersByTurn.forEach(player -> playerList.add(player.getPlayerAsPacket()));
-
-		return playerList;
-	}
-
+	
+//	public void sendGameDataToPlayers() {	
+//		new Thread(() -> playersByTurn.parallelStream()
+//				.forEach(player -> GameServer.getInstance().sendGameDataNotification( player))).start();
+//	}
+	
 	public void sendTurnOrderToPlayers() {
 		new Thread(() -> playersByTurn.parallelStream()
 				.forEach(player -> GameServer.getInstance().sendPlayersTurnOrderNotification(player))).start();
@@ -149,5 +156,12 @@ public class Game {
 	public void sendTurnCompleteToPlayers() {
 		new Thread(() -> playersByTurn.parallelStream()
 				.forEach(player -> GameServer.getInstance().sendTurnCompleteNotification(player))).start();
+	}
+	
+	public PlayerListPacketData getPlayersAsPacket() {
+		PlayerListPacketData playerList = new PlayerListPacketData();
+		playersByTurn.forEach(player -> playerList.add(player.getAsPlayerPacket()));
+
+		return playerList;
 	}
 }

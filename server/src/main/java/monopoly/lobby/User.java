@@ -23,8 +23,6 @@ public class User implements Identifiable {
 
 	private Lobby lobby;
 	private boolean ready;
-	private boolean micOpen;
-	private boolean camOpen;
 
 //	Uncomment if required (TA suggestion)
 //	private LobbyOwner lobbyOwnerInstance;
@@ -40,8 +38,6 @@ public class User implements Identifiable {
 		username = user.username;
 
 		lobby = user.lobby;
-		micOpen = user.micOpen;
-		camOpen = user.camOpen;
 		ready = user.ready;
 	}
 
@@ -57,8 +53,6 @@ public class User implements Identifiable {
 
 		lobby = null;
 		ready = false;
-		micOpen = false;
-		camOpen = false;
 	}
 
 	/**
@@ -94,12 +88,14 @@ public class User implements Identifiable {
 			throw new MonopolyException(PacketType.ERR_UNKNOWN);
 		}
 
-		lobby.userJoin(this, password);
-
 		this.lobby = lobby;
 		ready = false;
-		micOpen = false;
-		camOpen = false;
+		try {
+			lobby.userJoin(this, password);
+		} catch (MonopolyException e) {
+			this.lobby = null;
+			throw e;
+		}
 	}
 
 	/**

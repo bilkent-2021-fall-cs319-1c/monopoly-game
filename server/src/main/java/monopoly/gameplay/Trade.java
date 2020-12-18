@@ -1,10 +1,9 @@
 package monopoly.gameplay;
 
+import java.util.ArrayList;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Getter
 @Setter
@@ -22,11 +21,6 @@ public class Trade {
         this.playerFrom = playerFrom;
         this.playerTo = playerFrom;
 
-        //itemsOfPlayerFrom.addAll(playerFrom.getProperties());
-        //itemsOfPlayerFrom.addAll(playerFrom.getGetOutOfJailCards());
-
-        //itemsOfPlayerTo.addAll(playerTo.getProperties());
-        //itemsOfPlayerTo.addAll(playerTo.getGetOutOfJailCards());
         itemsOfPlayerFrom = new ArrayList<Tradeable>();
         itemsOfPlayerTo = new ArrayList<Tradeable>();
 

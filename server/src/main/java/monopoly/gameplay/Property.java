@@ -2,6 +2,7 @@ package monopoly.gameplay;
 
 import lombok.Getter;
 import lombok.Setter;
+import monopoly.MonopolyException;
 import monopoly.gameplay.tiles.PropertyTile;
 
 /**
@@ -13,46 +14,41 @@ import monopoly.gameplay.tiles.PropertyTile;
 
 @Getter
 @Setter
-public abstract class Property implements Auctionable,Tradeable{
+public abstract class Property implements Auctionable, Tradeable {
+	private PropertyTile tile;
+	private GamePlayer owner;
+	private boolean mortgaged;
+	private TitleDeedData titleDeed;
+	private ColorSet colorSet;
 
-    private PropertyTile tile;
-    private GamePlayer owner;
-    private boolean mortgaged;
-    private TitleDeedData titleDeed;
-    private ColorSet colorSet   ;
+	Property(PropertyTile tile, TitleDeedData titleDeed, ColorSet colorSet) {
+		this.tile = tile;
+		owner = null;
+		this.titleDeed = titleDeed;
+		this.colorSet = colorSet;
+		mortgaged = false;
+		tile.setProperty(this);
+		titleDeed.setProperty(this);
+	}
 
+	public void mortgage() {
+		mortgaged = !mortgaged;
+	}
 
-    Property(PropertyTile tile, GamePlayer owner, TitleDeedData titleDeed, ColorSet colorSet)
-    {
-        this.tile = tile;
-        this.owner = owner;
-        this.titleDeed = titleDeed;
-        this.colorSet = colorSet;
-        mortgaged = false;
-        tile.setProperty(this);
-        titleDeed.setProperty(this);
-    }
+	public abstract int getRentCost() throws MonopolyException;
 
-    public void mortgage()
-    {
-        mortgaged = !mortgaged;
-    }
+	public boolean isOwned() {
+		return owner != null;
+	}
 
-    public int getRentCost()
-    {
-        //Parent method does nothing
-        return -1;
-    }
+	@Override
+	public void give(GamePlayer player) {
+		owner = player;
+	}
 
-    @Override
-    public void give(GamePlayer player) {
-        owner = player;
-    }
-
-    @Override
-    public void trade(GamePlayer from, GamePlayer to) {
-        if (from.equals(owner))
-            give(to);
-    }
-
+	@Override
+	public void trade(GamePlayer from, GamePlayer to) {
+		if (from.equals(owner))
+			give(to);
+	}
 }
