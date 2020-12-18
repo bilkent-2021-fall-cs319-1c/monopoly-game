@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import monopoly.network.packet.important.packet_data.PacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 
@@ -15,9 +16,10 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TilePacke
  */
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class BoardPacketData implements PacketData{
+public class BoardPacketData implements PacketData {
 	private static final long serialVersionUID = 6634230326522093081L;
-	
+
 	private List<TilePacketData> tiles;
 }

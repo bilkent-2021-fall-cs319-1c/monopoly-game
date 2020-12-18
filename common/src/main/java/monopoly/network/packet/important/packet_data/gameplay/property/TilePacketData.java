@@ -2,6 +2,7 @@ package monopoly.network.packet.important.packet_data.gameplay.property;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import monopoly.network.packet.important.packet_data.PacketData;
 
 /**
@@ -12,6 +13,7 @@ import monopoly.network.packet.important.packet_data.PacketData;
  */
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class TilePacketData implements PacketData {
 	private static final long serialVersionUID = -580359519872171665L;

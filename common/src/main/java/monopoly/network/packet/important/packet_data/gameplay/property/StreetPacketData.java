@@ -2,6 +2,7 @@ package monopoly.network.packet.important.packet_data.gameplay.property;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
 
 /**
@@ -12,6 +13,7 @@ import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
  */
 
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class StreetPacketData extends PropertyPacketData {
 	private static final long serialVersionUID = -3484595840480253292L;
