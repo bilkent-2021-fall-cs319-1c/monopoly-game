@@ -1,25 +1,19 @@
 package monopoly.network.packet.important.packet_data.lobby;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 import monopoly.network.packet.important.packet_data.PacketData;
 
 /**
- * Lobby data holder that extends the generic packet data
+ * Lobby data holder that implements the generic packet data
  * 
  * @author Ziya Mukhtarov
  * @version Dec 13, 2020
  */
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-@ToString
-public class LobbyPacketData extends PacketData {
+public class LobbyPacketData implements PacketData {
 	private static final long serialVersionUID = 1586964682050981428L;
 
 	private int lobbyId;
