@@ -148,6 +148,7 @@ public class StreetTitleDeedPane extends MigPane implements DeedCard {
 		double rightColumnWidth = width * 0.3;
 		double leftHeight = height * 0.04;
 		double valuesHeight = height * 0.035;
+		double rentWithWidth = width * 0.25;
 
 		UIUtil.fitFont(titleDeedText, width * 0.9, topWrapper.getHeight() * 0.2);
 		UIUtil.fitFont(tileTitle, width * 0.7, topWrapper.getHeight() * 0.6);
@@ -158,19 +159,19 @@ public class StreetTitleDeedPane extends MigPane implements DeedCard {
 		UIUtil.fitFont(colourSetRent, width * 0.6, leftHeight);
 		UIUtil.fitFont(colourSetRentValue, rightColumnWidth, valuesHeight);
 
-		UIUtil.fitFont(oneHouseRent, width * 0.2, leftHeight);
+		UIUtil.fitFont(oneHouseRent, rentWithWidth, leftHeight);
 		UIUtil.fitFont(oneHouseRentValue, rightColumnWidth, valuesHeight);
 
-		UIUtil.fitFont(twoHouseRent, width * 0.2, leftHeight);
+		UIUtil.fitFont(twoHouseRent, rentWithWidth, leftHeight);
 		UIUtil.fitFont(twoHouseRentValue, rightColumnWidth, valuesHeight);
 
-		UIUtil.fitFont(threeHouseRent, width * 0.2, leftHeight);
+		UIUtil.fitFont(threeHouseRent, rentWithWidth, leftHeight);
 		UIUtil.fitFont(threeHouseRentValue, rightColumnWidth, valuesHeight);
 
-		UIUtil.fitFont(fourHouseRent, width * 0.2, leftHeight);
+		UIUtil.fitFont(fourHouseRent, rentWithWidth, leftHeight);
 		UIUtil.fitFont(fourHouseRentValue, rightColumnWidth, valuesHeight);
 
-		UIUtil.fitFont(hotelRent, width * 0.2, leftHeight);
+		UIUtil.fitFont(hotelRent, rentWithWidth, leftHeight);
 		UIUtil.fitFont(hotelRentValue, rightColumnWidth, valuesHeight);
 
 		UIUtil.fitFont(housesCost, width * 0.6, leftHeight);
@@ -180,7 +181,7 @@ public class StreetTitleDeedPane extends MigPane implements DeedCard {
 		UIUtil.fitFont(hotelsCostValue, rightColumnWidth, valuesHeight);
 		UIUtil.fitFont(plusFourHousesText, rightColumnWidth, height * 0.025);
 
-		double imageHeight = height * 0.05;
+		double imageHeight = height * 0.04;
 		oneHouse.setFitHeight(imageHeight);
 		twoHouses.setFitHeight(imageHeight);
 		threeHouses.setFitHeight(imageHeight);
