@@ -8,6 +8,7 @@
 <?import monopoly.ui.UIUtil?>
 <?import monopoly.ui.controller.gameplay.*?>
 <?import monopoly.ui.controller.gameplay.board.*?>
+<?import monopoly.ui.controller.gameplay.board.dice.Dice?>
 
 <fx:root xmlns="http://javafx.com/javafx"
 	xmlns:fx="http://javafx.com/fxml" type="MigPane"

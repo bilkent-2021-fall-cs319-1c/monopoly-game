@@ -8,6 +8,7 @@
 <?import monopoly.ui.controller.gameplay.PlayerPane?>
 <?import monopoly.ui.UIUtil?>
 <?import monopoly.ui.controller.gameplay.board.Board?>
+<?import monopoly.ui.controller.gameplay.board.dice.Dice?>
 
 <StackPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
@@ -40,14 +41,17 @@
 		<MigPane layout="fill, flowy" cols="0[fill]0"
 			MigPane.cc="grow, wrap, wmax 24%" fx:id="playersRight" />
 
-		<!-- Rotation Icons -->
-		<MigPane MigPane.cc="skip 1, grow" cols="[]push[]" rows="0[]0">
+		<!-- Rotation Icons and Dice -->
+		<MigPane MigPane.cc="skip 1, grow"
+			cols="[]push[15%, fill]push[]" rows="0[fill]0">
 			<ImageView pickOnBounds="true"
 				onMouseClicked="#rotateBoardCW" fx:id="rotateCWIcon">
 				<image>
 					<UIUtil fx:constant="CURVED_ARROW_CW" />
 				</image>
 			</ImageView>
+
+			<Dice opacity="0" fx:id="dice" />
 
 			<ImageView pickOnBounds="true"
 				onMouseClicked="#rotateBoardCCW" fx:id="rotateCCWIcon">

@@ -52,6 +52,7 @@ public class PlayerPane extends MigPane {
 
 	private ClientApplication app;
 
+	@Getter
 	private boolean nameOnLeft;
 	private boolean self;
 	private String username;

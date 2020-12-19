@@ -149,7 +149,7 @@ public class UIUtil {
 
 	private static Image[][] loadDice() {
 		Image[][] dice = new Image[9][16];
-		dice[0][0] = loadImage("images/dice/dice_1_0.png");
+		dice[0][0] = loadImage("images/dice/dice_0_0.png");
 		dice[8][0] = loadImage("images/dice/dice_8_0.png");
 
 		for (int i = 1; i < 8; i++) {

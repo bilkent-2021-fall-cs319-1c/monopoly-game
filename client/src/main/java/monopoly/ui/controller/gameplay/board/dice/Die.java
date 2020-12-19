@@ -1,4 +1,4 @@
-package monopoly.ui.controller.gameplay;
+package monopoly.ui.controller.gameplay.board.dice;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -11,8 +11,8 @@ import javafx.scene.image.ImageView;
 import monopoly.ui.UIUtil;
 
 public class Die extends ImageView {
-	private Coordinate prevLocation;
-	private Coordinate currentLocation;
+	private DieCoordinate prevLocation;
+	private DieCoordinate currentLocation;
 	private Random random;
 
 	public Die() {
@@ -24,22 +24,14 @@ public class Die extends ImageView {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		setFitWidth(200);
-		setPreserveRatio(true);
 
-		currentLocation = new Coordinate(0, 0);
+		currentLocation = new DieCoordinate(0, 0);
 		prevLocation = null;
 		updateImage();
 		random = new Random();
-
-		// TODO Testing
-		setOnMouseClicked(e -> {
-			new Thread(() -> roll(random.nextInt(6) + 1)).start();
-		});
 	}
 
-	private void goToDestiantion(Coordinate dest) {
+	private void goToDestiantion(DieCoordinate dest) {
 		while (currentLocation.getRow() < dest.getRow()) {
 			currentLocation = currentLocation.down();
 			updateImage();
@@ -69,41 +61,47 @@ public class Die extends ImageView {
 	}
 
 	private void randomTraverse() {
-		int duration = random.nextInt(100) + 100;
+		int duration = random.nextInt(25) + 25;
 		for (int i = 0; i < duration; i++) {
-			List<Coordinate> neighbours = currentLocation.getNeighbours();
-			Collections.shuffle(neighbours);
-			
-			Coordinate nextLocation = neighbours.get(0);
+//			Never go to previous location
+			List<DieCoordinate> neighbors = currentLocation.getNeighbors();
+			Collections.shuffle(neighbors);
+
+			DieCoordinate nextLocation = neighbors.get(0);
 			if (nextLocation.equals(prevLocation))
-				nextLocation = neighbours.get(1);
-			
+				nextLocation = neighbors.get(1);
+
 			prevLocation = currentLocation;
 			currentLocation = nextLocation;
+
 			updateImage();
 		}
 	}
 
+	private DieCoordinate getCoordinateOfFace(int face) {
+		if (face == 1) {
+			return new DieCoordinate(4, 0);
+		}
+		if (face == 2) {
+			return new DieCoordinate(4, 4);
+		}
+		if (face == 3) {
+			return new DieCoordinate(8, 0);
+		}
+		if (face == 4) {
+			return new DieCoordinate(0, 0);
+		}
+		if (face == 5) {
+			return new DieCoordinate(4, 12);
+		}
+		return new DieCoordinate(4, 8);
+	}
+
 	public void roll(int destination) {
-		randomTraverse();
-		if (destination == 1) {
-			goToDestiantion(new Coordinate(4, 0));
-		}
-		if (destination == 2) {
-			goToDestiantion(new Coordinate(4, 4));
-		}
-		if (destination == 3) {
-			goToDestiantion(new Coordinate(8, 0));
-		}
-		if (destination == 4) {
-			goToDestiantion(new Coordinate(0, 0));
-		}
-		if (destination == 5) {
-			goToDestiantion(new Coordinate(4, 12));
-		}
-		if (destination == 6) {
-			goToDestiantion(new Coordinate(4, 8));
-		}
+		new Thread(() -> {
+			randomTraverse();
+			goToDestiantion(getCoordinateOfFace(destination));
+		}).start();
 	}
 
 }

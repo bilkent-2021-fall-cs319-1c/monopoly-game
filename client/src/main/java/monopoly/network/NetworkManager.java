@@ -24,6 +24,7 @@ import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.controller.gameplay.GameplayController;
+import monopoly.ui.controller.gameplay.GameplayDataHolder;
 import monopoly.ui.controller.in_lobby.LobbyController;
 
 /**
@@ -213,25 +214,23 @@ public class NetworkManager {
 	}
 
 	/**
-	 * Queries the server for the open and not-in-game lobbies in the given range.
-	 * This method blocks until the response is received, or an error packet is
-	 * received, in which case the error listeners are notified. Note that, this
-	 * method may return before all the listeners have been notified.
+	 * Queries the server for the current game's data. This method blocks until the
+	 * response is received, or an error packet is received, in which case the error
+	 * listeners are notified. Note that, this method may return before all the
+	 * listeners have been notified.
 	 * 
-	 * @param from The starting index of the lobbies to request, inclusive
-	 * @param to   The ending index of the lobbies to request, exclusive
-	 * @return The list of requested lobbies, or null if an error packet is
-	 *         received.
+	 * @param app The application which requests this game data
+	 * @return The game data
 	 */
-	public GameData getGameData() {
+	public GameplayDataHolder getGameData(ClientApplication app) {
 		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.GET_GAME_DATA);
 		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.GAME_DATA);
 
 		if (response == null) {
 			return null;
 		}
-		return new GameData((PlayerListPacketData) response.getData().get(0),
-				(BoardPacketData) response.getData().get(1));
+		return new GameplayDataHolder((PlayerListPacketData) response.getData().get(0),
+				(BoardPacketData) response.getData().get(1), app);
 	}
 
 	/**

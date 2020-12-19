@@ -19,7 +19,7 @@ import monopoly.ui.UIUtil;
  * Constructs the Monopoly board.
  *
  * @author Ziya Mukhtarov, Ege Kaan Gürkan
- * @version Dec 13, 2020
+ * @version Dec 19, 2020
  */
 public class Board extends MigPane {
 	@FXML
@@ -104,7 +104,7 @@ public class Board extends MigPane {
 	}
 
 	private void addTiles() {
-		for (int i = 0; i < tiles.size(); i++) {
+		for (int i = tiles.size() - 1; i >= 0; i--) {
 			if (i > 0 && i < 10)
 				bottomSideTiles.add((Node) tiles.get(i));
 			else if (i > 10 && i < 20)

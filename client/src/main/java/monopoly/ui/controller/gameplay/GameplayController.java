@@ -1,14 +1,10 @@
 package monopoly.ui.controller.gameplay;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.sound.sampled.LineUnavailableException;
 
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
+import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
@@ -16,22 +12,18 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.CacheHint;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import lombok.Getter;
 import lombok.Setter;
-import monopoly.network.GameData;
-import monopoly.network.packet.important.packet_data.UserPacketData;
-import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
-import monopoly.network.packet.realtime.BufferedImagePacket;
-import monopoly.network.packet.realtime.MicSoundPacket;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.controller.MonopolyUIController;
 import monopoly.ui.controller.gameplay.board.Board;
+import monopoly.ui.controller.gameplay.board.dice.Dice;
 
 /**
  * Controls the base gameplay screen
@@ -59,6 +51,8 @@ public class GameplayController implements MonopolyUIController {
 	private ImageView chatIcon;
 	@FXML
 	private MigPane chatPane;
+	@FXML
+	private Dice dice;
 
 	private TranslateTransition openChatPane;
 	private TranslateTransition closeChatPane;
@@ -70,12 +64,10 @@ public class GameplayController implements MonopolyUIController {
 	private boolean chatOpen;
 	private boolean boardRotating;
 
-	private GameplayDataHolder data;
-	private Map<Integer, PlayerPane> playerMap;
+	@Getter
+	private GameplayDataHolder gameData;
 
 	public GameplayController() {
-		playerMap = Collections.synchronizedMap(new HashMap<Integer, PlayerPane>());
-
 		chatOpen = false;
 		boardRotating = false;
 
@@ -105,9 +97,8 @@ public class GameplayController implements MonopolyUIController {
 		closeChatPane.setNode(chatPane);
 		boardRoateAndScaleTransition.setNode(board);
 
-		data = new GameplayDataHolder();
-		GameData gameData = app.getNetworkManager().getGameData();
-		addPlayers(gameData.getPlayerData().getPlayers());
+		gameData = app.getNetworkManager().getGameData(app);
+		addPlayers(gameData.getPlayerPanes());
 		board.buildBoard(gameData.getBoardData());
 
 		sizeChanged(stackPane.getWidth(), stackPane.getHeight());
@@ -120,45 +111,24 @@ public class GameplayController implements MonopolyUIController {
 	 * 
 	 * @param playerCollection The players to add
 	 */
-	private void addPlayers(List<PlayerPacketData> players) {
+	private void addPlayers(List<PlayerPane> players) {
 		int playerCount = players.size();
 		for (int i = 0; i < playerCount / 2; i++) {
-			addPlayerToPane(false, players.get(i));
+			addPlayerPaneToView(players.get(i));
 		}
 		for (int i = playerCount - 1; i >= playerCount / 2; i--) {
-			addPlayerToPane(true, players.get(i));
+			addPlayerPaneToView(players.get(i));
 		}
 	}
 
-	private void addPlayerToPane(boolean toLeft, PlayerPacketData player) {
-		UserPacketData userData = player.getUserData();
-		int connectionId = userData.getConnectionId();
-
-		boolean self = false;
-		if (connectionId == app.getNetworkManager().getSelfConnectionId()) {
-			self = true;
-		}
-
+	private void addPlayerPaneToView(PlayerPane playerPane) {
 		MigPane container;
-		PlayerPane playerPane;
-		if (toLeft) {
+		if (playerPane.isNameOnLeft())
 			container = playersLeft;
-			playerPane = new PlayerPane(true, self, userData.getUsername(), app);
-		} else {
+		else
 			container = playersRight;
-			playerPane = new PlayerPane(false, self, userData.getUsername(), app);
-		}
+
 		Platform.runLater(() -> container.add(playerPane, "grow, hmax 30%, wmax 100%"));
-
-		AudioChannel audioChannel = null;
-		try {
-			audioChannel = new AudioChannel();
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
-		}
-		playerPane.setUserData(audioChannel);
-
-		playerMap.put(connectionId, playerPane);
 	}
 
 	/**
@@ -167,19 +137,7 @@ public class GameplayController implements MonopolyUIController {
 	 * @param packet The packet received
 	 */
 	public void realTimePacketReceived(RealTimeNetworkPacket packet) {
-		int sourceId = packet.getSourceConnectionID();
-		PlayerPane pane = playerMap.get(sourceId);
-
-		if (pane == null) {
-			return;
-		}
-
-		if (packet instanceof MicSoundPacket) {
-			((AudioChannel) pane.getUserData()).addToQueue((MicSoundPacket) packet);
-		} else {
-			Platform.runLater(() -> pane.getPlayerImage()
-					.setImage(SwingFXUtils.toFXImage(((BufferedImagePacket) packet).getImg(), null)));
-		}
+		gameData.resolveRealTimePacketSourceAndPlay(packet);
 	}
 
 	/**
@@ -211,6 +169,11 @@ public class GameplayController implements MonopolyUIController {
 		boardEntranceEffect.setOnFinished(e -> {
 			boardRotating = false;
 			board.setCacheHint(CacheHint.DEFAULT);
+
+			FadeTransition diceFadeIn = new FadeTransition(Duration.millis(500), dice);
+			diceFadeIn.setFromValue(0);
+			diceFadeIn.setToValue(1);
+			diceFadeIn.play();
 		});
 		board.setVisible(true);
 		boardEntranceEffect.play();

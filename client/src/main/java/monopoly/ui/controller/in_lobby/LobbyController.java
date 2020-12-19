@@ -75,6 +75,7 @@ public class LobbyController implements MonopolyUIController {
 			MigPane.setCc(playerPane, "grow, hmax 16%, wmax 100%");
 			players.getChildren().add(playerPane);
 			userMap.put(user.getConnectionId(), playerPane);
+			userReadyChange(user);
 		});
 	}
 

@@ -98,11 +98,15 @@ public class SideTile extends MigPane implements Tile {
 			setComponentConstraints(tokens, "spany 2");
 			setTileIcon(UIUtil.QUESTION_MARK);
 
+		} else if (tileType == TileType.TAX) {
+			topWrapper.setVisible(false);
+			setComponentConstraints(tokens, "spany 2");
+
 		} else if (tileType == TileType.CHANCE || tileType == TileType.COMMUNITY_CHEST) {
 			topWrapper.setVisible(false);
 			tileValue.setVisible(false);
 			setComponentConstraints(tokens, "spany 3");
-			setTileIcon("CHANCE".equals(tileTitleString) ? UIUtil.QUESTION_MARK : UIUtil.CHEST);
+			setTileIcon(tileType == TileType.CHANCE ? UIUtil.QUESTION_MARK : UIUtil.CHEST);
 		}
 
 		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));

@@ -7,7 +7,11 @@
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 <?import javafx.scene.control.*?>
 <?import monopoly.ui.UIUtil?>
+<?import monopoly.ui.controller.gameplay.board.dice.*?>
 
 <fx:root xmlns="http://javafx.com/javafx/15.0.1"
-	xmlns:fx="http://javafx.com/fxml" type="ImageView" preserveRatio="true">
+	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill"
+	cols="[]push[]" rows="[0:, center]">
+	<Die fx:id="die1" />
+	<Die fx:id="die2" />
 </fx:root>
