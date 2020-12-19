@@ -9,7 +9,7 @@
 
 <fx:root fx:id="root" xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" type="MigPane"
-	rows="1%[0:25%, fill]0[0:, grow, fill]0[1%]0[0:35%, center]1%"
+	rows="1%[0:25%, fill]3%[0:, grow, fill]2%[0:25%, bottom]1%"
 	cols="1%[0:, grow, fill]1%" layout="wrap"
 	style="-fx-border-color: black; -fx-border-width: 3px 3px 3px 3px;">
 
@@ -20,11 +20,8 @@
 		<Text fx:id="tileTitle" textAlignment="CENTER" lineSpacing="0"/>
 	</MigPane>
 
-	<!--<Label fx:id="tileTitle" alignment="CENTER" MigPane.cc="top, wrap, center"
-		/> -->
-
 	<MigPane fx:id="costsWrapper" layout="wrap"
-		MigPane.cc="" cols="0[][40%, left][fill, grow]0">
+		MigPane.cc="" cols="0[][40%, left][fill, grow]0" rows="0[grow][grow][grow][grow][grow][grow][grow]0">
 
 		<Text fx:id="rent" text="Rent" MigPane.cc="span 2" />
 		<Text fx:id="rentValue" MigPane.cc="right" />
@@ -80,16 +77,16 @@
 
 	</MigPane>
 
-	<Separator />
 
 	<MigPane fx:id="bottomWrapper"
-		cols="0[70%, fill][fill, grow]0" layout="">
-		<Text fx:id="housesCost" text="Houses Cost" MigPane.cc="cell 0 0" />
-		<Text fx:id="housesCostValue" MigPane.cc="right, cell 1 0" />
-		<Text fx:id="hotelsCost" text="Hotels Cost" MigPane.cc="cell 0 1" />
-		<Text fx:id="hotelsCostValue" MigPane.cc="right, cell 1 1" />
+		cols="0[70%, fill][fill, grow]0" rows="0[]push[][][]" layout="wrap">
+		<Separator MigPane.cc="wrap, span 2"/>
+		<Text fx:id="housesCost" text="Houses Cost" />
+		<Text fx:id="housesCostValue" MigPane.cc="right" />
+		<Text fx:id="hotelsCost" text="Hotels Cost"  />
+		<Text fx:id="hotelsCostValue" MigPane.cc="right" />
 		<Text fx:id="plusFourHousesText" text="(plus 4 houses)"
-			MigPane.cc="right, top, cell 1 2" />
+			MigPane.cc="right, top, span 2" />
 	</MigPane>
 
 </fx:root>
