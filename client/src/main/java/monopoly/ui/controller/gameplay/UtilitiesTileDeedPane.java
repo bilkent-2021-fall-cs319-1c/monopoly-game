@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * @version 17/12/2020
  */
 
-public class UtilitiesTileDeedPane extends MigPane {
+public class UtilitiesTileDeedPane extends MigPane implements DeedCard{
 
 	@FXML
 	private ImageView image;
@@ -80,6 +80,10 @@ public class UtilitiesTileDeedPane extends MigPane {
 
 	public enum UtilityType {
 		WATER_WORKS, ELECTRIC_COMPANY
+	}
+
+	public String getName() {
+		return utilityTitle.getText();
 	}
 
 }

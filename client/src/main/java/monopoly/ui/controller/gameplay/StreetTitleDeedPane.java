@@ -3,6 +3,7 @@ package monopoly.ui.controller.gameplay;
 import java.io.IOException;
 import java.util.stream.Stream;
 
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -24,7 +25,7 @@ import monopoly.ui.UIUtil;
  * @version Dec 17, 2020
  */
 
-public class StreetTitleDeedPane extends MigPane {
+public class StreetTitleDeedPane extends MigPane implements DeedCard {
 
 	@FXML
 	private MigPane root;
@@ -123,10 +124,6 @@ public class StreetTitleDeedPane extends MigPane {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		Stream.of(widthProperty(), heightProperty())
-				.forEach(p -> p.addListener((observable, oldVal, newVal) -> adjustSize()));
-
 	}
 
 	@FXML
@@ -145,6 +142,9 @@ public class StreetTitleDeedPane extends MigPane {
 		housesCostValue.setText(houseCostString);
 		hotelsCostValue.setText(hotelCostString);
 
+		setStyle(" -fx-background-color: white; -fx-border-color: black; -fx-border-width: 3px");
+
+		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));
 	}
 
 	private void adjustSize() {
@@ -154,10 +154,9 @@ public class StreetTitleDeedPane extends MigPane {
 		double rightColumnWidth = width * 0.3;
 		double leftHeight = height * 0.04;
 		double valuesHeight = height * 0.035;
-		double imageHeight = height * 0.5;
 
-		UIUtil.fitFont(titleDeedText, width * 0.9, height * 0.05);
-		UIUtil.fitFont(tileTitle, width * 0.9, height * 0.15);
+		UIUtil.fitFont(titleDeedText, width * 0.9, topWrapper.getHeight() * 0.2);
+		UIUtil.fitFont(tileTitle, width * 0.7, topWrapper.getHeight() * 0.6);
 
 		UIUtil.fitFont(rent, width * 0.6, leftHeight);
 		UIUtil.fitFont(rentValue, rightColumnWidth, valuesHeight);
@@ -187,11 +186,16 @@ public class StreetTitleDeedPane extends MigPane {
 		UIUtil.fitFont(hotelsCostValue, rightColumnWidth, valuesHeight);
 		UIUtil.fitFont(plusFourHousesText, rightColumnWidth, height * 0.025);
 
+		double imageHeight = height * 0.05;
 		oneHouse.setFitHeight(imageHeight);
 		twoHouses.setFitHeight(imageHeight);
 		threeHouses.setFitHeight(imageHeight);
 		fourHouses.setFitHeight(imageHeight);
 		hotel.setFitHeight(imageHeight);
+	}
+
+	public String getName() {
+		return tileTitleString;
 	}
 
 }

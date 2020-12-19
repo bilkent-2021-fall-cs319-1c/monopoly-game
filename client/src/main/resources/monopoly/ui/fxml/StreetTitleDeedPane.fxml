@@ -9,7 +9,7 @@
 
 <fx:root fx:id="root" xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" type="MigPane"
-	rows="1%[25%!, fill, grow]0[grow, fill]0[35%, center]1%"
+	rows="1%[0:25%, fill]0[0:, grow, fill]0[1%]0[0:35%, center]1%"
 	cols="1%[0:, grow, fill]1%" layout="wrap"
 	style="-fx-border-color: black; -fx-border-width: 3px 3px 3px 3px;">
 
@@ -83,7 +83,7 @@
 	<Separator />
 
 	<MigPane fx:id="bottomWrapper"
-		cols="3%[70%, fill][fill, grow]3%" layout="">
+		cols="0[70%, fill][fill, grow]0" layout="">
 		<Text fx:id="housesCost" text="Houses Cost" MigPane.cc="cell 0 0" />
 		<Text fx:id="housesCostValue" MigPane.cc="right, cell 1 0" />
 		<Text fx:id="hotelsCost" text="Hotels Cost" MigPane.cc="cell 0 1" />
