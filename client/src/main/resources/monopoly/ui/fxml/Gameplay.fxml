@@ -42,7 +42,7 @@
 			MigPane.cc="grow, wrap, wmax 24%" fx:id="playersRight" />
 
 		<!-- Rotation Icons and Dice -->
-		<MigPane MigPane.cc="skip 1, grow"
+		<MigPane MigPane.cc="skip 1, grow" layout="debug"
 			cols="[]push[15%, fill]push[]" rows="0[fill]0">
 			<ImageView pickOnBounds="true"
 				onMouseClicked="#rotateBoardCW" fx:id="rotateCWIcon">

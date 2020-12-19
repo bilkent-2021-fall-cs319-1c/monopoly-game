@@ -9,8 +9,7 @@
 
 <fx:root xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill, debug"
-	rows="0[]:1%:1%[]:1%:1%" styleClass="bordered"
-	style="-fx-background-color: white">
+	rows="0[]:1%:1%[]:1%:1%" styleClass="bordered">
 
 	<stylesheets>
 		<UIUtil fx:constant="COMMON_CSS" />
@@ -19,7 +18,8 @@
 
 	<!-- Player's Name -->
 	<Group MigPane.cc="spany 2" fx:id="playerNameLabelWrapper">
-		<Label style="-fx-rotate: -90" fx:id="playerNameLabel" />
+		<Label style="-fx-rotate: -90" fx:id="playerNameLabel"
+			styleClass="playerNameLabel" />
 	</Group>
 
 	<!-- Player's Image or Webcam -->
@@ -32,7 +32,8 @@
 		<Label text="1500M" fx:id="moneyLabel" />
 
 		<!-- Trade or Webcam/Mic Icons -->
-		<Button text="Trade" fx:id="tradeButton" MigPane.cc="span 2" />
+		<Button text="Trade" fx:id="tradeButton" MigPane.cc="span 2"
+			styleClass="buttonRegular, tradeButton" />
 
 		<ImageView fx:id="webcamIcon" visible="false"
 			pickOnBounds="true" onMouseClicked="#toggleWebcam">

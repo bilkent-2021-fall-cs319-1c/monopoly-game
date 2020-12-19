@@ -43,7 +43,7 @@ public class Dice extends MigPane {
 		double height = getHeight();
 		double width = getWidth();
 
-		double dieSize = Math.min(height * 0.9, width * 0.4);
+		double dieSize = Math.min(height, width * 0.4);
 
 		die1.setFitHeight(dieSize);
 		die2.setFitHeight(dieSize);

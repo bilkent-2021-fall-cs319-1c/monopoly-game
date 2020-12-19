@@ -12,7 +12,6 @@ import com.github.sarxos.webcam.WebcamListener;
 import com.jpro.webapi.WebAPI;
 
 import javafx.application.Platform;
-import javafx.beans.NamedArg;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,11 +20,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
 import lombok.Getter;
+import lombok.Setter;
 import monopoly.Error;
 import monopoly.network.Client;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.UIUtil;
+import monopoly.ui.controller.gameplay.board.Token;
 
 /**
  * Displays a player's container in gameplay view
@@ -56,6 +60,12 @@ public class PlayerPane extends MigPane {
 	private boolean nameOnLeft;
 	private boolean self;
 	private String username;
+	@Getter
+	private Color color;
+
+	@Getter
+	@Setter
+	private Token token;
 
 	private MicSender micSender;
 	private WebcamSender webcamSender;
@@ -70,12 +80,12 @@ public class PlayerPane extends MigPane {
 	 *                   displayed
 	 * @param username   Username to display
 	 */
-	public PlayerPane(@NamedArg("nameOnLeft") boolean nameOnLeft, @NamedArg("self") boolean self, String username,
-			ClientApplication app) {
+	public PlayerPane(boolean nameOnLeft, boolean self, String username, Color color, ClientApplication app) {
 		this.app = app;
 		this.nameOnLeft = nameOnLeft;
 		this.self = self;
 		this.username = username;
+		this.color = color;
 
 		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/PlayerPane.fxml"));
 		loader.setController(this);
@@ -153,7 +163,12 @@ public class PlayerPane extends MigPane {
 		Image playerIconImg = (nameOnLeft ? UIUtil.DEFAULT_PLAYER_IMAGE : UIUtil.DEFAULT_PLAYER_IMAGE_LOOKING_LEFT);
 		playerImage.setImage(playerIconImg);
 
+		setBackground(new Background(new BackgroundFill(color, null, null)));
+
 		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));
+
+		// TODO
+		setPlayerTurn(true);
 	}
 
 	@FXML
@@ -184,6 +199,11 @@ public class PlayerPane extends MigPane {
 		}
 	}
 
+	public void setPlayerTurn(boolean ownTurn) {
+		getStyleClass().removeAll("bordered");
+		getStyleClass().add("playerTurn");
+	}
+
 	/**
 	 * Adjusts the size of inner components based on the outer bounds
 	 */
@@ -203,9 +223,5 @@ public class PlayerPane extends MigPane {
 		webcamIcon.setFitWidth(webcamMicIconSize);
 		micIcon.setFitHeight(webcamMicIconSize);
 		micIcon.setFitWidth(webcamMicIconSize);
-
-		tradeButton.getStyleClass().add("buttonRegular");
-		tradeButton.getStyleClass().add("tradeButton");
-		playerNameLabel.getStyleClass().add("playerNameLabel");
 	}
 }

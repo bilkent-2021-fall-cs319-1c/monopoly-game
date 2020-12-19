@@ -10,10 +10,9 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
-import monopoly.network.packet.important.packet_data.gameplay.BoardPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.ui.UIUtil;
+import monopoly.ui.controller.gameplay.GameplayDataHolder;
 
 /**
  * Constructs the Monopoly board.
@@ -64,16 +63,16 @@ public class Board extends MigPane {
 		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));
 	}
 
-	public void buildBoard(BoardPacketData boardData) {
-		buildTiles(boardData.getTiles());
+	public void buildBoard(GameplayDataHolder gameData) {
+		buildTiles(gameData.getBoardData().getTiles());
 		addTiles();
 
-		tokens.add(new Token(Color.RED));
-		tokens.add(new Token(Color.GREEN));
-		tokens.add(new Token(Color.BLUE));
-		tokens.add(new Token(Color.ORANGE));
-		tokens.add(new Token(Color.YELLOW));
-		tokens.add(new Token(Color.GRAY));
+		// Create Player Tokens
+		gameData.getPlayerPanes().forEach(player -> {
+			Token token = new Token(player.getColor());
+			tokens.add(token);
+			player.setToken(token);
+		});
 
 		for (int i = 0; i < tokens.size(); i++) {
 			Token token = tokens.get(i);
@@ -81,8 +80,6 @@ public class Board extends MigPane {
 			go.add(token);
 			go.getTileTokens()[i] = token;
 			token.setCurrentTile(go);
-
-			token.setOnMouseClicked(e -> token.moveToNext());
 		}
 	}
 

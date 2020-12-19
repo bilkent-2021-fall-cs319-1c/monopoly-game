@@ -9,6 +9,7 @@ import javax.sound.sampled.LineUnavailableException;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.paint.Color;
 import lombok.Getter;
 import monopoly.network.packet.important.packet_data.UserPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.BoardPacketData;
@@ -20,6 +21,9 @@ import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.ui.ClientApplication;
 
 public class GameplayDataHolder {
+	private static final Color[] playerColors = { Color.HOTPINK, Color.MAGENTA, Color.YELLOW, Color.CHOCOLATE,
+			Color.GREEN, Color.BLUE };
+
 	private ClientApplication app;
 	private PlayerListPacketData playerData;
 	@Getter
@@ -45,11 +49,11 @@ public class GameplayDataHolder {
 
 		for (int i = 0; i < players.size(); i++) {
 			// Half of the players on the right, half in the left
-			playerPanes.add(createPlayerPane(players.get(i), i >= players.size() / 2));
+			playerPanes.add(createPlayerPane(players.get(i), i >= players.size() / 2, playerColors[i]));
 		}
 	}
 
-	private PlayerPane createPlayerPane(PlayerPacketData player, boolean onLeft) {
+	private PlayerPane createPlayerPane(PlayerPacketData player, boolean onLeft, Color color) {
 		UserPacketData userData = player.getUserData();
 		int connectionId = userData.getConnectionId();
 
@@ -58,7 +62,7 @@ public class GameplayDataHolder {
 			self = true;
 		}
 
-		PlayerPane playerPane = new PlayerPane(onLeft, self, player.getUserData().getUsername(), app);
+		PlayerPane playerPane = new PlayerPane(onLeft, self, player.getUserData().getUsername(), color, app);
 		idToPlayerPaneMap.put(connectionId, playerPane);
 
 		// Create player's audio channel for microphone

@@ -99,7 +99,7 @@ public class GameplayController implements MonopolyUIController {
 
 		gameData = app.getNetworkManager().getGameData(app);
 		addPlayers(gameData.getPlayerPanes());
-		board.buildBoard(gameData.getBoardData());
+		board.buildBoard(gameData);
 
 		sizeChanged(stackPane.getWidth(), stackPane.getHeight());
 		Platform.runLater(this::boardRotateAndEnter);
