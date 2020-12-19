@@ -47,7 +47,7 @@ public class ClientApplication extends Application implements ErrorListener {
 
 	/**
 	 * Creates a new client application and connects it to the server
-	 * 
+	 *
 	 * @throws IOException if an I/O error occurs when connecting to the server
 	 */
 	public ClientApplication() throws IOException {
@@ -136,7 +136,7 @@ public class ClientApplication extends Application implements ErrorListener {
 	/**
 	 * Displays an error overlay showing the given error details. Blurs the base
 	 * node that is displayed under the overlay.
-	 * 
+	 *
 	 * @param error The error to display
 	 */
 	public void displayError(Error error) {

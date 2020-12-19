@@ -34,6 +34,13 @@ public class UIUtil {
 	public static final Image WEBCAM_CROSSED_ICON = loadImage("images/CameraCross.png");
 	public static final Image MICROPHONE_ICON = loadImage("images/Microphone.png");
 	public static final Image MICROPHONE_CROSSED_ICON = loadImage("images/MicrophoneCross.png");
+	public static final Image FAUCET = loadImage("images/Faucet.png");
+	public static final Image LIGHTBULB = loadImage("images/LightBulb.png");
+	public static final Image ONEHOUSE = loadImage("images/OneHouse.png");
+	public static final Image TWOHOUSES = loadImage("images/TwoHouses.png");
+	public static final Image THREEHOUSES = loadImage("images/ThreeHouses.png");
+	public static final Image FOURHOUSES = loadImage("images/FourHouses.png");
+	public static final Image HOTEL = loadImage("images/Hotel.png");
 
 	public static final Image FREE_PARKING = loadImage("images/freeParking.png");
 	public static final Image GO_TO_JAIL = loadImage("images/goToJail.png");
