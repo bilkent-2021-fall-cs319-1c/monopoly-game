@@ -7,6 +7,10 @@ import org.tbee.javafx.scene.layout.fxml.MigPane;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import lombok.Getter;
+import lombok.Setter;
+import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
+import monopoly.ui.ClientApplication;
 import monopoly.ui.UIUtil;
 
 public class Dice extends MigPane {
@@ -14,6 +18,12 @@ public class Dice extends MigPane {
 	private Die die1;
 	@FXML
 	private Die die2;
+
+	@Setter
+	private ClientApplication app;
+
+	@Getter
+	private boolean rolling;
 
 	public Dice() {
 		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/Dice.fxml"));
@@ -24,11 +34,6 @@ public class Dice extends MigPane {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		setOnMouseClicked(e -> {
-			die1.roll(4);
-			die2.roll(4);
-		});
 	}
 
 	@FXML
@@ -47,5 +52,29 @@ public class Dice extends MigPane {
 
 		die1.setFitHeight(dieSize);
 		die2.setFitHeight(dieSize);
+	}
+
+	@FXML
+	private void roll() {
+		if (rolling)
+			return;
+
+		rolling = true;
+		app.getNetworkManager().askRollDice();
+	}
+
+	public void rollAndShowResult(DicePacketData result) {
+		die1.roll(result.getFirstDieValue());
+		die2.roll(result.getSecondDieValue());
+
+		while (die1.isRolling() || die2.isRolling()) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				Thread.currentThread().interrupt();
+			}
+		}
+		rolling = false;
 	}
 }

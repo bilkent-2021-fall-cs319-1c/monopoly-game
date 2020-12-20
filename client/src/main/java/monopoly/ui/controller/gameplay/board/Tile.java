@@ -10,6 +10,11 @@ import javafx.geometry.Point2D;
  */
 public interface Tile {
 	/**
+	 * @return The index of this tile on the board
+	 */
+	int getTileIndex();
+
+	/**
 	 * @return An array of size 6 that contains the current tokens in this tile. If
 	 *         a place is empty, then the corresponding array element must be null.
 	 */

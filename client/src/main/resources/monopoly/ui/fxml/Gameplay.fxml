@@ -51,7 +51,7 @@
 				</image>
 			</ImageView>
 
-			<Dice opacity="0" fx:id="dice" />
+			<Dice opacity="0" fx:id="dice" disable="true" />
 
 			<ImageView pickOnBounds="true"
 				onMouseClicked="#rotateBoardCCW" fx:id="rotateCCWIcon">

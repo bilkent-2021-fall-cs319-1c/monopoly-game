@@ -36,12 +36,14 @@
 		rows="0[100%, fill]0"
 		cols="0[11%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0[12%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0[11%!, fill]0" />
 
-	<CornerTile type="PARKING" fx:id="freeParking"
+	<CornerTile type="PARKING" tileIndex="20"
+		fx:id="freeParking"
 		MigPane.cc="grow, cell 0 0, width 0::13%, height 0::13%" />
-	<CornerTile type="JAIL" fx:id="jail"
+	<CornerTile type="JAIL" tileIndex="10" fx:id="jail"
 		MigPane.cc="grow, cell 0 3, width 0::13%, height 0::13%" />
-	<CornerTile type="GO_TO_JAIL" fx:id="gotoJail"
+	<CornerTile type="GO_TO_JAIL" tileIndex="30"
+		fx:id="gotoJail"
 		MigPane.cc="grow, cell 2 0, width 0::13%, height 0::13%" />
-	<CornerTile type="GO" fx:id="go"
+	<CornerTile type="GO" tileIndex="0" fx:id="go"
 		MigPane.cc="grow, cell 2 3, width 0::13%, height 0::13%" />
 </fx:root>

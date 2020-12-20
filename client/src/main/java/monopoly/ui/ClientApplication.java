@@ -24,7 +24,7 @@ import monopoly.ErrorListener;
 import monopoly.network.NetworkManager;
 import monopoly.network.packet.important.PacketType;
 import monopoly.ui.controller.MonopolyUIController;
-import monopoly.ui.controller.Overlay;
+import monopoly.ui.controller.ErrorOverlay;
 
 /**
  * JavaFX Application class for Monopoly.
@@ -140,7 +140,7 @@ public class ClientApplication extends Application implements ErrorListener {
 	 * @param error The error to display
 	 */
 	public void displayError(Error error) {
-		Overlay errorOverlay = new Overlay(error);
+		ErrorOverlay errorOverlay = new ErrorOverlay(error);
 		errorOverlay.setApp(this);
 		controllers.add(errorOverlay);
 

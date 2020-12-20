@@ -32,6 +32,7 @@ import monopoly.ui.controller.gameplay.board.dice.Dice;
  * @version Dec 13, 2020
  */
 public class GameplayController implements MonopolyUIController {
+	@Getter
 	@Setter
 	private ClientApplication app;
 
@@ -51,6 +52,7 @@ public class GameplayController implements MonopolyUIController {
 	private ImageView chatIcon;
 	@FXML
 	private MigPane chatPane;
+	@Getter
 	@FXML
 	private Dice dice;
 
@@ -65,7 +67,7 @@ public class GameplayController implements MonopolyUIController {
 	private boolean boardRotating;
 
 	@Getter
-	private GameplayDataHolder gameData;
+	private GameplayDataManager gameData;
 
 	public GameplayController() {
 		chatOpen = false;
@@ -97,9 +99,11 @@ public class GameplayController implements MonopolyUIController {
 		closeChatPane.setNode(chatPane);
 		boardRoateAndScaleTransition.setNode(board);
 
-		gameData = app.getNetworkManager().getGameData(app);
+		gameData = app.getNetworkManager().getGameData(this);
 		addPlayers(gameData.getPlayerPanes());
 		board.buildBoard(gameData);
+
+		dice.setApp(app);
 
 		sizeChanged(stackPane.getWidth(), stackPane.getHeight());
 		Platform.runLater(this::boardRotateAndEnter);
@@ -237,5 +241,9 @@ public class GameplayController implements MonopolyUIController {
 
 		chatPane.setTranslateX(chatPane.getPrefWidth());
 		closeChatPane.setToX(chatPane.getPrefWidth());
+	}
+
+	public void setDiceDisable(boolean disable) {
+		dice.setDisable(disable);
 	}
 }

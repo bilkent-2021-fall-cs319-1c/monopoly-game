@@ -12,7 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.ui.UIUtil;
-import monopoly.ui.controller.gameplay.GameplayDataHolder;
+import monopoly.ui.controller.gameplay.GameplayDataManager;
 
 /**
  * Constructs the Monopoly board.
@@ -63,7 +63,7 @@ public class Board extends MigPane {
 		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));
 	}
 
-	public void buildBoard(GameplayDataHolder gameData) {
+	public void buildBoard(GameplayDataManager gameData) {
 		buildTiles(gameData.getBoardData().getTiles());
 		addTiles();
 
@@ -84,19 +84,25 @@ public class Board extends MigPane {
 	}
 
 	private void buildTiles(List<TilePacketData> tileDataList) {
+//		go.setTileIndex(0);
+//		jail.setTileIndex(10);
+//		freeParking.setTileIndex(20);
+//		gotoJail.setTileIndex(30);
+
 		for (int i = 0; i < tileDataList.size(); i++) {
 			TilePacketData tileData = tileDataList.get(i);
 
-			if (i == 0)
+			if (i == 0) {
 				tiles.add(go);
-			else if (i == 10)
+			} else if (i == 10) {
 				tiles.add(jail);
-			else if (i == 20)
+			} else if (i == 20) {
 				tiles.add(freeParking);
-			else if (i == 30)
+			} else if (i == 30) {
 				tiles.add(gotoJail);
-			else
+			} else {
 				tiles.add(new SideTile(tileData));
+			}
 		}
 	}
 

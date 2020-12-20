@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamEvent;
+import com.github.sarxos.webcam.WebcamException;
 import com.github.sarxos.webcam.WebcamListener;
 
 import lombok.Getter;
@@ -72,8 +73,13 @@ public class WebcamSender {
 	 * Start sending webcam images
 	 */
 	public void start() {
-		webcam.open(true,
-				(long snapshotDuration, double deviceFps) -> (long) Math.max(1000.0 / FPS - snapshotDuration, 0));
+		try {
+			webcam.open(true,
+					(long snapshotDuration, double deviceFps) -> (long) Math.max(1000.0 / FPS - snapshotDuration, 0));
+		} catch (WebcamException e) {
+			e.printStackTrace();
+			// TODO show error
+		}
 	}
 
 	/**

@@ -13,34 +13,46 @@ import javafx.scene.paint.Color;
 import lombok.Getter;
 import monopoly.network.packet.important.packet_data.UserPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.BoardPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerListPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.network.packet.realtime.BufferedImagePacket;
 import monopoly.network.packet.realtime.MicSoundPacket;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
-import monopoly.ui.ClientApplication;
+import monopoly.ui.controller.gameplay.board.Token;
 
-public class GameplayDataHolder {
-	private static final Color[] playerColors = { Color.HOTPINK, Color.MAGENTA, Color.YELLOW, Color.CHOCOLATE,
-			Color.GREEN, Color.BLUE };
+public class GameplayDataManager {
+	private static final Color[] playerColors = { Color.web("#ff7d7d"), Color.web("#f7ffb2"), Color.web("#ffdf5e"),
+			Color.web("#ec8cff"), Color.web("#d0f4ff"), Color.BLUE };
 
-	private ClientApplication app;
+	private GameplayController gameplayController;
 	private PlayerListPacketData playerData;
 	@Getter
 	private BoardPacketData boardData;
 
 	@Getter
 	private List<PlayerPane> playerPanes;
-
 	private Map<Integer, PlayerPane> idToPlayerPaneMap;
 
-	public GameplayDataHolder(PlayerListPacketData playerData, BoardPacketData boardData, ClientApplication app) {
+	private boolean diceRolling;
+
+	/**
+	 * Holds the player that should play now
+	 */
+	private PlayerPane turn;
+
+	public GameplayDataManager(PlayerListPacketData playerData, BoardPacketData boardData,
+			GameplayController gameplayController) {
 		this.playerData = playerData;
 		this.boardData = boardData;
-		this.app = app;
+		this.gameplayController = gameplayController;
 
+		diceRolling = false;
 		idToPlayerPaneMap = new HashMap<>();
 		createPlayerPanes();
+
+		changePlayerTurn(playerData.getPlayers().get(0));
 	}
 
 	private void createPlayerPanes() {
@@ -58,11 +70,12 @@ public class GameplayDataHolder {
 		int connectionId = userData.getConnectionId();
 
 		boolean self = false;
-		if (connectionId == app.getNetworkManager().getSelfConnectionId()) {
+		if (connectionId == getSelfConnectionId()) {
 			self = true;
 		}
 
-		PlayerPane playerPane = new PlayerPane(onLeft, self, player.getUserData().getUsername(), color, app);
+		PlayerPane playerPane = new PlayerPane(onLeft, self, player.getUserData().getUsername(), color,
+				gameplayController.getApp());
 		idToPlayerPaneMap.put(connectionId, playerPane);
 
 		// Create player's audio channel for microphone
@@ -99,5 +112,66 @@ public class GameplayDataHolder {
 			Platform.runLater(() -> pane.getPlayerImage()
 					.setImage(SwingFXUtils.toFXImage(((BufferedImagePacket) packet).getImg(), null)));
 		}
+	}
+
+	public void changePlayerTurn(PlayerPacketData playerPacketData) {
+		if (turn != null) {
+			turn.setPlayerTurn(false);
+			if (turn.isSelf())
+				gameplayController.setDiceDisable(true);
+		}
+
+		turn = getPlayerPaneOfPlayer(playerPacketData);
+		turn.setPlayerTurn(true);
+		if (turn.isSelf())
+			gameplayController.setDiceDisable(false);
+	}
+
+	public void moveToken(PlayerPacketData player, TilePacketData destination) {
+		Token token = getPlayerPaneOfPlayer(player).getToken();
+		new Thread(() -> {
+			waitWhileDiceRolling();
+
+			while (token.getCurrentTile().getTileIndex() != destination.getIndex()) {
+				token.moveToNext();
+				try {
+					Thread.sleep((long) Token.MOVE_ANIMATION_DURATION.toMillis());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					Thread.currentThread().interrupt();
+				}
+			}
+		}).start();
+	}
+
+	public void rollDiceAndshowResult(DicePacketData dicePacketData) {
+		diceRolling = true;
+		new Thread(() -> {
+			gameplayController.getDice().rollAndShowResult(dicePacketData);
+			diceRolling = false;
+		}).start();
+	}
+
+	private PlayerPane getPlayerPaneOfPlayer(PlayerPacketData player) {
+		return idToPlayerPaneMap.get(player.getUserData().getConnectionId());
+	}
+
+	private int getSelfConnectionId() {
+		return gameplayController.getApp().getNetworkManager().getSelfConnectionId();
+	}
+
+	private void waitWhileDiceRolling() {
+		while (diceRolling) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				Thread.currentThread().interrupt();
+			}
+		}
+	}
+
+	public void displayBuyOrAuctionPane(TilePacketData tilePacketData) {
+		tilePacketData.getTitleDeed();
 	}
 }

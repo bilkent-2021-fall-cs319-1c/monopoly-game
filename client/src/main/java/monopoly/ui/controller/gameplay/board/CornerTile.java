@@ -25,12 +25,15 @@ import monopoly.ui.UIUtil;
  */
 public class CornerTile extends MigPane implements Tile {
 	private String type;
+	@Getter
+	private int tileIndex;
 
 	@Getter
 	private Token[] tileTokens;
 
-	public CornerTile(@NamedArg("type") String type) {
+	public CornerTile(@NamedArg("type") String type, @NamedArg("tileIndex") int tileIndex) {
 		this.type = type;
+		this.tileIndex = tileIndex;
 		tileTokens = new Token[6];
 
 		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/CornerTile.fxml"));
