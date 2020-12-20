@@ -84,11 +84,6 @@ public class Board extends MigPane {
 	}
 
 	private void buildTiles(List<TilePacketData> tileDataList) {
-//		go.setTileIndex(0);
-//		jail.setTileIndex(10);
-//		freeParking.setTileIndex(20);
-//		gotoJail.setTileIndex(30);
-
 		for (int i = 0; i < tileDataList.size(); i++) {
 			TilePacketData tileData = tileDataList.get(i);
 

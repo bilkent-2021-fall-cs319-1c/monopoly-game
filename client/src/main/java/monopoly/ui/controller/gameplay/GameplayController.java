@@ -15,6 +15,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.CacheHint;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import lombok.Getter;
@@ -69,7 +70,11 @@ public class GameplayController implements MonopolyUIController {
 	@Getter
 	private GameplayDataManager gameData;
 
+	private OverlayWrapper currentPopup;
+
 	public GameplayController() {
+		currentPopup = null;
+
 		chatOpen = false;
 		boardRotating = false;
 
@@ -245,5 +250,25 @@ public class GameplayController implements MonopolyUIController {
 
 	public void setDiceDisable(boolean disable) {
 		dice.setDisable(disable);
+	}
+
+	public void showPopup(Pane popup) {
+		Platform.runLater(() -> {
+			OverlayWrapper overlay = new OverlayWrapper(popup);
+			currentPopup = overlay;
+			stackPane.getChildren().add(overlay);
+		});
+	}
+
+	public void closePopup() {
+		if (currentPopup != null) {
+			Platform.runLater(() -> {
+				currentPopup.setOnFadeFinished(e -> {
+					stackPane.getChildren().remove(currentPopup);
+					currentPopup = null;
+				});
+				currentPopup.fade(false);
+			});
+		}
 	}
 }

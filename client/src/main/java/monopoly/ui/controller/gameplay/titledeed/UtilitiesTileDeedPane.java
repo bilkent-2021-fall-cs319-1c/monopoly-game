@@ -1,14 +1,15 @@
-package monopoly.ui.controller.gameplay;
+package monopoly.ui.controller.gameplay.titledeed;
 
 import java.io.IOException;
 
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
-import javafx.beans.NamedArg;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import lombok.Getter;
+import monopoly.network.packet.important.packet_data.gameplay.property.TitleDeedPacketData;
 import monopoly.ui.UIUtil;
 
 /**
@@ -17,9 +18,7 @@ import monopoly.ui.UIUtil;
  * @author Ege Kaan Gürkan
  * @version 17/12/2020
  */
-
 public class UtilitiesTileDeedPane extends MigPane implements DeedCard {
-
 	@FXML
 	private ImageView image;
 	@FXML
@@ -29,15 +28,15 @@ public class UtilitiesTileDeedPane extends MigPane implements DeedCard {
 	@FXML
 	private Text secondPar;
 
-	private UtilityType utility;
+	@Getter
+	private String name;
 
-	public UtilitiesTileDeedPane(@NamedArg("utility") UtilityType utility) {
-		this.utility = utility;
+	public UtilitiesTileDeedPane(TitleDeedPacketData deedData) {
+		this.name = deedData.getTitle();
 
 		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/UtilitiesTileDeedPane.fxml"));
 		loader.setController(this);
 		loader.setRoot(this);
-
 		try {
 			loader.load();
 		} catch (IOException e) {
@@ -47,7 +46,7 @@ public class UtilitiesTileDeedPane extends MigPane implements DeedCard {
 
 	@FXML
 	public void initialize() {
-		setIcon(utility);
+		setIconAndName();
 		firstPar.setText("If one utility is owned,\nrent is 4 times amount shown on dice.");
 		secondPar.setText("If both utilities are owned,\nrent is 10 time amount shown on dice.");
 
@@ -64,22 +63,13 @@ public class UtilitiesTileDeedPane extends MigPane implements DeedCard {
 		image.setFitWidth(width * 0.6);
 	}
 
-	private void setIcon(UtilityType utility) {
-		if (utility == UtilityType.ELECTRIC_COMPANY) {
-			utilityTitle.setText("ELECTRIC COMPANY");
+	private void setIconAndName() {
+		if ("ELECTRIC COMPANY".equals(name)) {
+			utilityTitle.setText(name);
 			image.setImage(UIUtil.LIGHTBULB);
 		} else {
-			utilityTitle.setText("WATER WORKS");
+			utilityTitle.setText(name);
 			image.setImage(UIUtil.FAUCET);
 		}
-
-	}
-
-	public enum UtilityType {
-		WATER_WORKS, ELECTRIC_COMPANY
-	}
-
-	public String getName() {
-		return utilityTitle.getText();
 	}
 }

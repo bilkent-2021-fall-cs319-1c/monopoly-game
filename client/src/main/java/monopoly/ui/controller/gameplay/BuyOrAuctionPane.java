@@ -1,29 +1,23 @@
 package monopoly.ui.controller.gameplay;
 
 import java.io.IOException;
-import java.util.stream.Stream;
 
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
-import javafx.beans.NamedArg;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import lombok.Setter;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.UIUtil;
-import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
+import monopoly.ui.controller.gameplay.titledeed.DeedCard;
 
-public class TitleDeedActionPane extends MigPane {
-	@Setter
-	private ClientApplication app;
-
+public class BuyOrAuctionPane extends MigPane {
 	@FXML
 	private MigPane buttonGroup;
 	@FXML
-	private MigPane addDeedCard;
+	private MigPane deedCardDisplay;
 	@FXML
 	private Text paneTitle;
 	@FXML
@@ -35,39 +29,39 @@ public class TitleDeedActionPane extends MigPane {
 	@FXML
 	private Button auctionButton;
 
-	private DeedCard deedCard;
+	private Pane deedCard;
+	private ClientApplication app;
 
-	public TitleDeedActionPane(@NamedArg("deedCard") DeedCard deedCard) {
+	public BuyOrAuctionPane(DeedCard deedCard, ClientApplication app) {
+		this.deedCard = (Pane) deedCard;
+		this.app = app;
 
-		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/TitleDeedActionPane.fxml"));
+		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/BuyOrAuctionPane.fxml"));
 		loader.setController(this);
 		loader.setRoot(this);
-
-		this.deedCard = deedCard;
-
 		try {
 			loader.load();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		Stream.of(widthProperty(), heightProperty())
-				.forEach(p -> p.addListener((observable, oldVal, newVal) -> adjustSize()));
 	}
 
+	@FXML
 	public void initialize() {
-		addDeedCard.getChildren().add((Node) deedCard);
+		deedCardDisplay.getChildren().add(deedCard);
+
+		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> adjustSize());
 	}
 
 	public void adjustSize() {
 		double height = getHeight();
 		double width = getWidth();
 
-		double deedWidth = Math.min(width, height * 0.75 * 2 / 3);
-		double deedHeight = Math.min(height * 0.75, width * 3 / 2);
-		addDeedCard.setMaxWidth(deedWidth);
-		addDeedCard.setMaxHeight(deedHeight);
-		
+		double deedWidth = Math.min(width * 0.9, height * 0.7 * 2 / 3);
+		double deedHeight = Math.min(height * 0.7, width * 0.9 * 3 / 2);
+		deedCard.setMaxWidth(deedWidth);
+		deedCard.setMaxHeight(deedHeight);
+
 		buyButton.setMaxWidth(deedWidth / 2);
 		auctionButton.setMaxWidth(deedWidth / 2);
 
@@ -90,4 +84,13 @@ public class TitleDeedActionPane extends MigPane {
 		balanceText.setText("You have " + propertyCount + "more of the same coloured property.");
 	}
 
+	@FXML
+	private void buy() {
+		((GameplayController) app.getMainController()).closePopup();
+	}
+
+	@FXML
+	private void auction() {
+		((GameplayController) app.getMainController()).closePopup();
+	}
 }

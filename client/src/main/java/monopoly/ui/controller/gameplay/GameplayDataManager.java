@@ -16,11 +16,17 @@ import monopoly.network.packet.important.packet_data.gameplay.BoardPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerListPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.StreetTitleDeedPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 import monopoly.network.packet.realtime.BufferedImagePacket;
 import monopoly.network.packet.realtime.MicSoundPacket;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.ui.controller.gameplay.board.Token;
+import monopoly.ui.controller.gameplay.titledeed.DeedCard;
+import monopoly.ui.controller.gameplay.titledeed.RailroadTitleDeedPane;
+import monopoly.ui.controller.gameplay.titledeed.StreetTitleDeedPane;
+import monopoly.ui.controller.gameplay.titledeed.UtilitiesTileDeedPane;
 
 public class GameplayDataManager {
 	private static final Color[] playerColors = { Color.web("#ff7d7d"), Color.web("#f7ffb2"), Color.web("#ffdf5e"),
@@ -36,6 +42,7 @@ public class GameplayDataManager {
 	private Map<Integer, PlayerPane> idToPlayerPaneMap;
 
 	private boolean diceRolling;
+	private boolean tokenMoving;
 
 	/**
 	 * Holds the player that should play now
@@ -128,7 +135,9 @@ public class GameplayDataManager {
 	}
 
 	public void moveToken(PlayerPacketData player, TilePacketData destination) {
+		tokenMoving = true;
 		Token token = getPlayerPaneOfPlayer(player).getToken();
+
 		new Thread(() -> {
 			waitWhileDiceRolling();
 
@@ -141,6 +150,8 @@ public class GameplayDataManager {
 					Thread.currentThread().interrupt();
 				}
 			}
+
+			tokenMoving = false;
 		}).start();
 	}
 
@@ -162,16 +173,40 @@ public class GameplayDataManager {
 
 	private void waitWhileDiceRolling() {
 		while (diceRolling) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				Thread.currentThread().interrupt();
-			}
+			sleep100ms();
+		}
+	}
+
+	private void waitWhileTokenMoving() {
+		while (tokenMoving) {
+			sleep100ms();
+		}
+	}
+
+	private void sleep100ms() {
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			Thread.currentThread().interrupt();
 		}
 	}
 
 	public void displayBuyOrAuctionPane(TilePacketData tilePacketData) {
-		tilePacketData.getTitleDeed();
+		DeedCard deedCard;
+		TileType tileType = tilePacketData.getType();
+		if (tileType == TileType.RAILROAD) {
+			deedCard = new RailroadTitleDeedPane(tilePacketData.getTitleDeed());
+		} else if (tileType == TileType.UTILITY) {
+			deedCard = new UtilitiesTileDeedPane(tilePacketData.getTitleDeed());
+		} else {
+			deedCard = new StreetTitleDeedPane((StreetTitleDeedPacketData) tilePacketData.getTitleDeed());
+		}
+
+		new Thread(() -> {
+			waitWhileDiceRolling();
+			waitWhileTokenMoving();
+			gameplayController.showPopup(new BuyOrAuctionPane(deedCard, gameplayController.getApp()));
+		}).start();
 	}
 }

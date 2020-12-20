@@ -1,15 +1,17 @@
-package monopoly.ui.controller.gameplay;
+package monopoly.ui.controller.gameplay.titledeed;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.application.Platform;
-import javafx.beans.NamedArg;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import lombok.Getter;
+import monopoly.network.packet.important.packet_data.gameplay.property.StreetTitleDeedPacketData;
 import monopoly.ui.UIUtil;
 
 /**
@@ -18,9 +20,7 @@ import monopoly.ui.UIUtil;
  * @author Ege Kaan Gürkan
  * @version Dec 17, 2020
  */
-
 public class StreetTitleDeedPane extends MigPane implements DeedCard {
-
 	@FXML
 	private MigPane root;
 	@FXML
@@ -78,8 +78,9 @@ public class StreetTitleDeedPane extends MigPane implements DeedCard {
 	@FXML
 	private ImageView hotel;
 
+	@Getter
+	private String name;
 	private String tileColor;
-	private String tileTitleString;
 	private String rentString;
 	private String colourSetRentString;
 	private String oneHouseRentString;
@@ -90,29 +91,24 @@ public class StreetTitleDeedPane extends MigPane implements DeedCard {
 	private String houseCostString;
 	private String hotelCostString;
 
-	public StreetTitleDeedPane(@NamedArg("tileColor") String tileColor, @NamedArg("tileTitle") String tileTitle,
-			@NamedArg("rent") String rent, @NamedArg("colourSetRent") String colourSetRent,
-			@NamedArg("oneHouseRent") String oneHouseRent, @NamedArg("twoHouseRent") String twoHouseRent,
-			@NamedArg("threeHouseRent") String threeHouseRent, @NamedArg("fourHouseRent") String fourHouseRent,
-			@NamedArg("hotelRent") String hotelRent, @NamedArg("houseCost") String houseCost,
-			@NamedArg("hotelCost") String hotelCost) {
+	public StreetTitleDeedPane(StreetTitleDeedPacketData deedData) {
+		tileColor = deedData.getColor();
+		name = deedData.getTitle();
+		houseCostString = "" + deedData.getHousePrice();
+		hotelCostString = "" + deedData.getHotelPrice();
+
+		List<Integer> rentCost = deedData.getRentCost();
+		rentString = "" + rentCost.get(0);
+		colourSetRentString = "" + rentCost.get(1);
+		oneHouseRentString = "" + rentCost.get(2);
+		twoHouseRentString = "" + rentCost.get(3);
+		threeHouseRentString = "" + rentCost.get(4);
+		fourHouseRentString = "" + rentCost.get(5);
+		hotelRentString = "" + rentCost.get(6);
 
 		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/StreetTitleDeedPane.fxml"));
 		loader.setController(this);
 		loader.setRoot(this);
-
-		this.tileColor = tileColor;
-		tileTitleString = tileTitle;
-		rentString = rent;
-		colourSetRentString = colourSetRent;
-		oneHouseRentString = oneHouseRent;
-		twoHouseRentString = twoHouseRent;
-		threeHouseRentString = threeHouseRent;
-		fourHouseRentString = fourHouseRent;
-		hotelRentString = hotelRent;
-		houseCostString = houseCost;
-		hotelCostString = hotelCost;
-
 		try {
 			loader.load();
 		} catch (IOException e) {
@@ -122,10 +118,9 @@ public class StreetTitleDeedPane extends MigPane implements DeedCard {
 
 	@FXML
 	public void initialize() {
-
 		topWrapper.setStyle("-fx-background-color: " + tileColor + "; -fx-border-color: black; -fx-border-width: 3px");
 
-		tileTitle.setText(tileTitleString);
+		tileTitle.setText(name);
 		rentValue.setText(rentString);
 		colourSetRentValue.setText(colourSetRentString);
 		oneHouseRentValue.setText(oneHouseRentString);
@@ -136,7 +131,6 @@ public class StreetTitleDeedPane extends MigPane implements DeedCard {
 		housesCostValue.setText(houseCostString);
 		hotelsCostValue.setText(hotelCostString);
 
-		setStyle(" -fx-background-color: white; -fx-border-color: black; -fx-border-width: 3px");
 
 		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));
 	}
@@ -188,9 +182,4 @@ public class StreetTitleDeedPane extends MigPane implements DeedCard {
 		fourHouses.setFitHeight(imageHeight);
 		hotel.setFitHeight(imageHeight);
 	}
-
-	public String getName() {
-		return tileTitleString;
-	}
-
 }
