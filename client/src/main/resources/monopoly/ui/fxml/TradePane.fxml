@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+
+<?import javafx.scene.text.Text?>
+<?import monopoly.ui.UIUtil?>
+<?import monopoly.ui.controller.gameplay.StreetTitleDeedPane?>
+<fx:root xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         type="MigPane"
+         cols="0[50%, grow, fill]0[50%, grow, fill]0"
+         rows="0[10%]0[grow, fill]1%[10%, fill]1%[12%, fill, grow]0"
+         layout="wrap">
+
+    <stylesheets>
+        <UIUtil fx:constant="TRADE_PANE_CSS"/>
+    </stylesheets>
+
+    <Text fx:id="tradeTitle" MigPane.cc="grow, span 2, center"/>
+
+    <!-- Player 1 Middle Wrapper -->
+    <MigPane MigPane.cc="grow" cols="0[100%, fill, grow]0" rows="0[5%]0[5%]0[grow, fill]0" layout="wrap">
+        <MigPane MigPane.cc="grow" cols="0[33%][33%, fill, grow][33%]0">
+            <MigPane fx:id="playerOneBackground" MigPane.cc="cell 1 0, grow" rows="0[grow]0" cols="0[grow]0">
+                <Text fx:id="playerOneNameText" MigPane.cc="center" text="Player 1"/>
+            </MigPane>
+        </MigPane>
+        <Text fx:id="playerOneMoneyText" style="-fx-background-color: blue" MigPane.cc="grow, center" text="xxxM"/>
+        <MigPane fx:id="playerOneAssetsWrapper" MigPane.cc="grow" styleClass="playerAssetsWrapper"
+                 layout="wrap"
+                 cols="9%[36%,grow]9%[36%, grow]9%"
+                 rows="0[33%, grow][33%, grow][33%, grow]0">
+
+        </MigPane>
+    </MigPane>
+
+    <!-- Player 2 Middle Wrapper -->
+    <MigPane MigPane.cc="grow" cols="0[100%, fill, grow]0" rows="0[5%]0[5%]0[grow, fill]0" layout="wrap">
+        <MigPane MigPane.cc="grow" cols="0[33%][33%, fill, grow][33%]0">
+            <MigPane fx:id="playerTwoBackground" MigPane.cc="cell 1 0, grow" rows="0[grow]0" cols="0[grow]0">
+                <Text fx:id="playerTwoNameText" MigPane.cc="center" text="Player 2"/>
+            </MigPane>
+        </MigPane>
+
+        <Text fx:id="playerTwoMoneyText" style="-fx-background-color: blue" MigPane.cc="grow, center" text="xxxM"/>
+
+        <MigPane fx:id="playerTwoAssetsWrapper" MigPane.cc="grow" styleClass="playerAssetsWrapper"
+                 layout="wrap"
+                 cols="6%[41%,grow]6%[41%, grow]6%"
+                 rows="0[33%, grow][33%, grow][33%, grow]0">
+
+            <StreetTitleDeedPane tileColor="red" tileTitle="KENTUCKY AVENUE" rent="" colourSetRent="" twoHouseRent=""
+                                 threeHouseRent="" fourHouseRent="" hotelCost="" hotelRent="" houseCost=""
+                                 MigPane.cc="grow"/>
+            <StreetTitleDeedPane tileColor="blue" tileTitle="KENTUCKY AVENUE" rent="" colourSetRent="" twoHouseRent=""
+                                 threeHouseRent="" fourHouseRent="" hotelCost="" hotelRent="" houseCost=""
+                                 MigPane.cc="grow"/>
+            <StreetTitleDeedPane tileColor="magenta" tileTitle="KENTUCKY AVENUE" rent="" colourSetRent="" twoHouseRent=""
+                                 threeHouseRent="" fourHouseRent="" hotelCost="" hotelRent="" houseCost=""
+                                 MigPane.cc="grow"/>
+            <StreetTitleDeedPane tileColor="red" tileTitle="KENTUCKY AVENUE" rent="" colourSetRent="" twoHouseRent=""
+                                 threeHouseRent="" fourHouseRent="" hotelCost="" hotelRent="" houseCost=""
+                                 MigPane.cc="grow"/>
+            <StreetTitleDeedPane tileColor="red" tileTitle="KENTUCKY AVENUE" rent="" colourSetRent="" twoHouseRent=""
+                                 threeHouseRent="" fourHouseRent="" hotelCost="" hotelRent="" houseCost=""
+                                 MigPane.cc="grow"/>
+            <StreetTitleDeedPane tileColor="red" tileTitle="KENTUCKY AVENUE" rent="" colourSetRent="" twoHouseRent=""
+                                 threeHouseRent="" fourHouseRent="" hotelCost="" hotelRent="" houseCost=""
+                                 MigPane.cc="grow"/>
+
+        </MigPane>
+    </MigPane>
+
+    <!-- Player 1 Bottom Wrapper -->
+    <MigPane MigPane.cc="grow" cols="3%[47%, grow, fill][47%, grow, fill]3%" rows="0[100%, grow, fill]0" layout="">
+        <ComboBox fx:id="playerOneComboBox"/>
+        <Button text="Add Asset" />
+    </MigPane>
+
+    <!-- Player 2 Bottom Wrapper -->
+    <MigPane MigPane.cc="grow" cols="3%[47%, grow, fill][47%, grow, fill]3%" rows="0[100%, grow, fill]0" layout="">
+        <ComboBox fx:id="playerTwoComboBox"/>
+        <Button text="Add Asset" />
+    </MigPane>
+
+    <!-- Accept Offer Wrapper -->
+    <MigPane MigPane.cc="grow, center" >
+        <Button fx:id="acceptButton" text="Accept Offer" MigPane.cc="center"/>
+    </MigPane>
+
+    <!-- Accept Offer Wrapper -->
+    <MigPane MigPane.cc="grow, center" >
+        <Button fx:id="rejectButton" text="Reject Offer" MigPane.cc="center"/>
+    </MigPane>
+
+</fx:root>

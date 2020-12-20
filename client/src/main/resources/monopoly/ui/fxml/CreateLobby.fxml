@@ -9,46 +9,48 @@
 <?import monopoly.ui.UIUtil?>
 
 <MigPane xmlns="http://javafx.com/javafx/15.0.1"
-	xmlns:fx="http://javafx.com/fxml" fx:id="root"
-	layout="wrap, center, gap 5%"
-	rows="push[15%]10%[5%, fill][5%, fill][5%, fill]10%[5%, top, fill]push"
-	cols="10%[right]2%[left, fill]10%"
-	fx:controller="monopoly.ui.controller.CreateLobbyController">
-	<!--<background> <Background> <images> <BackgroundImage> <image> <UIUtil 
-		fx:constant="BACKGROUND_IMAGE4" /> </image> </BackgroundImage> </images> 
-		</Background> </background> -->
+         xmlns:fx="http://javafx.com/fxml" fx:id="root"
+         layout="wrap, center, gap 5%"
+         rows="push[15%][grow, fill][5%, top, fill]push"
+         cols="push[60%, fill]push"
+         fx:controller="monopoly.ui.controller.CreateLobbyController">
+    <!--<background> <Background> <images> <BackgroundImage> <image> <UIUtil
+        fx:constant="BACKGROUND_IMAGE4" /> </image> </BackgroundImage> </images>
+        </Background> </background> -->
 
-	<stylesheets>
-		<UIUtil fx:constant="COMMON_CSS" />
-		<UIUtil fx:constant="CREATE_LOBBY_CSS" />
-	</stylesheets>
+    <stylesheets>
+        <UIUtil fx:constant="COMMON_CSS"/>
+        <UIUtil fx:constant="CREATE_LOBBY_CSS"/>
+    </stylesheets>
 
-	<ImageView fx:id="backIcon" pickOnBounds="true"
-		onMouseClicked="#back" MigPane.cc="pos 10 10">
-		<image>
-			<UIUtil fx:constant="BACK_ICON" />
-		</image>
-	</ImageView>
+    <ImageView fx:id="backIcon" pickOnBounds="true"
+               onMouseClicked="#back" MigPane.cc="pos 20 20" preserveRatio="true">
+        <image>
+            <UIUtil fx:constant="BACK_ICON"/>
+        </image>
+    </ImageView>
 
-	<Text fx:id="mainTitle" MigPane.cc="span 2, center">Create Lobby</Text>
+    <Text fx:id="mainTitle" MigPane.cc="span 2, center">Create Lobby</Text>
 
-	<Text fx:id="limitTitle">Player Limit:</Text>
-	<Spinner fx:id="limitValue">
-		<valueFactory>
-			<SpinnerValueFactory.IntegerSpinnerValueFactory
-				min="2" max="6" />
-		</valueFactory>
-	</Spinner>
+    <MigPane rows="0[grow][grow][grow]0" cols="0[50%][50%]0" layout="wrap" MigPane.cc="grow" styleClass="wrapper">
+        <Text fx:id="limitTitle" MigPane.cc="right">Player Limit:</Text>
+        <Spinner fx:id="limitValue">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory
+                        min="2" max="6"/>
+            </valueFactory>
+        </Spinner>
 
-	<Text fx:id="roomTitle">Room Name:</Text>
-	<TextField fx:id="roomName" text="" />
+        <Text fx:id="roomTitle" MigPane.cc="right">Room Name:</Text>
+        <TextField fx:id="roomName" text=""/>
 
-	<Text fx:id="passwordTitle">Password:</Text>
-	<TextField fx:id="passwordValue" text="" disable="true" />
+        <Text fx:id="passwordTitle" MigPane.cc="right">Password:</Text>
+        <TextField fx:id="passwordValue" text="" disable="true"/>
 
-	<CheckBox fx:id="checkPriv" MigPane.cc="left" text="Private"
-		onAction="#privateChange" />
-	<Button fx:id="createButton" mnemonicParsing="false"
-		styleClass="buttonRegular" text="Create" MigPane.cc="right"
-		onAction="#validateAndCreateLobby" />
+        <CheckBox fx:id="checkPriv" MigPane.cc="center" text="Private"
+                  onAction="#privateChange" styleClass="checkPriv"/>
+        <Button fx:id="createButton" mnemonicParsing="false"
+                styleClass="buttonRegular" text="Create" MigPane.cc="center"
+                onAction="#validateAndCreateLobby"/>
+    </MigPane>
 </MigPane>

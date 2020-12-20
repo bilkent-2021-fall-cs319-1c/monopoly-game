@@ -1,5 +1,7 @@
 package monopoly.ui.controller.join_lobby;
 
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.beans.binding.Bindings;
@@ -14,7 +16,6 @@ import javafx.scene.control.Pagination;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import lombok.Setter;
 import monopoly.Error;
@@ -26,7 +27,7 @@ import monopoly.ui.controller.MonopolyUIController;
 
 /**
  * Controls the join lobby UI
- * 
+ *
  * @author Ziya Mukhtarov
  * @version Dec 13, 2020
  */
@@ -93,6 +94,18 @@ public class JoinLobbyController implements MonopolyUIController {
 				passwordValue.clear();
 			}
 		});
+
+		mainPane.setBackground(new Background(new BackgroundImage(UIUtil.BACKGROUND_IMAGE5, BackgroundRepeat.NO_REPEAT,
+				BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0,1.0,
+				true,true, false, true))));
+
+		mainTitle.setFont(Font.font("Kabel"));
+		promptText.setFont(Font.font("Avenir Next"));
+		roomTitle.setFont(Font.font("Avenir Next"));
+		roomName.setFont(Font.font("Avenir Next"));
+		passwordTitle.setFont(Font.font("Avenir Next"));
+		passwordValue.setFont(Font.font("Avenir Next"));
+
 	}
 
 	/**
@@ -106,7 +119,7 @@ public class JoinLobbyController implements MonopolyUIController {
 	/**
 	 * Creates the lobby page for the given page index. The data for that page is
 	 * taken from the server.
-	 * 
+	 *
 	 * @return An empty meaningless component. It is returned for correct JavaFX
 	 *         paging API.
 	 */
@@ -161,7 +174,7 @@ public class JoinLobbyController implements MonopolyUIController {
 	/**
 	 * Called when the bounds of this pane is changed. Responsive UIs should use
 	 * this method to update their font sizes and scaling
-	 * 
+	 *
 	 * @param width  The total width of this container
 	 * @param height The total height of this container
 	 */

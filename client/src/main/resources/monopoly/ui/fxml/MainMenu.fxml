@@ -11,8 +11,8 @@
 	layout="flowy, center, gap 5:5%" cols="33%[center, fill]33%"
 	rows="push[]5:15%[][][][]push"
 	fx:controller="monopoly.ui.controller.MainMenuController">
-	<!--<background> <Background> <images> <BackgroundImage> <image> <UIUtil 
-		fx:constant="BACKGROUND_IMAGE4" /> </image> </BackgroundImage> </images> 
+	<!--<background> <Background> <images> <BackgroundImage> <image> <UIUtil
+		fx:constant="BACKGROUND_IMAGE4" /> </image> </BackgroundImage> </images>
 		</Background> </background> -->
 
 	<stylesheets>
@@ -25,12 +25,12 @@
 
 	<Button fx:id="createGameButton"
 		onAction="#switchToCreateGameScreen" styleClass="buttonRegular"
-		text="Create Game" />
+		text="Create Game" MigPane.cc="gap 50 50"/>
 	<Button fx:id="joinGameButton"
 		onAction="#switchToJoinLobbyScreen" styleClass="buttonRegular"
-		text="Join Game" />
+		text="Join Game" MigPane.cc="gap 50 50"/>
 	<Button fx:id="helpButton" onAction="#switchToHelpScreen"
-		styleClass="buttonRegular" text="Help" />
+		styleClass="buttonRegular" text="Help" MigPane.cc="gap 50 50" />
 	<Button fx:id="exitButton" onAction="#exitApp"
-		styleClass="buttonDanger" text="Exit" />
+		styleClass="buttonDanger" text="Exit" MigPane.cc="gap 50 50"/>
 </MigPane>
