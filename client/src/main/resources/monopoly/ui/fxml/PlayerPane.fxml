@@ -8,7 +8,7 @@
 <?import monopoly.ui.UIUtil?>
 
 <fx:root xmlns="http://javafx.com/javafx/15.0.1"
-	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill, debug"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill"
 	rows="0[]:1%:1%[]:1%:1%" styleClass="bordered">
 
 	<stylesheets>

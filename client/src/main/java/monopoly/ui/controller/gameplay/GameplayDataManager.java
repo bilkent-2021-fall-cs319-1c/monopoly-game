@@ -31,8 +31,8 @@ import monopoly.ui.controller.gameplay.titledeed.StreetTitleDeedPane;
 import monopoly.ui.controller.gameplay.titledeed.UtilitiesTileDeedPane;
 
 public class GameplayDataManager {
-	private static final Color[] playerColors = { Color.web("#ff7d7d"), Color.web("#f7ffb2"), Color.web("#ffdf5e"),
-			Color.web("#ec8cff"), Color.web("#d0f4ff"), Color.BLUE };
+	private static final Color[] playerColors = { Color.web("#ff4646"), Color.web("#7579e7"), Color.web("#ffdf5e"),
+			Color.web("#ec8cff"), Color.web("#d0f4ff"), Color.web("#fc8621") };
 
 	private GameplayController gameplayController;
 	private PlayerListPacketData playerData;

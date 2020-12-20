@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.application.Platform;
@@ -21,7 +23,7 @@ import monopoly.ui.controller.MonopolyUIController;
 /**
  * Controls the lobby UI (the screen after joining a lobby and waiting for the
  * game start)
- * 
+ *
  * @author Ziya Mukhtarov
  * @version Dec 13, 2020
  */
@@ -61,11 +63,23 @@ public class LobbyController implements MonopolyUIController {
 		if (users != null) {
 			users.getUsers().forEach(this::userJoined);
 		}
+
+		root.setBackground(new Background(new BackgroundImage(UIUtil.BACKGROUND_IMAGE5, BackgroundRepeat.NO_REPEAT,
+				BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0,1.0,
+				true,true, false, true))));
+
+		lobbyText.setFont(Font.font("Avenir Next"));
+		nameText.setFont(Font.font("Avenir Next"));
+		passwordText.setFont(Font.font("Avenir Next"));
+		waitingText.setFont(Font.font("Avenir Next"));
+		nameField.setFont(Font.font("Avenir Next"));
+		passwordField.setFont(Font.font("Avenir Next"));
+		readyButton.setFont(Font.font("Avenir Next"));
 	}
 
 	/**
 	 * Displays a new player that joined this lobby
-	 * 
+	 *
 	 * @param user The player joining this lobby
 	 */
 	public void userJoined(UserPacketData user) {
@@ -81,7 +95,7 @@ public class LobbyController implements MonopolyUIController {
 
 	/**
 	 * Changes the player's readiness status
-	 * 
+	 *
 	 * @param user The player data that identifies the player and contains the
 	 *             readiness to set
 	 */
@@ -117,7 +131,7 @@ public class LobbyController implements MonopolyUIController {
 	/**
 	 * Called when the bounds of this pane is changed. Responsive UIs should use
 	 * this method to update their font sizes and scaling
-	 * 
+	 *
 	 * @param width  The total width of this container
 	 * @param height The total height of this container
 	 */
