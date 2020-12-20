@@ -83,15 +83,6 @@ public class NetworkManager {
 	}
 
 	/**
-	 * Notifies all error listeners about the error.
-	 * 
-	 * @param errorPacket The packet containing error details
-	 */
-	private void notifyAllErrorListeners(ImportantNetworkPacket errorPacket) {
-		errorListeners.parallelStream().forEach(l -> l.errorOccured(new Error(errorPacket.getType())));
-	}
-
-	/**
 	 * Queries the server for the number of open and not-in-game lobbies. This
 	 * method blocks until the response is received, or an error packet is received,
 	 * in which case the error listeners are notified. Note that, this method may
@@ -246,6 +237,39 @@ public class NetworkManager {
 	}
 
 	/**
+	 * Informs the server that this player wants to buy current property
+	 */
+	public void buyProperty() {
+		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.BUY_PROPERTY);
+		client.sendImportantPacket(request);
+	}
+
+	/**
+	 * Informs the server that this player wants to auction current property
+	 */
+	public void auctionProperty() {
+		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.INITIATE_AUCTION);
+		client.sendImportantPacket(request);
+	}
+
+	/**
+	 * Informs the server that this player wants to pass this auction turn
+	 */
+	public void passOnAuction() {
+		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.SKIP_BID);
+		client.sendImportantPacket(request);
+	}
+
+	/**
+	 * Increases the bid by the given amount
+	 */
+	public void bidOnAuction(Integer value) {
+		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.INCREASE_BID,
+				new IntegerPacketData(value));
+		client.sendImportantPacket(request);
+	}
+
+	/**
 	 * Only one of this method should run at once during the runtime, hence the
 	 * synchronized keyword. It blocks until the desired network packet, or an error
 	 * packet is received.
@@ -273,7 +297,6 @@ public class NetworkManager {
 		logger.debug("Response: {}", responsePacket.getType());
 
 		if (responsePacket.isErrorPacket()) {
-			new Thread(() -> notifyAllErrorListeners(responsePacket)).start();
 			return null;
 		} else {
 			return responsePacket;
@@ -326,6 +349,11 @@ public class NetworkManager {
 			PacketType type = packet.getType();
 			logger.debug("Received: {}", packet);
 			System.out.println(packet);
+
+			if (packet.isErrorPacket()) {
+				new Thread(() -> notifyAllErrorListeners(responsePacket)).start();
+			}
+
 			if ((type == waitingForResponseType && responsePacket == null) || packet.isErrorPacket()) {
 				responsePacket = packet;
 			} else {
@@ -353,8 +381,40 @@ public class NetworkManager {
 
 				} else if (type == PacketType.ACT_BUY_OR_AUCTION) {
 					handleBuyOrAuctionOption((TilePacketData) packet.getData().get(0));
+
+				} else if (type == PacketType.PROPERTY_BOUGHT) {
+					handlePropertyBought((TilePacketData) packet.getData().get(0),
+							(PlayerPacketData) packet.getData().get(1));
+
+				} else if (type == PacketType.AUCTION_INITIATED) {
+					handleAuctionStart((TilePacketData) packet.getData().get(0));
+
+				} else if (type == PacketType.AUCTION_TURN) {
+					handleAuctionTurnChange((PlayerPacketData) packet.getData().get(0));
+
+				} else if (type == PacketType.BID_INCREASED) {
+					handleAuctionBidIncrease((PlayerPacketData) packet.getData().get(0),
+							(IntegerPacketData) packet.getData().get(1));
+
+				} else if (type == PacketType.BID_SKIPPED) {
+					handleAuctionBidSkip((PlayerPacketData) packet.getData().get(0));
+
+				} else if (type == PacketType.AUCTION_COMPLETE) {
+					handleAuctionComplete();
+
+				} else if (type == PacketType.PLAYER_BALANCE) {
+					handleBalanceChange((PlayerPacketData) packet.getData().get(0));
 				}
 			}
+		}
+
+		/**
+		 * Notifies all error listeners about the error.
+		 * 
+		 * @param errorPacket The packet containing error details
+		 */
+		private void notifyAllErrorListeners(ImportantNetworkPacket errorPacket) {
+			errorListeners.parallelStream().forEach(l -> l.errorOccured(new Error(errorPacket.getType())));
 		}
 
 		/**
@@ -452,6 +512,97 @@ public class NetworkManager {
 			if (uiController instanceof GameplayController) {
 				GameplayController gameplayController = (GameplayController) uiController;
 				gameplayController.getGameData().displayBuyOrAuctionPane(tilePacketData);
+			} else {
+				logger.error("Wrong controller. Expected GameplayController, displaying {}", uiController);
+			}
+		}
+
+		/**
+		 * Handles a property being bought by the given player
+		 */
+		private void handlePropertyBought(TilePacketData tilePacketData, PlayerPacketData playerPacketData) {
+			Object uiController = app.getMainController();
+			if (uiController instanceof GameplayController) {
+				GameplayController gameplayController = (GameplayController) uiController;
+				gameplayController.getGameData().propertyBought(tilePacketData, playerPacketData);
+			} else {
+				logger.error("Wrong controller. Expected GameplayController, displaying {}", uiController);
+			}
+		}
+
+		/**
+		 * Handles a property being bought by the given player
+		 */
+		private void handleBalanceChange(PlayerPacketData playerPacketData) {
+			Object uiController = app.getMainController();
+			if (uiController instanceof GameplayController) {
+				GameplayController gameplayController = (GameplayController) uiController;
+				gameplayController.getGameData().balanceChange(playerPacketData);
+			} else {
+				logger.error("Wrong controller. Expected GameplayController, displaying {}", uiController);
+			}
+		}
+
+		/**
+		 * Handles auction starting
+		 */
+		private void handleAuctionStart(TilePacketData tilePacketData) {
+			Object uiController = app.getMainController();
+			if (uiController instanceof GameplayController) {
+				GameplayController gameplayController = (GameplayController) uiController;
+				gameplayController.getGameData().auctionStarted(tilePacketData);
+			} else {
+				logger.error("Wrong controller. Expected GameplayController, displaying {}", uiController);
+			}
+		}
+
+		/**
+		 * Handles the turn change during auction
+		 */
+		private void handleAuctionTurnChange(PlayerPacketData playerPacketData) {
+			Object uiController = app.getMainController();
+			if (uiController instanceof GameplayController) {
+				GameplayController gameplayController = (GameplayController) uiController;
+				gameplayController.getGameData().auctionTurnChange(playerPacketData);
+			} else {
+				logger.error("Wrong controller. Expected GameplayController, displaying {}", uiController);
+			}
+		}
+
+		/**
+		 * Handles auction bid change
+		 */
+		private void handleAuctionBidIncrease(PlayerPacketData playerPacketData, IntegerPacketData integerPacketData) {
+			Object uiController = app.getMainController();
+			if (uiController instanceof GameplayController) {
+				GameplayController gameplayController = (GameplayController) uiController;
+				gameplayController.getGameData().auctionBidChange(playerPacketData, integerPacketData.getData());
+			} else {
+				logger.error("Wrong controller. Expected GameplayController, displaying {}", uiController);
+			}
+		}
+
+		/**
+		 * Handles someone skipping the bid
+		 */
+		private void handleAuctionBidSkip(PlayerPacketData playerPacketData) {
+			Object uiController = app.getMainController();
+			if (uiController instanceof GameplayController) {
+				GameplayController gameplayController = (GameplayController) uiController;
+				gameplayController.getGameData().auctionSkipped(playerPacketData);
+			} else {
+				logger.error("Wrong controller. Expected GameplayController, displaying {}", uiController);
+			}
+		}
+
+		/**
+		 * Handles the end of an auction
+		 */
+		private void handleAuctionComplete() {
+			Object uiController = app.getMainController();
+			if (uiController instanceof GameplayController) {
+				GameplayController gameplayController = (GameplayController) uiController;
+				gameplayController.getGameData().auctionEnded();
 			} else {
 				logger.error("Wrong controller. Expected GameplayController, displaying {}", uiController);
 			}

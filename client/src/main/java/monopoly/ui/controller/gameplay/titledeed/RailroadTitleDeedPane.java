@@ -50,6 +50,9 @@ public class RailroadTitleDeedPane extends MigPane implements DeedCard {
 	private String fourRailroadRent;
 	private String mortgageString;
 
+	@Getter
+	private int buyCost;
+
 	public RailroadTitleDeedPane(TitleDeedPacketData deedData) {
 		name = deedData.getTitle();
 		mortgageString = "" + deedData.getMortgagePrice();
@@ -59,6 +62,8 @@ public class RailroadTitleDeedPane extends MigPane implements DeedCard {
 		twoRailroadRent = "" + rentCost.get(1);
 		threeRailroadRent = "" + rentCost.get(2);
 		fourRailroadRent = "" + rentCost.get(3);
+
+		buyCost = deedData.getBuyPrice();
 
 		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/RailroadTitleDeedPane.fxml"));
 		loader.setController(this);

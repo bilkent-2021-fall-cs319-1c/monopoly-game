@@ -23,6 +23,7 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TilePacke
 import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 import monopoly.network.packet.important.packet_data.gameplay.property.TitleDeedPacketData;
 import monopoly.ui.UIUtil;
+import monopoly.ui.controller.gameplay.PlayerPane;
 
 /**
  * Models a tile in Monopoly.
@@ -37,6 +38,8 @@ public class SideTile extends MigPane implements Tile {
 	private Text tileTitle;
 	@FXML
 	private Text tileValue;
+	@FXML
+	private MigPane tileValueWrapper;
 	@FXML
 	private MigPane tokens;
 
@@ -105,7 +108,7 @@ public class SideTile extends MigPane implements Tile {
 
 		} else if (tileType == TileType.CHANCE || tileType == TileType.COMMUNITY_CHEST) {
 			topWrapper.setVisible(false);
-			tileValue.setVisible(false);
+			tileValueWrapper.setVisible(false);
 			setComponentConstraints(tokens, "spany 3");
 			setTileIcon(tileType == TileType.CHANCE ? UIUtil.QUESTION_MARK : UIUtil.CHEST);
 		}
@@ -130,7 +133,7 @@ public class SideTile extends MigPane implements Tile {
 		else
 			UIUtil.fitFont(tileTitle, width - 5, height * 0.36);
 
-		if (tileValue.isVisible())
+		if (tileValueWrapper.isVisible())
 			UIUtil.fitFont(tileValue, width, height * 0.15);
 	}
 
@@ -183,5 +186,10 @@ public class SideTile extends MigPane implements Tile {
 		if (minBound.getX() > maxBound.getX() && minBound.getY() > maxBound.getY())
 			return 180;
 		return 270;
+	}
+
+	public void setOwner(PlayerPane playerPaneOfPlayer) {
+		Platform.runLater(() -> tileValueWrapper
+				.setBackground(new Background(new BackgroundFill(playerPaneOfPlayer.getColor(), null, null))));
 	}
 }

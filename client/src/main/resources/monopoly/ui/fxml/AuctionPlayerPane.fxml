@@ -19,7 +19,7 @@
 	</stylesheets>
 
 	<MigPane fx:id="yourTurnWrapper" rows="0[100%]0"
-		cols="0[100%]0" styleClass="yourTurnWrapper">
+		cols="0[100%]0" visible="false" styleClass="yourTurnWrapper">
 		<Text fx:id="yourTurnText" text="Your Turn!"
 			textAlignment="CENTER" MigPane.cc="center, grow" />
 	</MigPane>

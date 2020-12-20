@@ -43,6 +43,7 @@ public class GameplayController implements MonopolyUIController {
 	private MigPane playersLeft;
 	@FXML
 	private MigPane playersRight;
+	@Getter
 	@FXML
 	private Board board;
 	@FXML
@@ -71,9 +72,11 @@ public class GameplayController implements MonopolyUIController {
 	private GameplayDataManager gameData;
 
 	private OverlayWrapper currentPopup;
+	private boolean popupClosing;
 
 	public GameplayController() {
 		currentPopup = null;
+		popupClosing = false;
 
 		chatOpen = false;
 		boardRotating = false;
@@ -253,6 +256,16 @@ public class GameplayController implements MonopolyUIController {
 	}
 
 	public void showPopup(Pane popup) {
+		closePopup();
+		while (currentPopup != null) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				Thread.currentThread().interrupt();
+			}
+		}
+
 		Platform.runLater(() -> {
 			OverlayWrapper overlay = new OverlayWrapper(popup);
 			currentPopup = overlay;
@@ -261,11 +274,13 @@ public class GameplayController implements MonopolyUIController {
 	}
 
 	public void closePopup() {
-		if (currentPopup != null) {
+		if (currentPopup != null && !popupClosing) {
+			popupClosing = true;
 			Platform.runLater(() -> {
 				currentPopup.setOnFadeFinished(e -> {
 					stackPane.getChildren().remove(currentPopup);
 					currentPopup = null;
+					popupClosing = false;
 				});
 				currentPopup.fade(false);
 			});

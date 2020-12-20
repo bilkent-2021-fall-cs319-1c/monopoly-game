@@ -30,5 +30,8 @@
 	<MigPane layout="wrap" rows="push[]push[]push"
 		cols="push[]push[]push[]push" fx:id="tokens" />
 
-	<Text fx:id="tileValue" MigPane.cc="center, hmax 15%" />
+	<MigPane fx:id="tileValueWrapper" MigPane.cc="center, hmax 15%"
+		rows="0[]0" cols="0[center, grow, fill]0">
+		<Text fx:id="tileValue" />
+	</MigPane>
 </fx:root>

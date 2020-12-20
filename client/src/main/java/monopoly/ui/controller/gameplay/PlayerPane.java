@@ -60,6 +60,7 @@ public class PlayerPane extends MigPane {
 	private boolean nameOnLeft;
 	@Getter
 	private boolean self;
+	@Getter
 	private String username;
 	@Getter
 	private Color color;
@@ -70,6 +71,9 @@ public class PlayerPane extends MigPane {
 
 	private MicSender micSender;
 	private WebcamSender webcamSender;
+
+	@Getter
+	private int balance;
 
 	/**
 	 * Initializes the pane. Creates webcam sender and microphone sender if this
@@ -87,6 +91,8 @@ public class PlayerPane extends MigPane {
 		this.self = self;
 		this.username = username;
 		this.color = color;
+
+		balance = 1500;
 
 		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/PlayerPane.fxml"));
 		loader.setController(this);
@@ -228,5 +234,27 @@ public class PlayerPane extends MigPane {
 		webcamIcon.setFitWidth(webcamMicIconSize);
 		micIcon.setFitHeight(webcamMicIconSize);
 		micIcon.setFitWidth(webcamMicIconSize);
+	}
+
+	public void balanceChange(int balance) {
+		Platform.runLater(() -> {
+			moneyLabel.setText(balance + "M");
+			if (balance > this.balance) {
+				moneyLabel.setTextFill(Color.LAWNGREEN);
+			} else {
+				moneyLabel.setTextFill(Color.RED);
+			}
+			this.balance = balance;
+
+			new Thread(() -> {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					Thread.currentThread().interrupt();
+				}
+				Platform.runLater(() -> moneyLabel.setTextFill(Color.BLACK));
+			}).start();
+		});
 	}
 }

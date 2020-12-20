@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import lombok.Getter;
 import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.ui.UIUtil;
 import monopoly.ui.controller.gameplay.GameplayDataManager;
@@ -38,6 +39,7 @@ public class Board extends MigPane {
 	@FXML
 	private CornerTile gotoJail;
 
+	@Getter
 	private List<Tile> tiles;
 	private List<Token> tokens;
 

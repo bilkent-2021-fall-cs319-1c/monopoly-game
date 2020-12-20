@@ -22,6 +22,8 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 import monopoly.network.packet.realtime.BufferedImagePacket;
 import monopoly.network.packet.realtime.MicSoundPacket;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
+import monopoly.ui.controller.gameplay.board.SideTile;
+import monopoly.ui.controller.gameplay.board.Tile;
 import monopoly.ui.controller.gameplay.board.Token;
 import monopoly.ui.controller.gameplay.titledeed.DeedCard;
 import monopoly.ui.controller.gameplay.titledeed.RailroadTitleDeedPane;
@@ -44,10 +46,13 @@ public class GameplayDataManager {
 	private boolean diceRolling;
 	private boolean tokenMoving;
 
+	private AuctionPane ongoingAuction;
+
 	/**
 	 * Holds the player that should play now
 	 */
 	private PlayerPane turn;
+	private AuctionPlayerPane auctionTurn;
 
 	public GameplayDataManager(PlayerListPacketData playerData, BoardPacketData boardData,
 			GameplayController gameplayController) {
@@ -57,6 +62,8 @@ public class GameplayDataManager {
 
 		diceRolling = false;
 		idToPlayerPaneMap = new HashMap<>();
+		ongoingAuction = null;
+		auctionTurn = null;
 		createPlayerPanes();
 
 		changePlayerTurn(playerData.getPlayers().get(0));
@@ -164,7 +171,11 @@ public class GameplayDataManager {
 	}
 
 	private PlayerPane getPlayerPaneOfPlayer(PlayerPacketData player) {
-		return idToPlayerPaneMap.get(player.getUserData().getConnectionId());
+		return getPlayerPaneOfPlayer(player.getUserData().getConnectionId());
+	}
+
+	private PlayerPane getPlayerPaneOfPlayer(int connectionId) {
+		return idToPlayerPaneMap.get(connectionId);
 	}
 
 	private int getSelfConnectionId() {
@@ -208,5 +219,63 @@ public class GameplayDataManager {
 			waitWhileTokenMoving();
 			gameplayController.showPopup(new BuyOrAuctionPane(deedCard, gameplayController.getApp()));
 		}).start();
+	}
+
+	public void auctionStarted(TilePacketData tilePacketData) {
+		DeedCard deedCard;
+		TileType tileType = tilePacketData.getType();
+		if (tileType == TileType.RAILROAD) {
+			deedCard = new RailroadTitleDeedPane(tilePacketData.getTitleDeed());
+		} else if (tileType == TileType.UTILITY) {
+			deedCard = new UtilitiesTileDeedPane(tilePacketData.getTitleDeed());
+		} else {
+			deedCard = new StreetTitleDeedPane((StreetTitleDeedPacketData) tilePacketData.getTitleDeed());
+		}
+
+		ongoingAuction = new AuctionPane(deedCard, playerPanes, gameplayController.getApp());
+		new Thread(() -> gameplayController.showPopup(ongoingAuction)).start();
+	}
+
+	public void propertyBought(TilePacketData tilePacketData, PlayerPacketData playerPacketData) {
+		Tile boughtTile = gameplayController.getBoard().getTiles().get(tilePacketData.getIndex());
+		((SideTile) boughtTile).setOwner(getPlayerPaneOfPlayer(playerPacketData));
+	}
+
+	public void balanceChange(PlayerPacketData playerPacketData) {
+		getPlayerPaneOfPlayer(playerPacketData).balanceChange(playerPacketData.getBalance());
+	}
+
+	public int getThisPlayersBalance() {
+		return getPlayerPaneOfPlayer(getSelfConnectionId()).getBalance();
+	}
+
+	public void auctionTurnChange(PlayerPacketData playerPacketData) {
+		if (auctionTurn != null) {
+			auctionTurn.setTurn(false);
+			if (auctionTurn.getPlayerPane().isSelf()) {
+				ongoingAuction.setDisableControl(true);
+			}
+		}
+
+		Color playerColor = getPlayerPaneOfPlayer(playerPacketData).getColor();
+		auctionTurn = ongoingAuction.getPlayerPane(playerColor);
+		auctionTurn.setTurn(true);
+		if (auctionTurn.getPlayerPane().isSelf()) {
+			ongoingAuction.setDisableControl(false);
+		}
+	}
+
+	public void auctionBidChange(PlayerPacketData playerPacketData, int amount) {
+		ongoingAuction.setHighestBid(amount);
+	}
+
+	public void auctionSkipped(PlayerPacketData playerPacketData) {
+		Color playerColor = getPlayerPaneOfPlayer(playerPacketData).getColor();
+		auctionTurn = ongoingAuction.getPlayerPane(playerColor);
+		auctionTurn.passed();
+	}
+
+	public void auctionEnded() {
+		gameplayController.closePopup();
 	}
 }

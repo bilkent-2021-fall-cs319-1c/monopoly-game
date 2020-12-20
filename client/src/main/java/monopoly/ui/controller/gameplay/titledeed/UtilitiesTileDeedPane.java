@@ -31,8 +31,12 @@ public class UtilitiesTileDeedPane extends MigPane implements DeedCard {
 	@Getter
 	private String name;
 
+	@Getter
+	private int buyCost;
+
 	public UtilitiesTileDeedPane(TitleDeedPacketData deedData) {
 		this.name = deedData.getTitle();
+		buyCost = deedData.getBuyPrice();
 
 		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/UtilitiesTileDeedPane.fxml"));
 		loader.setController(this);

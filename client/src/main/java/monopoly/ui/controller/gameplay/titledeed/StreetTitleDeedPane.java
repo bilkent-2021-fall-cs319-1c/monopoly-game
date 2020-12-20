@@ -91,6 +91,9 @@ public class StreetTitleDeedPane extends MigPane implements DeedCard {
 	private String houseCostString;
 	private String hotelCostString;
 
+	@Getter
+	private int buyCost;
+
 	public StreetTitleDeedPane(StreetTitleDeedPacketData deedData) {
 		tileColor = deedData.getColor();
 		name = deedData.getTitle();
@@ -105,6 +108,8 @@ public class StreetTitleDeedPane extends MigPane implements DeedCard {
 		threeHouseRentString = "" + rentCost.get(4);
 		fourHouseRentString = "" + rentCost.get(5);
 		hotelRentString = "" + rentCost.get(6);
+
+		buyCost = deedData.getBuyPrice();
 
 		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/StreetTitleDeedPane.fxml"));
 		loader.setController(this);
@@ -130,7 +135,6 @@ public class StreetTitleDeedPane extends MigPane implements DeedCard {
 		hotelRentValue.setText(hotelRentString);
 		housesCostValue.setText(houseCostString);
 		hotelsCostValue.setText(hotelCostString);
-
 
 		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));
 	}

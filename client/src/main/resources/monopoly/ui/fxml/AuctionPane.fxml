@@ -6,14 +6,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import org.tbee.javafx.scene.layout.fxml.*?>
-
 <?import javafx.scene.text.Text?>
-<?import monopoly.ui.controller.gameplay.StreetTitleDeedPane?>
-<?import monopoly.ui.controller.gameplay.AuctionPlayerPane?>
 
 <fx:root xmlns="http://javafx.com/javafx"
 	xmlns:fx="http://javafx.com/fxml" type="MigPane" cols="0[grow, fill]0"
-	rows="0[10%]0[10%]0[grow, fill]0[15%, fill]0" layout="wrap">
+	rows="0[10%]0[10%]0[grow, fill]0[15%, fill]0" layout="wrap"
+	style="-fx-background-color: white">
 
 	<Text fx:id="auctionText" text="AUCTION" textAlignment="CENTER"
 		MigPane.cc="center" />
@@ -25,36 +23,31 @@
 		cols="0[50%, grow, fill][50%, grow, fill]0"
 		rows="0[100%, grow, fill]0" layout="">
 
-		<MigPane fx:id="addDeedCard" cols="10%[80%, grow, fill]10%"
-			rows="5%[90%, grow, fill]5%" layout="wrap">
+		<MigPane fx:id="deedCardDisplay"
+			cols="10%[80%, grow, fill]10%" rows="5%[90%, grow, fill]5%"
+			layout="wrap">
 		</MigPane>
 
 		<MigPane cols="0[50%]0[50%]0" rows="20%[20%]0[20%]0[20%]20%"
 			layout="wrap">
 			<Text fx:id="bidHereText" MigPane.cc="grow, center, span 2"
-				text="Bid here!" />
-			<TextField fx:id="bidTextField" MigPane.cc="span 2, center" />
-			<Button fx:id="bidButton" text="Bid" MigPane.cc="center" />
-			<Button fx:id="passButton" text="Pass" MigPane.cc="center" />
+				text="Enter your increase&#10;amount here!" />
+			<Spinner editable="true" fx:id="bidInput"
+				MigPane.cc="span 2, center">
+				<valueFactory>
+					<SpinnerValueFactory.IntegerSpinnerValueFactory
+						min="1" max="1" />
+				</valueFactory>
+			</Spinner>
+			<!-- <TextField fx:id="bidTextField" MigPane.cc="span 2, center" /> -->
+			<Button fx:id="bidButton" text="Bid" MigPane.cc="center"
+				onAction="#bid" />
+			<Button fx:id="passButton" text="Pass" MigPane.cc="center"
+				onAction="#pass" />
 		</MigPane>
 	</MigPane>
 
-	<MigPane fx:id="bottomWrapper" MigPane.cc=""
-		cols="0[17%]0[17%]0[17%]0[17%]0[16%]0[16%]0" rows="0[100%]0"
-		layout="wrap">
-		<AuctionPlayerPane playerName="Player 1" color="red"
-			isTurn="true" MigPane.cc="grow" />
-		<AuctionPlayerPane playerName="Player 1"
-			color="blue" isTurn="false" MigPane.cc="grow" />
-		<AuctionPlayerPane playerName="Player 1"
-			color="magenta" isTurn="true" MigPane.cc="grow" />
-		<AuctionPlayerPane playerName="Player 1"
-			color="yellow" isTurn="false" MigPane.cc="grow" />
-		<AuctionPlayerPane playerName="Player 1"
-			color="green" isTurn="false" MigPane.cc="grow" />
-		<AuctionPlayerPane playerName="Player 1"
-			color="cyan" isTurn="false" MigPane.cc="grow" />
-	</MigPane>
-
-
+	<MigPane fx:id="playerPanesWrapper" layout="wrap"
+		rows="0[100%, fill]0"
+		cols="0[17%, fill]0[17%, fill]0[17%, fill]0[17%, fill]0[16%, fill]0[16%, fill]0" />
 </fx:root>
