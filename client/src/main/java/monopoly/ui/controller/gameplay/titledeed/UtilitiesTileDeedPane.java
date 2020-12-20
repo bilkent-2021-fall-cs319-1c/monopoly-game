@@ -61,14 +61,14 @@ public class UtilitiesTileDeedPane extends MigPane implements DeedCard {
 		double width = getWidth();
 		double height = getHeight();
 
-		UIUtil.fitFont(utilityTitle, width, height * 0.07);
+		UIUtil.fitFont(utilityTitle, width, height * 0.6);
 		UIUtil.fitFont(firstPar, width, height * 0.9);
 		UIUtil.fitFont(secondPar, width, height * 0.9);
 		image.setFitWidth(width * 0.6);
 	}
 
 	private void setIconAndName() {
-		if ("ELECTRIC COMPANY".equals(name)) {
+		if ("ELECTRIC\nCOMPANY".equals(name)) {
 			utilityTitle.setText(name);
 			image.setImage(UIUtil.LIGHTBULB);
 		} else {

@@ -17,7 +17,7 @@
          xmlns="http://javafx.com/javafx/15.0.1"
          xmlns:fx="http://javafx.com/fxml" type="MigPane"
          rows="5%[30%, fill, center]5%[10%][22%][23%]5%" cols="0[grow, fill]0"
-         layout="wrap" style="-fx-border-color: black; -fx-border-width: 3px 0 3px 3px;">
+         layout="wrap" style="-fx-border-color: black; -fx-border-width: 3px; -fx-background-color: white;">
 
     <ImageView fx:id="image" MigPane.cc="center, grow" preserveRatio="true"/>
 

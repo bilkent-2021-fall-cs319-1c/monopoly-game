@@ -19,6 +19,13 @@ import monopoly.ui.ClientApplication;
 import monopoly.ui.UIUtil;
 import monopoly.ui.controller.gameplay.titledeed.DeedCard;
 
+/**
+ * Models a street deed card in Monopoly.
+ *
+ * @author Ege Kaan Gürkan
+ * @version Dec 17, 2020
+ */
+
 public class AuctionPane extends MigPane {
 	@FXML
 	private MigPane playerPanesWrapper;

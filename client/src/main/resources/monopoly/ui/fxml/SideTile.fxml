@@ -8,7 +8,7 @@
 <?import javafx.scene.paint.*?>
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 <?import monopoly.ui.UIUtil?>
-<?import monopoly.ui.gameplay.*?>
+<?import monopoly.ui.controller.gameplay.*?>
 <?import javafx.scene.image.ImageView?>
 
 <?import javafx.scene.text.TextFlow?>

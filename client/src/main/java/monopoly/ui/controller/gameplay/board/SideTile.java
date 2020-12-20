@@ -100,7 +100,7 @@ public class SideTile extends MigPane implements Tile {
 		} else if (tileType == TileType.UTILITY) {
 			topWrapper.setVisible(false);
 			setComponentConstraints(tokens, "spany 2");
-			setTileIcon(UIUtil.QUESTION_MARK);
+			setTileIcon("ELECTRIC\nCOMPANY".equals(tileTitleString) ? UIUtil.LIGHTBULB : UIUtil.FAUCET);
 
 		} else if (tileType == TileType.TAX) {
 			topWrapper.setVisible(false);

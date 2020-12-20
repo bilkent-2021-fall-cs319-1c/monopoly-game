@@ -18,6 +18,13 @@ import lombok.Getter;
 import monopoly.network.packet.important.packet_data.gameplay.property.TitleDeedPacketData;
 import monopoly.ui.UIUtil;
 
+/**
+ * Models a railroad deed card in Monopoly.
+ *
+ * @author Ege Kaan Gürkan
+ * @version Dec 17, 2020
+ */
+
 public class RailroadTitleDeedPane extends MigPane implements DeedCard {
 	@FXML
 	private MigPane topWrapper;
@@ -79,7 +86,7 @@ public class RailroadTitleDeedPane extends MigPane implements DeedCard {
 	private void initialize() {
 		tileName.setText(name);
 		topWrapper.setBackground(
-				new Background(new BackgroundImage(UIUtil.BOARD, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+				new Background(new BackgroundImage(UIUtil.TRAIN, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
 						BackgroundPosition.CENTER, new BackgroundSize(0.6, 0.8, true, true, false, false))));
 
 		rentValueText.setText(rentString);

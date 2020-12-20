@@ -19,7 +19,7 @@
 		<UIUtil fx:constant="LOBBY_CSS" />
 	</stylesheets>
 
-	<MigPane layout="fill, wrap, debug"
+	<MigPane layout="fill, wrap"
 		rows="[15%][grow][::10%, fill]" cols="5%[fill]"
 		MigPane.cc="height 100%, width 39%">
 

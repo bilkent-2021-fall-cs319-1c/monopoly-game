@@ -77,6 +77,7 @@ public class UIUtil {
 	public static void loadFonts() {
 		loadFont("fonts/kabel/Kabel-Bold.ttf");
 		loadFont("fonts/recoleta/RecoletaAlt-Bold.ttf");
+		loadFont("fonts/avenirNext/Avenir_Next.ttc");
 	}
 
 	/**

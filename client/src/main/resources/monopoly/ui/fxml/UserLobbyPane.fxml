@@ -11,7 +11,7 @@
 <?import monopoly.ui.UIUtil?>
 
 <fx:root xmlns="http://javafx.com/javafx/15.0.1"
-	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill, wrap, debug"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill, wrap"
 	cols="[::19%]1%[::49%]1%[::30%]" rows="0[fill, grow]0"
 	style="-fx-background-color: indianred" styleClass="bordered">
 	<stylesheets>
