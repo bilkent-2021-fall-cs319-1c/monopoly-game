@@ -87,7 +87,7 @@ public class AuctionPane extends MigPane {
 
 		UIUtil.fitFont(auctionText, width, height * 0.05);
 		UIUtil.fitFont(highestBidText, width, height * 0.04);
-		UIUtil.fitFont(bidHereText, width * 0.45, height * 0.04);
+		UIUtil.fitFont(bidHereText, width, height * 0.1);
 
 		UIUtil.fitFont(bidButton, width * 0.03, height * 0.03);
 		UIUtil.fitFont(passButton, width * 0.04, height * 0.04);
