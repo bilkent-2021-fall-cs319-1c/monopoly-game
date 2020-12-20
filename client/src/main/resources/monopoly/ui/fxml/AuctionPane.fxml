@@ -7,11 +7,17 @@
 <?import javafx.scene.layout.*?>
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 <?import javafx.scene.text.Text?>
+<?import monopoly.ui.*?>
 
 <fx:root xmlns="http://javafx.com/javafx"
 	xmlns:fx="http://javafx.com/fxml" type="MigPane" cols="0[grow, fill]0"
 	rows="0[10%]0[10%]0[grow, fill]0[15%, fill]0" layout="wrap"
 	style="-fx-background-color: white">
+	
+	<stylesheets>
+		<UIUtil fx:constant="COMMON_CSS" />
+		<UIUtil fx:constant="JOIN_LOBBY_CSS" />
+	</stylesheets>
 
 	<Text fx:id="auctionText" text="AUCTION" textAlignment="CENTER"
 		MigPane.cc="center" />
@@ -28,8 +34,8 @@
 			layout="wrap">
 		</MigPane>
 
-		<MigPane cols="0[50%]0[50%]0" rows="20%[20%]0[20%]0[20%]20%"
-			layout="wrap">
+		<MigPane cols="push[15%, fill]2%[15%, fill]push" rows="20%[::20%, fill]0[20%]0[20%]20%"
+			layout="wrap, center">
 			<Text fx:id="bidHereText" MigPane.cc="grow, center, span 2"
 				text="Enter your increase&#10;amount here!" />
 			<Spinner editable="true" fx:id="bidInput"
@@ -40,14 +46,14 @@
 				</valueFactory>
 			</Spinner>
 			<!-- <TextField fx:id="bidTextField" MigPane.cc="span 2, center" /> -->
-			<Button fx:id="bidButton" text="Bid" MigPane.cc="center"
+			<Button fx:id="bidButton" text="Bid" MigPane.cc="right"
 				onAction="#bid" />
-			<Button fx:id="passButton" text="Pass" MigPane.cc="center"
+			<Button fx:id="passButton" text="Pass" MigPane.cc="left"
 				onAction="#pass" />
 		</MigPane>
 	</MigPane>
 
-	<MigPane fx:id="playerPanesWrapper" layout="wrap"
+	<MigPane fx:id="playerPanesWrapper" layout="wrap" MigPane.cc="center"
 		rows="0[100%, fill]0"
 		cols="0[17%, fill]0[17%, fill]0[17%, fill]0[17%, fill]0[16%, fill]0[16%, fill]0" />
 </fx:root>

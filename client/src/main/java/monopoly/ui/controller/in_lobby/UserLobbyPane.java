@@ -28,8 +28,6 @@ public class UserLobbyPane extends MigPane {
 	@FXML
 	private MigPane buttonGroup;
 	@FXML
-	private Button makeAdminButton;
-	@FXML
 	private Button removeButton;
 
 	private String userType;
@@ -81,8 +79,5 @@ public class UserLobbyPane extends MigPane {
 		double height = getHeight();
 
 		UIUtil.fitFont(playerName, width * 0.3, height * 0.3);
-
-		makeAdminButton.setPrefWidth(width * 0.2);
-		makeAdminButton.setPrefHeight(height * 0.2);
 	}
 }
