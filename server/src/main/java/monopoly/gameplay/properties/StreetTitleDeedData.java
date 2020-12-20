@@ -1,4 +1,4 @@
-package monopoly.gameplay;
+package monopoly.gameplay.properties;
 
 import java.util.List;
 

@@ -15,7 +15,6 @@ import monopoly.network.packet.important.packet_data.UserPacketData;
  * @version Nov 29, 2020
  */
 @Getter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements Identifiable {
 	@EqualsAndHashCode.Include
 	private int id;
@@ -118,6 +117,20 @@ public class User implements Identifiable {
 
 	public GamePlayer asPlayer() {
 		return gamePlayerInstance;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof User)) {
+			return false;
+		}
+
+		return ((User) obj).id == id;
+	}
+
+	@Override
+	public int hashCode() {
+		return id;
 	}
 
 	/**

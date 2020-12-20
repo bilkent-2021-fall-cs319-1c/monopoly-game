@@ -1,6 +1,8 @@
 package monopoly.gameplay.tiles;
 
 import monopoly.gameplay.GamePlayer;
+import monopoly.gameplay.properties.TitleDeedData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 
 /**
  * Tile that sends player to jail
@@ -10,8 +12,8 @@ import monopoly.gameplay.GamePlayer;
  */
 
 public class GoToJailTile extends Tile{
-    public GoToJailTile(String name, String description, int index) {
-        super(name, description, index);
+	public GoToJailTile(TitleDeedData titleDeed, String name, String description, TileType type, int index) {
+        super(titleDeed, name, description, type, index);
     }
 
     @Override

@@ -1,10 +1,11 @@
-package monopoly.gameplay;
-
-import lombok.Getter;
-import lombok.Setter;
+package monopoly.gameplay.cards;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import lombok.Getter;
+import lombok.Setter;
+import monopoly.gameplay.GamePlayer;
 
 @Getter
 @Setter

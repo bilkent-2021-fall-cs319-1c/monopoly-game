@@ -1,4 +1,4 @@
-package monopoly.gameplay;
+package monopoly.gameplay.properties;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class TitleDeedData {
     private int mortgageCost;
     private List<Integer> rentPrice;
 
-    TitleDeedData(String title, int buyCost, int mortgageCost, List<Integer> rentPrice)
+    public TitleDeedData(String title, int buyCost, int mortgageCost, List<Integer> rentPrice)
     {
     	this.title = title;
         this.buyCost = buyCost;

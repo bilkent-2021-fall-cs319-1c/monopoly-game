@@ -1,6 +1,4 @@
-package monopoly.gameplay;
-
-import monopoly.gameplay.tiles.PropertyTile;
+package monopoly.gameplay.properties;
 
 /**
  * Utility property class
@@ -10,8 +8,8 @@ import monopoly.gameplay.tiles.PropertyTile;
  */
 
 public class Utility extends Property{
-    public Utility(PropertyTile tile, TitleDeedData titleDeed, ColorSet colorSet) {
-        super(tile, titleDeed, colorSet);
+    public Utility(String color) {
+        super(color);
     }
 
     @Override

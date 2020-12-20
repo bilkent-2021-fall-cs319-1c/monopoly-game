@@ -1,6 +1,4 @@
-package monopoly.gameplay;
-
-import monopoly.gameplay.tiles.PropertyTile;
+package monopoly.gameplay.properties;
 
 /**
  * Railroad property, can't take any buildings
@@ -10,8 +8,8 @@ import monopoly.gameplay.tiles.PropertyTile;
  */
 
 public class Railroad extends Property {
-	public Railroad(PropertyTile tile, TitleDeedData titleDeed, ColorSet colorSet) {
-		super(tile, titleDeed, colorSet);
+	public Railroad(String color){
+		super(color);
 	}
 
 	@Override

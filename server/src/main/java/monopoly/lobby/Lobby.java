@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import monopoly.GameStartListener;
 import monopoly.Identifiable;
 import monopoly.MonopolyException;
 import monopoly.gameplay.Game;
@@ -38,6 +39,14 @@ public class Lobby implements Identifiable {
 	private String password;
 	@Setter(AccessLevel.PACKAGE)
 	private boolean isPublic;
+
+	/**
+	 * Will be notified when the game starts. Supports only one listener. Setting
+	 * new one will override the previous one
+	 */
+	@Getter
+	@Setter
+	private GameStartListener gameStartListener;
 
 	@Getter
 	private boolean inGame;
@@ -177,25 +186,28 @@ public class Lobby implements Identifiable {
 	 */
 	public void startGame() {
 		inGame = true;
+
+		if (gameStartListener != null) {
+			gameStartListener.gameStarted( this);
+		}
+		
 		game = new Game(this);
 		game.updatePlayerLocations();
-		
+
 		// Notify everyone that the game started
 		new Thread(
 				() -> users.parallelStream().forEach(user -> GameServer.getInstance().sendGameStartNotification(user)))
 						.start();
-
-		// Notify everyone about the turn order and the player who is starting
-//		game.sendTurnOrderToPlayers();
-//		game.sendPlayerTurnToPlayers();
 	}
 
 	public void checkGameStart() {
+		// if ( getPlayerCount() >= 2) {
 		for (User user : users) {
 			if (!user.isReady())
 				return;
 		}
 		startGame();
+		// }
 	}
 
 	public boolean checkLobbyClose() {

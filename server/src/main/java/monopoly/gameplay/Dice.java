@@ -1,9 +1,11 @@
 package monopoly.gameplay;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import monopoly.network.GameServer;
 import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
 
 /**
@@ -47,5 +49,10 @@ public class Dice {
 
 	public int getSecondDieValue() {
 		return secondDie.getValue();
+	}
+
+	public void sendDiceResultToPlayers(List<GamePlayer> players) {
+		players.parallelStream()
+				.forEach(player -> GameServer.getInstance().sendDiceRollNotification(player, getDiceAsPacket()));
 	}
 }

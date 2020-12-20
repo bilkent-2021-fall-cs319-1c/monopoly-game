@@ -2,10 +2,10 @@ package monopoly.gameplay.tiles;
 
 import lombok.Getter;
 import lombok.Setter;
-import monopoly.MonopolyException;
+import monopoly.gameplay.Game;
 import monopoly.gameplay.GamePlayer;
-import monopoly.gameplay.Property;
-import monopoly.gameplay.TitleDeedData;
+import monopoly.gameplay.properties.Property;
+import monopoly.gameplay.properties.TitleDeedData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 
@@ -25,18 +25,28 @@ public class PropertyTile extends Tile {
 			Property property) {
 		super(titleDeed, name, description, type, index);
 		this.property = property;
+		property.setTile(this);
+		property.setTitleDeed(titleDeed);
 	}
 
 	@Override
 	public void doAction(GamePlayer player) {
+		Game game = player.getCurrentGame();
+		GamePlayer owner = property.getOwner();
+		int balance = player.getBalance();
+		int rent = property.getRentCost();
 
-		if (!player.equals(property.getOwner())) {
-			try {
-				player.setBalance(player.getBalance() - property.getRentCost());
-			} catch (MonopolyException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		if (!player.equals(owner)) {
+			if (balance >= rent) {
+				player.setBalance(balance - rent);
+				game.sendBalanceChangeToPlayers(player);
+
+				owner.setBalance(owner.getBalance() + rent);
+				game.sendBalanceChangeToPlayers(owner);
+			} else {
+				game.bankrupt(player);
 			}
+
 		}
 	}
 

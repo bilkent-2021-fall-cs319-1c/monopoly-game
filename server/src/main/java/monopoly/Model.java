@@ -17,7 +17,7 @@ import monopoly.network.GameServer;
  * @author Alper Sarı, Javid Baghirov
  * @version Nov 29, 2020
  */
-public class Model {
+public class Model implements GameStartListener {
 	private EntitiesWithId<Lobby> lobbies;
 	private EntitiesWithId<User> users;
 
@@ -34,10 +34,10 @@ public class Model {
 		users = new EntitiesWithId<>();
 
 		waitingLobbies = Collections.synchronizedList(new ArrayList<Lobby>());
-		
-		//Creates a game server
+
+		// Creates a game server
 		GameServer.getInstance();
-		GameServer.getInstance().setModel( this);
+		GameServer.getInstance().setModel(this);
 	}
 
 	/**
@@ -67,10 +67,11 @@ public class Model {
 			throws MonopolyException {
 		User user = getUserByID(userId);
 		Lobby lobby = new Lobby(name, limit, isPublic, password);
+		lobby.setGameStartListener(this);
 		registerNewLobby(lobby);
 		user.joinLobby(lobby, password);
 	}
-	
+
 	private void registerNewLobby(Lobby lobby) {
 		lobbies.add(lobby);
 		waitingLobbies.add(lobby);
@@ -86,6 +87,7 @@ public class Model {
 	}
 
 	public List<Lobby> getWaitingLobbies(int from, int to) {
+
 		if (from < 0)
 			from = 0;
 		if (to > waitingLobbies.size())
@@ -136,9 +138,15 @@ public class Model {
 	public Lobby getLobbyByID(int id) {
 		return lobbies.getByID(id);
 	}
-	
+
 	public Game getGameOfPlayer(int playerId) {
 		return getLobbyOfUser(playerId).getGame();
 	}
-	
+
+	@Override
+	public void gameStarted(Lobby lobby) {
+		// TODO Uncomment to update waiting lobbies when the game starts
+//		waitingLobbies.remove( lobby);
+	}
+
 }

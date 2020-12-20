@@ -2,9 +2,7 @@ package monopoly.gameplay.tiles;
 
 import lombok.Getter;
 import lombok.Setter;
-import monopoly.gameplay.Actionable;
-import monopoly.gameplay.GamePlayer;
-import monopoly.gameplay.TitleDeedData;
+import monopoly.gameplay.properties.TitleDeedData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 
@@ -16,7 +14,7 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
  */
 @Getter
 @Setter
-public class Tile implements Actionable{
+public abstract class Tile implements Actionable{
 
     private String name;
     private String description;
@@ -25,7 +23,7 @@ public class Tile implements Actionable{
     private TileType type;
     private TitleDeedData titleDeed;
 
-    public Tile(TitleDeedData titleDeed, String name, String description, TileType type, int index) {
+    protected Tile(TitleDeedData titleDeed, String name, String description, TileType type, int index) {
     	this.titleDeed = titleDeed;
         this.name = name;
         this.description = description;
@@ -33,16 +31,6 @@ public class Tile implements Actionable{
         this.index = index;
     }
 
-    /**
-     * Performs the tile action
-     *
-     * @param player player subject
-     */
-    @Override
-    public void doAction(GamePlayer player) {
-        //Do nothing in parent
-    }
-    
     public TilePacketData getAsTilePacket() {
     	return new TilePacketData( titleDeed.getAsTitleDeedPacket(), name, description, type, index);
     }

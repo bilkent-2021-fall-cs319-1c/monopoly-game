@@ -1,7 +1,9 @@
-package monopoly.gameplay;
+package monopoly.gameplay.cards;
 
 import lombok.Getter;
 import lombok.Setter;
+import monopoly.gameplay.GamePlayer;
+import monopoly.gameplay.properties.Tradeable;
 
 @Getter
 @Setter

@@ -1,4 +1,6 @@
-package monopoly.gameplay;
+package monopoly.gameplay.tiles;
+
+import monopoly.gameplay.GamePlayer;
 
 /**
  * Interface for cards and tiles which perform an action

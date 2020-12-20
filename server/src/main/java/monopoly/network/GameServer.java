@@ -8,6 +8,8 @@ import monopoly.Model;
 import monopoly.MonopolyException;
 import monopoly.gameplay.Game;
 import monopoly.gameplay.GamePlayer;
+import monopoly.gameplay.properties.Auction;
+import monopoly.gameplay.tiles.PropertyTile;
 import monopoly.lobby.Lobby;
 import monopoly.lobby.User;
 import monopoly.network.packet.important.ImportantNetworkPacket;
@@ -67,7 +69,7 @@ public class GameServer extends Server {
 
 	@Override
 	public void disconnected(int connectionID) {
-		// To be done in later versions
+
 	}
 
 	@Override
@@ -82,6 +84,7 @@ public class GameServer extends Server {
 
 	@Override
 	public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
+		System.out.println("From " + connectionID + " Received " + packet);
 		// Take action depending on the received packet type
 		if (packet.getType() == PacketType.CONNECT) {
 			handleConnect(connectionID);
@@ -114,6 +117,24 @@ public class GameServer extends Server {
 
 		} else if (packet.getType() == PacketType.BUY_PROPERTY) {
 			handleBuyProperty(connectionID);
+
+		} else if (packet.getType() == PacketType.BUILD_HOUSE) {
+			handleBuildHouse(connectionID);
+
+		} else if (packet.getType() == PacketType.BUILD_HOTEL) {
+			handleBuildHotel(connectionID);
+
+		} else if (packet.getType() == PacketType.INITIATE_AUCTION) {
+			handleInitiateAuction(connectionID);
+
+		} else if (packet.getType() == PacketType.INCREASE_BID) {
+			handleIncreaseBid(connectionID, packet);
+
+		} else if (packet.getType() == PacketType.SKIP_BID) {
+			handleSkipBid(connectionID);
+			
+		} else if (packet.getType() == PacketType.INITIATE_TRADE) {
+			handleSkipBid(connectionID);
 		}
 	}
 
@@ -246,27 +267,107 @@ public class GameServer extends Server {
 	}
 
 	private void handleGameData(int connectionID) {
-		GamePlayer player = model.getUserByID( connectionID).asPlayer();
-		
-		sendGameDataNotification( player);
+		GamePlayer player = model.getUserByID(connectionID).asPlayer();
+
+		sendGameDataNotification(player);
 	}
 
 	private void handleDiceRoll(int connectionID) {
-		Game game = model.getLobbyOfUser(connectionID).getGame();
+		Game game = model.getGameOfPlayer(connectionID);
+		GamePlayer player = game.getCurrentPlayer();
+
+		new Thread(() -> {
+			try {
+				player.rollDice();
+			} catch (MonopolyException e) {
+				sendImportantPacket(e.getAsPacket(), connectionID);
+			}
+		}).start();
+	}
+
+	public void handleBuyProperty(int connectionID) {
+		Game game = model.getGameOfPlayer(connectionID);
+		GamePlayer player = game.getCurrentPlayer();
+
+		new Thread(() -> {
+			try {
+				if (player.buyProperty()) {
+					game.sendPropertyBoughtToPlayers((PropertyTile) player.getTile(), player);
+				}
+			} catch (MonopolyException e) {
+				sendImportantPacket(e.getAsPacket(), connectionID);
+			}
+
+			game.completeTurn();
+		}).start();
+	}
+
+	public void handleBuildHouse(int connectionID) {
+		Game game = model.getGameOfPlayer(connectionID);
+		GamePlayer player = game.getCurrentPlayer();
+
+		new Thread(() -> {
+			try {
+				if (player.buildHouse()) {
+					game.sendHouseBuiltToPlayers();
+				}
+			} catch (MonopolyException e) {
+				sendImportantPacket(e.getAsPacket(), connectionID);
+			}
+
+			game.completeTurn();
+		}).start();
+	}
+
+	public void handleBuildHotel(int connectionID) {
+		Game game = model.getGameOfPlayer(connectionID);
 		GamePlayer player = game.getCurrentPlayer();
 
 		try {
-			DicePacketData diceData = player.rollDice();
-			game.sendDiceResultToPlayers(diceData);
-			game.playTurn();
+			if (player.buildHotel()) {
+				game.sendHotelBuiltToPlayers();
+			}
 		} catch (MonopolyException e) {
 			sendImportantPacket(e.getAsPacket(), connectionID);
 		}
 	}
 
-	public void handleBuyProperty(int connectionID) {
-		Game game = model.getLobbyOfUser(connectionID).getGame();
-		GamePlayer player = game.getCurrentPlayer();
+	public void handleInitiateAuction(int connectionID) {
+		Game game = model.getGameOfPlayer(connectionID);
+		PropertyTile item = (PropertyTile) game.getCurrentPlayer().getTile();
+
+		try {
+			game.auction(item.getProperty());
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
+		}
+	}
+
+	public void handleIncreaseBid(int connectionID, ImportantNetworkPacket packet) {
+		int bidAmount = ((IntegerPacketData) packet.getData().get(0)).getData();
+		GamePlayer player = model.getUserByID(connectionID).asPlayer();
+
+		try {
+			player.bid(bidAmount);
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
+		}
+	}
+
+	public void handleSkipBid(int connectionID) {
+		GamePlayer player = model.getUserByID(connectionID).asPlayer();
+
+		try {
+			player.skipBid();
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
+		}
+	}
+	
+	public void handleInitiateTrade(int connectionID) {
+		GamePlayer player = model.getUserByID(connectionID).asPlayer();
+		
+		
 	}
 
 	/**
@@ -349,12 +450,75 @@ public class GameServer extends Server {
 	}
 
 	public void sendTokenMovedNotification(GamePlayer playerMoved, TilePacketData tileData, GamePlayer playerToNotify) {
-		sendImportantPacket(new ImportantNetworkPacket(PacketType.TOKEN_MOVED, playerMoved.getAsPacket(), tileData),
+		sendImportantPacket(
+				new ImportantNetworkPacket(PacketType.TOKEN_MOVED, playerMoved.getAsPlayerPacket(), tileData),
 				playerToNotify.getId());
+	}
+
+	public void sendBuyOrAuctionNotification(GamePlayer player) {
+		sendImportantPacket(
+				new ImportantNetworkPacket(PacketType.ACT_BUY_OR_AUCTION, player.getTile().getAsTilePacket()),
+				player.getId());
+	}
+
+	public void sendBalanceChangeNotification(GamePlayer playerWithNewBalance, GamePlayer playerToNotify) {
+		sendImportantPacket(
+				new ImportantNetworkPacket(PacketType.PLAYER_BALANCE, playerWithNewBalance.getAsPlayerPacket()),
+				playerToNotify.getId());
+	}
+
+	public void sendPropertyBoughtNotification(PropertyTile tile, GamePlayer playerBuying, GamePlayer playerToNotify) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.PROPERTY_BOUGHT, tile.getAsTilePacket(),
+				playerBuying.getAsPlayerPacket()), playerToNotify.getId());
+	}
+
+	public void sendAuctionInitiatedNotification(PropertyTile tile, GamePlayer playerToNotify) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.AUCTION_INITIATED, tile.getAsTilePacket()),
+				playerToNotify.getId());
+	}
+
+	public void sendAuctionTurnNotification(GamePlayer playerTurn, GamePlayer playerToNotify) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.AUCTION_TURN, playerTurn.getAsPlayerPacket()),
+				playerToNotify.getId());
+	}
+
+	public void sendUpdatedBidNotification(GamePlayer playerBid, GamePlayer playerToNotify, int bidAmount) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.BID_INCREASED, playerBid.getAsPlayerPacket(),
+				new IntegerPacketData(bidAmount)), playerToNotify.getId());
+	}
+
+	public void sendSkipBidNotification(GamePlayer playerSkipped, GamePlayer playerToNotify) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.BID_SKIPPED, playerSkipped.getAsPlayerPacket()),
+				playerToNotify.getId());
+	}
+
+	public void sendAuctionCompleteNotification(GamePlayer player) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.AUCTION_COMPLETE), player.getId());
+	}
+
+	public void sendCurrentBidNotification(GamePlayer player) {
+		Auction auction = model.getGameOfPlayer(player.getId()).getAuction();
+
+		sendImportantPacket(
+				new ImportantNetworkPacket(PacketType.CURRENT_BID, new IntegerPacketData(auction.getCurrentBid())),
+				player.getId());
+	}
+
+	public void sendHouseBuiltNotification(GamePlayer player) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.HOUSE_BUILT), player.getId());
+	}
+
+	public void sendHotelBuiltNotification(GamePlayer player) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.HOTEL_BUILT), player.getId());
 	}
 
 	public void sendTurnCompleteNotification(GamePlayer player) {
 		sendImportantPacket(new ImportantNetworkPacket(PacketType.TURN_COMPLETE), player.getId());
 
+	}
+
+	public void sendPlayerBankruptNotification(GamePlayer playerBankrupt, GamePlayer playerToNotify) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.PLAYER_BANKRUPT, playerBankrupt.getAsPlayerPacket()),
+				playerToNotify.getId());
 	}
 }

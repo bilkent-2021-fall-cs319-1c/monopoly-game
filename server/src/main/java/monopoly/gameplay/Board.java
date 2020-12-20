@@ -2,6 +2,7 @@ package monopoly.gameplay;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -9,8 +10,18 @@ import org.json.JSONTokener;
 
 import lombok.Getter;
 import lombok.Setter;
+import monopoly.gameplay.properties.Railroad;
+import monopoly.gameplay.properties.Street;
+import monopoly.gameplay.properties.StreetTitleDeedData;
+import monopoly.gameplay.properties.TitleDeedData;
+import monopoly.gameplay.properties.Utility;
+import monopoly.gameplay.tiles.CardTile;
 import monopoly.gameplay.tiles.GoTile;
+import monopoly.gameplay.tiles.GoToJailTile;
+import monopoly.gameplay.tiles.JailTile;
+import monopoly.gameplay.tiles.ParkingTile;
 import monopoly.gameplay.tiles.PropertyTile;
+import monopoly.gameplay.tiles.TaxTile;
 import monopoly.gameplay.tiles.Tile;
 import monopoly.network.packet.important.packet_data.gameplay.BoardPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
@@ -50,11 +61,12 @@ public class Board {
 
 				} else {
 					player.setTileIndex(0);
-					player.getTile().doAction(player);
+					// TODO player.getTile().doAction(player);
 				}
 
-				if (!(player.getTile() instanceof GoTile))
-					player.getTile().doAction(player);
+				// TODO
+//				if (!(player.getTile() instanceof GoTile))
+//					//player.getTile().doAction(player);
 			}
 
 			if (player.isInJail())
@@ -66,46 +78,77 @@ public class Board {
 	 * Inserts the board tiles in the correct order
 	 */
 	private void initialize() {
-		System.out.println(Board.class.getResourceAsStream("monopoly_board.json"));
 		JSONTokener tokener = new JSONTokener(Board.class.getResourceAsStream("monopoly_board.json"));
-		JSONArray arr = new JSONArray(tokener);
+		JSONArray gameData = new JSONArray(tokener);
 
-		for (int i = 0; i < arr.length(); i++) {
-			JSONObject tile = arr.getJSONObject(i);
+		for (int i = 0; i < gameData.length(); i++) {
+			JSONObject tile = gameData.getJSONObject(i);
 
-			String name = tile.getString("name");
+			String name = tile.getString("name").toUpperCase(Locale.ENGLISH);
 			String description = tile.getString("description");
 			String type = tile.getString("type");
 			TileType tileType = TileType.getAsTileType(type);
+			TitleDeedData titleDeed = new TitleDeedData(name, 0, 0, null);
 
-			if (type.equals("STREET")) {
+			if (tileType == TileType.STREET) {
 				int buyPrice = tile.getInt("cost");
-				int houseBuildPrice = tile.getInt("house");
-				// TODO Find and write hotel build prices to the json file
-				int hotelBuildPrice = 200;
-				String color = tile.getString( "color");
+				int buildPrice = tile.getInt("house");
+				// TODO Find and write mortgage prices to the json file
+				int mortgagePrice = 0;
+				String color = tile.getString("color");
 
-				JSONArray rentCosts = tile.getJSONArray("rent");
+				tiles.add(new PropertyTile(new StreetTitleDeedData(name, buyPrice, mortgagePrice, getRentPrices(tile),
+						buildPrice, buildPrice, color), name, description, tileType, i, new Street(color)));
 
-				List<Integer> rentPrice = new ArrayList<>();
-				for (int j = 0; j < rentCosts.length(); j++) {
-					rentPrice.add(rentCosts.getInt(j));
-				}
-
-				tiles.add(new PropertyTile(
-						new StreetTitleDeedData(name, buyPrice, 0, rentPrice, houseBuildPrice, hotelBuildPrice, color), name,
-						description, tileType, i, null));
-
-			} else if (tile.getString("type").equals("RAILROAD") || tile.getString("type").equals("UTILITY")) {
+			} else if (tileType == TileType.RAILROAD) {
 				int buyPrice = tile.getInt("cost");
+				int mortgagePrice = 0;
 
-				tiles.add(new PropertyTile(new TitleDeedData(name, buyPrice, 0, null), name, description, tileType, i,
-						null));
-			} else {
-				tiles.add(new Tile(new TitleDeedData(name, 0, 0, null), name, description, tileType, i));
+				tiles.add(new PropertyTile(new TitleDeedData(name, buyPrice, mortgagePrice, getRentPrices(tile)), name,
+						description, tileType, i, new Railroad("RAILROAD")));
+
+			} else if (tileType == TileType.UTILITY) {
+				int buyPrice = tile.getInt("cost");
+				int mortgagePrice = 0;
+
+				tiles.add(new PropertyTile(new TitleDeedData(name, buyPrice, mortgagePrice, null), name, description,
+						tileType, i, new Utility("UTILITY")));
+
 			}
 
+			else if (tileType == TileType.GO) {
+				tiles.add(new GoTile(titleDeed, name, description, tileType, i));
+
+			} else if (tileType == TileType.TAX) {
+				int taxCost = tile.getInt("cost");
+
+				tiles.add(new TaxTile(titleDeed, name, description, tileType, i, taxCost));
+
+			} else if (tileType == TileType.JAIL) {
+				tiles.add(new JailTile(titleDeed, name, description, tileType, i));
+
+			} else if (tileType == TileType.PARKING) {
+				tiles.add(new ParkingTile(titleDeed, name, description, tileType, i));
+
+			} else if (tileType == TileType.GO_TO_JAIL) {
+				tiles.add(new GoToJailTile(titleDeed, name, description, tileType, i));
+
+			} else {
+				tiles.add(new CardTile(titleDeed, name, description, tileType, i));
+			}
 		}
+	}
+
+	public List<Integer> getRentPrices(JSONObject object) {
+		JSONArray rentCosts = object.getJSONArray("rent");
+		List<Integer> rentPrice = new ArrayList<>();
+
+		for (int j = 0; j < rentCosts.length(); j++) {
+			rentPrice.add(rentCosts.getInt(j));
+		}
+		rentPrice.add(1, 2 * rentPrice.get(0));
+
+		return rentPrice;
 	}
 
 	public BoardPacketData getAsBoardPacket() {
