@@ -9,7 +9,8 @@ import java.io.ObjectOutputStream;
 
 import javax.imageio.ImageIO;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * A network packet that contains a BufferedImage
@@ -17,7 +18,8 @@ import lombok.Getter;
  * @author Ziya Mukhtarov
  * @version Nov 18, 2020
  */
-@Getter
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class BufferedImagePacket extends RealTimeNetworkPacket {
 	private static final long serialVersionUID = 650861908884172142L;
 
@@ -29,7 +31,7 @@ public class BufferedImagePacket extends RealTimeNetworkPacket {
 	/**
 	 * Only used for deserialization. Should not be used anywhere else.
 	 */
-	private BufferedImagePacket() {
+	BufferedImagePacket() {
 		super(-10); // Random negative number
 		img = null;
 	}
@@ -52,7 +54,7 @@ public class BufferedImagePacket extends RealTimeNetworkPacket {
 	}
 
 	/**
-	 * Custom Deserialization
+	 * Custom deserialization
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();

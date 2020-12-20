@@ -8,8 +8,7 @@ import java.io.IOException;
  * @author Javid Baghirov
  * @version Nov 29, 2020
  */
-public class ServerRunner {
-	
+public class Runner {
 	public static void main(String[] args) {
 		try {
 			new Model();

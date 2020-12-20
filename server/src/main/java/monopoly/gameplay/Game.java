@@ -1,0 +1,231 @@
+package monopoly.gameplay;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import lombok.Getter;
+import lombok.Setter;
+import monopoly.MonopolyException;
+import monopoly.gameplay.properties.Auction;
+import monopoly.gameplay.properties.Property;
+import monopoly.gameplay.properties.Trade;
+import monopoly.gameplay.tiles.PropertyTile;
+import monopoly.gameplay.tiles.Tile;
+import monopoly.lobby.Lobby;
+import monopoly.lobby.User;
+import monopoly.network.GameServer;
+import monopoly.network.packet.important.PacketType;
+import monopoly.network.packet.important.packet_data.gameplay.PlayerListPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
+
+/**
+ * The main game class with all the gameplay functionalities
+ * 
+ * @author Javid Baghirov
+ * @version Dec 12, 2020
+ */
+
+public class Game {
+	private Lobby lobby;
+
+	private Dice dice;
+	@Getter
+	private Board board;
+
+	@Getter
+	private List<GamePlayer> playersByTurn;
+	private int turnNumber;
+
+	@Getter
+	@Setter
+	private Auction auction;
+
+	@Getter
+	private Trade trade;
+
+	/**
+	 * Creates a game object
+	 * 
+	 * @param lobby the specified lobby that the game starts in
+	 * @throws NoSuchAlgorithmException when the requested algorithm is not
+	 *                                  available
+	 */
+	public Game(Lobby lobby) {
+		this.lobby = lobby;
+		turnNumber = 0;
+
+		playersByTurn = lobby.getUsers().parallelStream().map(User::asPlayer).collect(Collectors.toList());
+		initializeGamePlayers();
+
+		// Randomize the turns
+		Collections.shuffle(playersByTurn);
+
+		dice = new Dice();
+		board = new Board();
+		auction = null;
+		trade = null;
+	}
+
+	private void initializeGamePlayers() {
+		for (int i = 0; i < playersByTurn.size(); i++) {
+			playersByTurn.set(i, new GamePlayer(lobby.getUsers().get(i)));
+		}
+	}
+
+	public void updatePlayerLocations() {
+		new Thread(() -> playersByTurn.parallelStream().forEach(GamePlayer::updateTile)).start();
+	}
+
+	public GamePlayer nextTurn() {
+		turnNumber = (turnNumber + 1) % playersByTurn.size();
+
+		return getCurrentPlayer();
+	}
+
+	public GamePlayer getCurrentPlayer() {
+		return playersByTurn.get(turnNumber);
+	}
+
+	private boolean isPlayerTurn(GamePlayer player) {
+		return getCurrentPlayer().equals(player);
+	}
+
+	public void rollDice(GamePlayer player) throws MonopolyException {
+		if (!isPlayerTurn(player)) {
+			throw new MonopolyException(PacketType.ERR_NOT_PLAYER_TURN);
+		}
+
+		dice.roll();
+		dice.sendDiceResultToPlayers(playersByTurn);
+
+		moveToken();
+	}
+
+	public void move(GamePlayer player) throws MonopolyException {
+		if (!isPlayerTurn(player)) {
+			throw new MonopolyException(PacketType.ERR_NOT_PLAYER_TURN);
+		}
+
+		board.move(player, dice.getResult());
+		player.updateTile();
+	}
+
+	/**
+	 * The main method to handle turn operations. It is called every time the dice
+	 * are rolled
+	 */
+	public void moveToken() {
+		TilePacketData tileData = getCurrentPlayer().move();
+
+		// Notify everyone about the token move
+		sendTokenMoveToPlayers(getCurrentPlayer(), tileData);
+
+		decideOnAction(getCurrentPlayer());
+
+	}
+
+	public void decideOnAction(GamePlayer player) {
+		Tile tile = player.getTile();
+
+		if (tile instanceof PropertyTile) {
+			PropertyTile propertyTile = (PropertyTile) player.getTile();
+
+			if (propertyTile.getProperty().getOwner() == null) {
+				GameServer.getInstance().sendBuyOrAuctionNotification(player);
+			} else {
+				tile.doAction(player);
+				completeTurn();
+			}
+		} else {
+			int balance = player.getBalance();
+			int amount;
+
+			if (tile.getType() == TileType.GO_TO_JAIL || tile.getType() == TileType.TAX) {
+				amount = 200;
+			} else
+				amount = -200;
+
+			if (balance >= amount) {
+				player.setBalance(balance - amount);
+				sendBalanceChangeToPlayers(player);
+			} else {
+				bankrupt(player);
+			}
+			completeTurn();
+		}
+	}
+
+	public void auction(Property item) throws MonopolyException {
+		if (auction != null) {
+			throw new MonopolyException(PacketType.ERR_UNKNOWN);
+		}
+		auction = new Auction(this, item);
+	}
+
+	public void trade(GamePlayer playerFrom, GamePlayer playerTo) {
+
+	}
+
+	public void completeTurn() {
+		// Notify everyone about turn complete status
+		sendTurnCompleteToPlayers();
+
+		nextTurn();
+
+		// Notify everyone about who is playing next
+		sendPlayerTurnToPlayers();
+	}
+
+	public void bankrupt(GamePlayer player) {
+		sendPlayerBankruptToPlayers(player);
+	}
+
+	public void sendPlayerTurnToPlayers() {
+		new Thread(() -> playersByTurn.parallelStream()
+				.forEach(player -> GameServer.getInstance().sendPlayerTurnNotification(player))).start();
+	}
+
+	public void sendTokenMoveToPlayers(GamePlayer playerMoved, TilePacketData tileData) {
+		playersByTurn.parallelStream()
+				.forEach(player -> GameServer.getInstance().sendTokenMovedNotification(playerMoved, tileData, player));
+	}
+
+	public void sendBalanceChangeToPlayers(GamePlayer playerWithNewBalance) {
+		playersByTurn.parallelStream()
+				.forEach(p -> GameServer.getInstance().sendBalanceChangeNotification(playerWithNewBalance, p));
+	}
+
+	public void sendPropertyBoughtToPlayers(PropertyTile tile, GamePlayer playerBuying) {
+		playersByTurn.parallelStream()
+				.forEach(player -> GameServer.getInstance().sendPropertyBoughtNotification(tile, playerBuying, player));
+	}
+
+	public void sendHouseBuiltToPlayers() {
+		playersByTurn.parallelStream().forEach(player -> GameServer.getInstance().sendHouseBuiltNotification(player));
+	}
+
+	public void sendHotelBuiltToPlayers() {
+		playersByTurn.parallelStream().forEach(player -> GameServer.getInstance().sendHotelBuiltNotification(player));
+	}
+
+	public void sendTurnCompleteToPlayers() {
+		playersByTurn.parallelStream().forEach(player -> GameServer.getInstance().sendTurnCompleteNotification(player));
+	}
+
+	public void sendPlayerBankruptToPlayers(GamePlayer playerBankrupt) {
+		playersByTurn.parallelStream()
+				.forEach(player -> GameServer.getInstance().sendPlayerBankruptNotification(playerBankrupt, player));
+	}
+
+	public PlayerListPacketData getPlayersAsPacket() {
+		PlayerListPacketData playerList = new PlayerListPacketData();
+		playersByTurn.forEach(player -> {
+			playerList.add(player.getAsPlayerPacket());
+		});
+
+		return playerList;
+	}
+}

@@ -1,0 +1,334 @@
+[
+    {
+        "name": "Go",
+        "description": "",
+        "type": "GO",
+        "corner": true
+    },
+    {
+        "name": "Mediter\nranean\nAvenue",
+        "description": "M60",
+        "type": "STREET",
+        "cost": 60,
+        "color": "#955438", 
+        "rent": [2,10,30,90,160,250],
+        "group": [1, 1, 2],
+        "house": 50
+    },
+    {
+        "name": "Community\nChest",
+        "description": "",
+        "type": "COMMUNITY_CHEST"
+    },
+    {
+        "name": "Baltic\nAvenue",
+        "description": "M60",
+        "type": "STREET",
+        "cost": 60,
+        "color": "#955438",
+        "rent": [4,20,60,180,320,450],
+        "group": [1, 2, 2],
+        "house": 50
+    },
+    {
+        "name": "Income\nTax",
+        "description": "PAY M200",
+        "type": "TAX",
+        "cost": 200
+    },
+    {
+        "name": "Reading\nRailroad",
+        "description": "M200",
+        "type": "RAILROAD",
+        "cost": 200,
+        "rent": [25, 50, 100, 200],
+        "group": [9, 1, 4]
+    },
+    {
+        "name": "Oriental\nAvenue",
+        "description": "M100",
+        "type": "STREET",
+        "cost": 100,
+        "color": "#aae0fa",
+        "rent": [6,30,90,270,400,550],
+        "group": [2, 1, 3],
+        "house": 50
+    },
+    {
+        "name": "Chance",
+        "description": "",
+        "type": "CHANCE"
+    },
+    {
+        "name": "Vermont\nAvenue",
+        "description": "M100",
+        "type": "STREET",
+        "cost": 100,
+        "color": "#aae0fa",
+        "rent": [6,30,90,270,400,550],
+        "group": [2, 2, 3],
+        "house": 50
+    },
+    {
+        "name": "Connecticut\nAvenue",
+        "description": "M120",
+        "type": "STREET",
+        "cost": 120,
+        "color": "#aae0fa",
+        "rent": [8,40,100,300,450,600],
+        "group": [2, 3, 3],
+        "house": 50
+    },
+    {
+        "name": "Jail",
+        "description": "",
+        "type": "JAIL",
+        "corner": true
+    },
+    {
+        "name": "St. Charles\nPlace",
+        "description": "M140",
+        "type": "STREET",
+        "cost": 140,
+        "color": "#d93a96",
+        "rent": [10,50,150,450,625,750],
+        "group": [3, 1, 3],
+        "house": 100
+    },
+    {
+        "name": "Electric\nCompany",
+        "description": "M150",
+        "type": "UTILITY",
+        "cost": 150,
+        "group": [10, 1, 2]
+    },
+    {
+        "name": "States\nAvenue",
+        "description": "M140",
+        "type": "STREET",
+        "cost": 140,
+        "color": "#d93a96",
+        "rent": [10,50,150,450,625,750],
+        "group": [3, 2, 3],
+        "house": 100
+    },
+    {
+        "name": "Virginia\nAvenue",
+        "description": "M160",
+        "type": "STREET",
+        "cost": 160,
+        "color": "#d93a96",
+        "rent": [12,60,180,500,700,900],
+        "group": [3, 3, 3],
+        "house": 100
+    },
+    {
+        "name": "Pennsylvania\nRailroad",
+        "description": "M200",
+        "type": "RAILROAD",
+        "cost": 200,
+        "rent": [25, 50, 100, 200],
+        "group": [9, 2, 4]
+    },
+    {
+        "name": "St. James\nPlace",
+        "description": "M180",
+        "type": "STREET",
+        "cost": 180,
+        "color": "#f7941d",
+        "rent": [14,70,200,550,750,950],
+        "group": [4, 1, 3],
+        "house": 100
+    },
+    {
+        "name": "Community\nChest",
+        "description": "",
+        "type": "COMMUNITY_CHEST"
+    },
+    {
+        "name": "Tennessee\nAvenue",
+        "description": "M180",
+        "type": "STREET",
+        "cost": 180,
+        "color": "#f7941d",
+        "rent": [14,70,200,550,750,950],
+        "group": [4, 2, 3],
+        "house": 100
+    },
+    {
+        "name": "New York\nAvenue",
+        "description": "M200",
+        "type": "STREET",
+        "cost": 200,
+        "color": "#f7941d",
+        "rent": [16,80,220,600,800,1000],
+        "group": [4, 3, 3],
+        "house": 100
+    },
+    {
+        "name": "Free Parking",
+        "description": "",
+        "type": "PARKING",
+        "corner": true
+    },
+    {
+        "name": "Kentucky\nAvenue",
+        "description": "M220",
+        "type": "STREET",
+        "cost": 220,
+        "color": "#ed1b24",
+        "rent": [18,90,250,700,875,1050],
+        "group": [5, 1, 3],
+        "house": 150
+    },
+    {
+        "name": "Chance",
+        "description": "",
+        "type": "CHANCE"
+    },
+    {
+        "name": "Indiana\nAvenue",
+        "description": "M220",
+        "type": "STREET",
+        "cost": 220,
+        "color": "#ed1b24",
+        "rent": [18,90,250,700,875,1050],
+        "group": [5, 2, 3],
+        "house": 150
+    },
+    {
+        "name": "Illnois\nAvenue",
+        "description": "M240",
+        "type": "STREET",
+        "cost": 240,
+        "color": "#ed1b24",
+        "rent": [20,100,300,750,925,1100],
+        "group": [5, 3, 3],
+        "house": 150
+    },
+    {
+        "name": "B. & O.\nRailroad",
+        "description": "M200",
+        "type": "RAILROAD",
+        "cost": 200,
+        "rent": [25, 50, 100, 200],
+        "group": [9, 3, 4]
+    },
+    {
+        "name": "Atlatic\nAvenue",
+        "description": "M260",
+        "type": "STREET",
+        "cost": 260,
+        "color": "#fef200",
+        "rent": [22,110,330,800,975,1150],
+        "group": [6, 1, 3],
+        "house": 150
+    },
+    {
+        "name": "Ventura\nAvenue",
+        "description": "M260",
+        "type": "STREET",
+        "cost": 260,
+        "color": "#fef200",
+        "rent": [22,110,330,800,975,1150],
+        "group": [6, 2, 3],
+        "house": 150
+    },
+    {
+        "name": "Water\nWorks",
+        "description": "M150",
+        "type": "UTILITY",
+        "cost": 150,
+        "group": [10, 2, 2]
+    },
+    {
+        "name": "Marvin\nGardens",
+        "description": "M280",
+        "type": "STREET",
+        "cost": 280,
+        "color": "#fef200",
+        "rent": [24,120,360,850,1025,1200],
+        "group": [6, 3, 3],
+        "house": 150
+    },
+    {
+        "name": "Go To Jail",
+        "description": "",
+        "type": "GO_TO_JAIL",
+        "corner": true
+    },
+    {
+        "name": "Pacific\nAvenue",
+        "description": "M300",
+        "type": "STREET",
+        "cost": 300,
+        "color": "#1fb25a",
+        "rent": [26,130,390,900,1100,1275],
+        "group": [7, 1, 3],
+        "house": 200
+    },
+    {
+        "name": "North\nCarolina\nAvenue",
+        "description": "M300",
+        "type": "STREET",
+        "cost": 300,
+        "color": "#1fb25a",
+        "rent": [26,130,390,900,1100,1275],
+        "group": [7, 2, 3],
+        "house": 200
+    },
+    {
+        "name": "Community\nChest",
+        "description": "",
+        "type": "COMMUNITY_CHEST"
+    },
+    {
+        "name": "Pennsylvania\nAvenue",
+        "description": "M320",
+        "type": "STREET",
+        "cost": 320,
+        "color": "#1fb25a",
+        "rent": [28,150,450,1000,1200,1400],
+        "group": [7, 3, 3],
+        "house": 200
+    },
+    {
+        "name": "Short\nline",
+        "description": "M200",
+        "type": "RAILROAD",
+        "cost": 200,
+        "rent": [25, 50, 100, 200],
+        "group": [9, 4, 4]
+    },
+    {
+        "name": "Chance",
+        "description": "",
+        "type": "CHANCE"
+    },
+    {
+        "name": "Park\nPlace",
+        "description": "M350",
+        "type": "STREET",
+        "cost": 350,
+        "color": "#0072bb",
+        "rent": [35,175,500,1100,1300,1500],
+        "group": [8, 1, 2],
+        "house": 200
+    },
+    {
+        "name": "Luxury\nTax",
+        "description": "PAY M100",
+        "type": "TAX",
+        "cost": 100
+    },
+    {
+        "name": "Boardwalk",
+        "description": "M400",
+        "type": "STREET",
+        "cost": 400,
+        "color": "#0072bb",
+        "rent": [50,200,600,1400,1700,2000],
+        "group": [8, 2, 2],
+        "house": 200
+    }
+]

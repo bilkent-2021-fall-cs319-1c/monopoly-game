@@ -26,7 +26,7 @@ public abstract class Server {
 	 * 
 	 * @throws IOException if the server could not be opened
 	 */
-	public Server() throws IOException {
+	protected Server() throws IOException {
 		kryoServer = new com.esotericsoftware.kryonet.Server(WRITE_BUFFER_SIZE, OBJECT_BUFFER_SIZE);
 
 		PacketUtil.registerPackets(kryoServer.getKryo());
@@ -83,7 +83,7 @@ public abstract class Server {
 	 * client
 	 * 
 	 * @param connectionID the server assigned unique connection ID
-	 * @param object       the received object
+	 * @param packet       the received packet
 	 */
 	public abstract void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet);
 
@@ -95,6 +95,7 @@ public abstract class Server {
 	 *                     packet should be sent
 	 */
 	public void sendRealTimePacket(RealTimeNetworkPacket packet, int connectionID) {
+		System.out.println("Send to " + connectionID + " Packet: " + packet);
 		kryoServer.sendToUDP(connectionID, packet);
 	}
 

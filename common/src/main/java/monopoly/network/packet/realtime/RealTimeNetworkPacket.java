@@ -2,8 +2,8 @@ package monopoly.network.packet.realtime;
 
 import java.io.Serializable;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * A generic network packet to be sent over the network for real-time
@@ -14,8 +14,9 @@ import lombok.Setter;
  * @author Ziya Mukhtarov
  * @version Nov 18, 2020
  */
-@Getter
-@Setter
+
+@Data
+@NoArgsConstructor
 public class RealTimeNetworkPacket implements Serializable {
 	private static final long serialVersionUID = 4336363027314300293L;
 
