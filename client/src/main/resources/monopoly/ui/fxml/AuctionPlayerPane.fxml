@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+
+<?import javafx.scene.text.Text?>
+<?import monopoly.ui.UIUtil?>
+<fx:root xmlns="http://javafx.com/javafx"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane"
+	cols="0[100%, grow, fill]0" rows="0[30%, fill, grow]0[70%,grow, fill]0"
+	layout="wrap">
+
+	<stylesheets>
+		<UIUtil fx:constant="AUCTION_PLAYER_PANE_CSS" />
+	</stylesheets>
+
+	<MigPane fx:id="yourTurnWrapper" rows="0[100%]0"
+		cols="0[100%]0" styleClass="yourTurnWrapper">
+		<Text fx:id="yourTurnText" text="Your Turn!"
+			textAlignment="CENTER" MigPane.cc="center, grow" />
+	</MigPane>
+
+	<MigPane fx:id="playerNameWrapper" rows="0[100%]0"
+		cols="0[100%]0" styleClass="playerNameWrapper">
+		<Text fx:id="playerNameText" text="Player 1"
+			textAlignment="CENTER" MigPane.cc="center, grow" />
+	</MigPane>
+
+</fx:root>

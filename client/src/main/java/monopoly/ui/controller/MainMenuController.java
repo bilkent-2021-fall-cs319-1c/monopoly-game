@@ -5,6 +5,11 @@ import org.tbee.javafx.scene.layout.fxml.MigPane;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.text.Text;
 import lombok.Setter;
 import monopoly.ui.ClientApplication;
@@ -12,7 +17,7 @@ import monopoly.ui.UIUtil;
 
 /**
  * Controls the main menu UI
- * 
+ *
  * @author Ziya Mukhtarov
  * @version Dec 13, 2020
  */
@@ -41,6 +46,13 @@ public class MainMenuController implements MonopolyUIController {
 		UIUtil.fitFont(joinGameButton, width * 0.32 - 40, height * 0.05);
 		UIUtil.fitFont(helpButton, width * 0.32 - 40, height * 0.05);
 		UIUtil.fitFont(exitButton, width * 0.32 - 40, height * 0.05);
+	}
+
+	@FXML
+	private void initialize() {
+		mainMigPane.setBackground(new Background(
+				new BackgroundImage(UIUtil.BACKGROUND_IMAGE5, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+						BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, true))));
 	}
 
 	@FXML

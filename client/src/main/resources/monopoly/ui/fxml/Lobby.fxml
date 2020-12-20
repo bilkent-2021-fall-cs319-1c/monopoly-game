@@ -16,21 +16,25 @@
 
 	<stylesheets>
 		<UIUtil fx:constant="COMMON_CSS" />
+		<UIUtil fx:constant="LOBBY_CSS" />
 	</stylesheets>
 
 	<MigPane layout="fill, wrap, debug"
-		rows="[15%][10%][10%][10%][10%][20%][::10%, fill][::10%, fill]"
-		cols="5%[fill]" MigPane.cc="height 100%, width 39%">
+		rows="[15%][grow][::10%, fill]" cols="5%[fill]"
+		MigPane.cc="height 100%, width 39%">
 
 		<Text style="-fx-font-family: 'Kabel'" text="Lobby"
 			fx:id="lobbyText" />
-		<Text text="Room Name" fx:id="nameText" />
-		<Text text="xxxxx" fx:id="nameField" />
-		<Text text="Room Password" fx:id="passwordText" />
-		<Text text="xxxxx" fx:id="passwordField" />
-		<Text fx:id="waitingText">
-			Waiting for players...
-		</Text>
+		<MigPane rows="[10%][10%][10%][10%][20%][::10%, fill]"
+			cols="2%[100%]2%" layout="wrap" styleClass="wrapper">
+			<Text text="Room Name" fx:id="nameText" />
+			<Text text="xxxxx" fx:id="nameField" />
+			<Text text="Room Password" fx:id="passwordText" />
+			<Text text="xxxxx" fx:id="passwordField" />
+			<Text fx:id="waitingText">
+				Waiting for players...
+			</Text>
+		</MigPane>
 
 		<Button styleClass="buttonRegular" text="Make Public"
 			disable="true" />

@@ -12,8 +12,8 @@
 
 <MigPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" fx:id="mainPane"
-	layout="fill, center" rows="[fill]"
-	cols="[::39%, fill, grow]2%[::59%, fill, grow]"
+	layout="fill, center, wrap" rows="[fill]"
+	cols="[:50%, fill, grow]2%[::48%, fill, grow]"
 	fx:controller="monopoly.ui.controller.join_lobby.JoinLobbyController">
 
 	<stylesheets>
@@ -22,12 +22,11 @@
 	</stylesheets>
 
 	<MigPane fx:id="leftPane" layout="wrap, gap 5%"
-		rows="10[15%, top]push[15%]push[7%, fill][7%, fill]push[5%]0"
-		cols="10[right]2%[left, grow, fill]0" MigPane.cc="grow">
+		rows="10[15%, top]10%[50%]push[5%]3%"
+		cols="10[left]2%[left, grow, fill]0" MigPane.cc="grow">
 
 		<ImageView preserveRatio="true" fx:id="backIcon"
-			pickOnBounds="true" onMouseClicked="#back"
-			MigPane.cc="span 2, split 2, gapright 5:::push">
+			pickOnBounds="true" onMouseClicked="#back" MigPane.cc="">
 			<image>
 				<UIUtil fx:constant="BACK_ICON" />
 			</image>
@@ -35,27 +34,33 @@
 
 		<Text fx:id="mainTitle">Join Lobby</Text>
 
-		<TextFlow MigPane.cc="span 2, left">
-			<Text fx:id="promptText"
-				text="Choose a room to join.&#10;You can also search for a room by entering&#10;its name or by the player." />
-		</TextFlow>
+		<MigPane MigPane.cc="span 2, skip 1, grow"
+			rows="5%[]push[]2%[]5%" cols="5%[50%][50%]5%" layout="wrap"
+			styleClass="wrapper">
+			<TextFlow MigPane.cc="span 2, left">
+				<Text fx:id="promptText"
+					text="Choose a room to join.&#10;You can also search for a room by entering&#10;its name or by the player." />
+			</TextFlow>
 
-		<Text fx:id="roomTitle">Room Name:</Text>
-		<TextField fx:id="roomName" disable="true"
-			promptText="Disabled" />
+			<Text fx:id="roomTitle" MigPane.cc="">Room Name:</Text>
+			<TextField fx:id="roomName" disable="true"
+				styleClass="disabledTextField" promptText="Disabled" />
 
-		<Text fx:id="passwordTitle">Password:</Text>
-		<TextField fx:id="passwordValue" disable="true"
-			promptText="Select Lobby" />
+			<Text fx:id="passwordTitle" MigPane.cc="">Password:</Text>
+			<TextField fx:id="passwordValue" disable="true"
+				styleClass="disabledTextField" promptText="Select Lobby" />
+
+		</MigPane>
 
 		<Button fx:id="joinButton" mnemonicParsing="false" text="Join"
-			MigPane.cc="span 2, grow, wmax 75%, center" onAction="#joinLobby"
-			styleClass="buttonRegular, joinButton" />
+			MigPane.cc="span 2, skip 1,grow, wmax 75%, center"
+			onAction="#joinLobby" styleClass="buttonRegular, joinButton" />
 	</MigPane>
 
 	<MigPane layout="fill, flowy, gap 0" rows="[95%][5%, fill]"
 		fx:id="rightPane" MigPane.cc="grow">
-		<TableView fx:id="lobbyTable" MigPane.cc="grow">
+		<TableView fx:id="lobbyTable" MigPane.cc="grow"
+			styleClass="table-view">
 			<columns>
 				<TableColumn style="-fx-alignment: CENTER;" text="Owner"
 					sortable="false" prefWidth="${lobbyTable.width * 0.2}">

@@ -14,9 +14,9 @@
 }
 
 .button {
-    -fx-padding: 15.0px;
-    -fx-border-radius: 10.0px;
-    -fx-background-radius: 13.0px;
+    -fx-padding: 10.0px;
+    -fx-border-radius: 50.0px;
+    -fx-background-radius: 50.0px;
     -fx-font-family: 'Avenir Next';
     -fx-font-weight: bold;
 }
@@ -28,14 +28,11 @@
 
 
 .buttonRegular {
-    -fx-border-color: linear-gradient(to bottom right, #5AFF15, #007B34);
-    -fx-border-width: 4.0px;
     -fx-background-color: linear-gradient(to bottom right, #5AFF15, #007B34);
     -fx-text-fill: white;
 }
 
 .buttonRegular:hover {
-    -fx-border-color: linear-gradient(to bottom right, #007B34, #5AFF15);
     -fx-background-color: linear-gradient(to bottom right, #007B34, #5AFF15);
     -fx-text-fill: white;
 }

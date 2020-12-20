@@ -8,6 +8,12 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import lombok.Setter;
 import monopoly.Error;
@@ -16,7 +22,7 @@ import monopoly.ui.UIUtil;
 
 /**
  * Controls the create lobby UI
- * 
+ *
  * @author Ziya Mukhtarov
  * @version Dec 13, 2020
  */
@@ -59,6 +65,22 @@ public class CreateLobbyController implements MonopolyUIController {
 	}
 
 	@FXML
+	public void initialize() {
+		root.setBackground(new Background(
+				new BackgroundImage(UIUtil.BACKGROUND_IMAGE5, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+						BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, true))));
+
+		String fontAvenir = "Avenir Next";
+		mainTitle.setFont(Font.font("Kabel"));
+		limitTitle.setFont(Font.font(fontAvenir));
+		roomTitle.setFont(Font.font(fontAvenir));
+		roomName.setFont(Font.font(fontAvenir));
+		passwordTitle.setFont(Font.font(fontAvenir));
+		passwordValue.setFont(Font.font(fontAvenir));
+		checkPriv.setFont(Font.font(fontAvenir));
+	}
+
+	@FXML
 	private void validateAndCreateLobby() {
 		String lobbyName = roomName.getText();
 		boolean isPublic = !checkPriv.isSelected();
@@ -80,7 +102,7 @@ public class CreateLobbyController implements MonopolyUIController {
 	/**
 	 * Validates the input fields and check whether they are valid values for a
 	 * lobby
-	 * 
+	 *
 	 * @return true if the fields are valid, false otherwise
 	 */
 	private boolean validate(int playerLimit) {
@@ -103,7 +125,7 @@ public class CreateLobbyController implements MonopolyUIController {
 	/**
 	 * Called when the bounds of this pane is changed. Responsive UIs should use
 	 * this method to update their font sizes and scaling
-	 * 
+	 *
 	 * @param width  The total width of this container
 	 * @param height The total height of this container
 	 */
