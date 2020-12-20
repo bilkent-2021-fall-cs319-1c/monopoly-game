@@ -13,16 +13,21 @@
 <StackPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
 	fx:controller="monopoly.ui.controller.gameplay.GameplayController">
-
+	
+	<stylesheets>
+		<UIUtil fx:constant="COMMON_CSS" />
+		<UIUtil fx:constant="GAMEPLAY_CSS" />
+	</stylesheets>
+	
 	<!-- Main Gameplay View -->
-	<MigPane layout="fill" rows="0[grow, fill] [:5%:5%]"
+	<MigPane layout="fill" rows="0[grow, fill] [:5%:5%]2%"
 		cols="[:24%:24%, fill, grow]1%[center]1%[:24%:24%, fill, grow]">
 		<background>
 			<Background>
 				<images>
 					<BackgroundImage>
 						<image>
-							<UIUtil fx:constant="BACKGROUND_IMAGE1" />
+							<UIUtil fx:constant="BACKGROUND_IMAGE6" />
 						</image>
 					</BackgroundImage>
 				</images>
@@ -42,8 +47,8 @@
 			MigPane.cc="grow, wrap, wmax 24%" fx:id="playersRight" />
 
 		<!-- Rotation Icons and Dice -->
-		<MigPane MigPane.cc="skip 1, grow" layout="debug"
-			cols="[]push[15%, fill]push[]" rows="0[fill]0">
+		<MigPane MigPane.cc="skip 1, grow" layout=""
+			cols="10[]push[15%, fill]push[]10" rows="10[fill]2%" styleClass="wrapper">
 			<ImageView pickOnBounds="true"
 				onMouseClicked="#rotateBoardCW" fx:id="rotateCWIcon">
 				<image>

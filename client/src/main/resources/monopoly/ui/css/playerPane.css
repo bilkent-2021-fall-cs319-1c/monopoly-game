@@ -12,11 +12,11 @@
 }
 
 .playerNameLabel {
-    -fx-text-fill: linear-gradient(to bottom right, #b100fc, #ff002f);
+    -fx-text-fill: black;
 }
 
 .playerTurn {
-	-fx-border-color: green;
+	-fx-border-color:  linear-gradient(to bottom, #54e346 , #00000000);
 	-fx-border-width: 10.0;
 	-fx-border-insets: -10.0;
 	-fx-border-radius: 20.0;
