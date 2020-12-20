@@ -5,22 +5,29 @@
 <?import javafx.scene.layout.*?>
 <?import org.tbee.javafx.scene.layout.fxml.*?>
 
-<?import monopoly.ui.gameplay.PlayerPane?>
+<?import monopoly.ui.controller.gameplay.PlayerPane?>
 <?import monopoly.ui.UIUtil?>
+<?import monopoly.ui.controller.gameplay.board.Board?>
+<?import monopoly.ui.controller.gameplay.board.dice.Dice?>
 
 <StackPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
-	fx:controller="monopoly.ui.gameplay.GameplayController">
-
+	fx:controller="monopoly.ui.controller.gameplay.GameplayController">
+	
+	<stylesheets>
+		<UIUtil fx:constant="COMMON_CSS" />
+		<UIUtil fx:constant="GAMEPLAY_CSS" />
+	</stylesheets>
+	
 	<!-- Main Gameplay View -->
-	<MigPane layout="fill" rows="0[grow, fill] [:5%:5%]"
+	<MigPane layout="fill" rows="0[grow, fill] [:5%:5%]2%"
 		cols="[:24%:24%, fill, grow]1%[center]1%[:24%:24%, fill, grow]">
 		<background>
 			<Background>
 				<images>
 					<BackgroundImage>
 						<image>
-							<UIUtil fx:constant="BACKGROUND_IMAGE1" />
+							<UIUtil fx:constant="BACKGROUND_IMAGE6" />
 						</image>
 					</BackgroundImage>
 				</images>
@@ -29,28 +36,27 @@
 
 		<!-- Players on the left side -->
 		<MigPane layout="fill, flowy" cols="0[fill]0"
-			MigPane.cc="grow" fx:id="playersLeft" />
+			MigPane.cc="grow, wmax 24%" fx:id="playersLeft" />
 
 		<!-- Board -->
-		<ImageView fx:id="board" scaleX="0" scaleY="0"
-			fitHeight="10" fitWidth="10">
-			<image>
-				<UIUtil fx:constant="BOARD" />
-			</image>
-		</ImageView>
+		<Board fx:id="board" visible="false" MigPane.cc="grow"
+			cache="true" />
 
 		<!-- Players on the right side -->
 		<MigPane layout="fill, flowy" cols="0[fill]0"
-			MigPane.cc="grow, wrap" fx:id="playersRight" />
+			MigPane.cc="grow, wrap, wmax 24%" fx:id="playersRight" />
 
-		<!-- Rotation Icons -->
-		<MigPane MigPane.cc="skip 1, grow" cols="[]push[]" rows="0[]0">
+		<!-- Rotation Icons and Dice -->
+		<MigPane MigPane.cc="skip 1, grow" layout=""
+			cols="10[]push[15%, fill]push[]10" rows="10[fill]2%" styleClass="wrapper">
 			<ImageView pickOnBounds="true"
 				onMouseClicked="#rotateBoardCW" fx:id="rotateCWIcon">
 				<image>
 					<UIUtil fx:constant="CURVED_ARROW_CW" />
 				</image>
 			</ImageView>
+
+			<Dice opacity="0" fx:id="dice" disable="true" />
 
 			<ImageView pickOnBounds="true"
 				onMouseClicked="#rotateBoardCCW" fx:id="rotateCCWIcon">
@@ -76,6 +82,5 @@
 		<Label text="Chat Window" style="-fx-font: 30px Arial"
 			MigPane.cc="split" onMouseClicked="#toggleChatPane" />
 		<Separator prefWidth="1000" />
-
 	</MigPane>
 </StackPane>

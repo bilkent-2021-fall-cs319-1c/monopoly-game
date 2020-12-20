@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+<?import monopoly.ui.UIUtil?>
+
+<fx:root xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="center"
+	rows="push[50%, fill]push" cols="[50%, fill]"
+	style="-fx-background-color: rgb(232, 135, 135, 0.3)">
+
+	<stylesheets>
+		<UIUtil fx:constant="COMMON_CSS" />
+	</stylesheets>
+
+	<MigPane layout="flowy, center" cols="[center]"
+		rows="[20%]10%[50%, top][10%]" styleClass="bordered"
+		style="-fx-background-color: red">
+
+		<Label alignment="CENTER" text="An Error Occured!" fx:id="title" />
+		<TextFlow textAlignment="CENTER">
+			<Text text="Consult admins" fx:id="info" />
+		</TextFlow>
+		<Button text="OK" MigPane.cc="width 75%"
+			onMouseClicked="#closeOverlay" />
+
+	</MigPane>
+</fx:root>

@@ -87,7 +87,7 @@ public abstract class Client {
 	 * Called when client receives an {@link ImportantNetworkPacket} from the server
 	 * 
 	 * @param connectionID the server assigned unique ID
-	 * @param object       the received object
+	 * @param packet       the received packet
 	 */
 	public abstract void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet);
 

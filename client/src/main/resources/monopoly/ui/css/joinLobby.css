@@ -1,3 +1,126 @@
 .joinButton {
-    -fx-padding: 3px;
+    -fx-padding: 3.0px;
+}
+
+.table-view .scroll-bar * {
+	-fx-min-width: 0.0;
+    -fx-pref-width: 0.0;
+    -fx-max-width: 0.0;
+
+    -fx-min-height: 0.0;
+    -fx-pref-height: 0.0;
+    -fx-max-height: 0.0;
+}
+
+.disabledTextField:disabled {
+    -fx-background-color: black;
+}
+
+.table-view {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background .filler {
+    -fx-background-color: transparent;
+}
+
+.table-view .corner {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background{
+    -fx-background-color: linear-gradient(to right bottom, #18e2d8, #3918e2);
+    -fx-text-fill: white;
+    -fx-background-radius: 7.0px 7.0px 0.0px 0.0px;
+    -fx-background-insets: 0.0 11.0px 0.0 0.0;
+    -fx-padding: 0.0 0.0 5.0px 0.0;
+}
+
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:vertical .track,
+.table-view .virtual-flow .scroll-bar:vertical .track-background,
+.table-view .virtual-flow .scroll-bar:horizontal,
+.table-view .virtual-flow .scroll-bar:horizontal .track,
+.table-view .virtual-flow .scroll-bar:horizontal .track-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .virtual-flow .scroll-bar .increment-button,
+.table-view .virtual-flow .scroll-bar .decrement-button {
+    -fx-opacity: 0.0;
+    -fx-padding: 2.0;
+}
+
+.table-view .virtual-flow .scroll-bar:vertical .thumb{
+    -fx-background-color: transparent;
+}
+.table-view .virtual-flow .scroll-bar:horizontal .thumb {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+
+.table-view .table-cell{
+    -fx-border-color: transparent;
+    -fx-padding: 2.0 0.0 2.0 10.0px;
+}
+.table-row-cell:hover {
+    -fx-background-color: rgba(255.0, 255.0, 255.0, 0.9);
+    -fx-text-background-color: black;
+    -fx-font-weight: bold;
+}
+.table-row-cell:selected {
+    -fx-background-color: rgba(255, 255, 255, 1);
+    -fx-text-background-color: black;
+    -fx-font-weight: bold;
+}
+.table-row-cell {
+    -fx-background-color: rgba(255.0, 255.0, 255.0, 0.7);
+}
+
+.wrapper {
+    -fx-background-color: rgba(255.0,255.0,255.0,0.7);
+    -fx-background-radius: 30.0px;
+}
+
+.pagination {
+    -fx-min-width_: 30.0;
+    -fx-min-height_: 30.0;
+	-fx-page-information-visible: false;
+}
+
+/* Remove spacing */
+.pagination > .pagination-control > .control-box {
+    -fx-spacing: 0.0;
+}
+
+/* You can control the actual button sizes here */
+.pagination > .pagination-control > .control-box > .number-button,
+.pagination > .pagination-control > .control-box > .bullet-button,
+.pagination > .pagination-control > .control-box > .left-arrow-button,
+.pagination > .pagination-control > .control-box > .right-arrow-button {
+    -fx-background-insets: 0.0, 1.0;
+    -fx-background-color: lightgray, #FAFAFA;
+
+    -fx-min-width: -fx-min-width_;
+    -fx-min-height: -fx-min-height_;
+}
+
+/* Colors on hover */
+.pagination > .pagination-control > .control-box > .number-button:hover,
+.pagination > .pagination-control > .control-box > .bullet-button:hover,
+.pagination > .pagination-control > .control-box > .left-arrow-button:hover,
+.pagination > .pagination-control > .control-box > .right-arrow-button:hover {
+    -fx-background-insets: 0.0;
+    -fx-background-color: lightgray;
+}
+
+/* Selected toggle color */
+.pagination > .pagination-control > .control-box > .number-button:selected,
+.pagination > .pagination-control > .control-box > .bullet-button:selected{
+    -fx-background-insets: 0.0;
+    -fx-background-color: #18e2d8;
+    -fx-text-fill: black;
 }

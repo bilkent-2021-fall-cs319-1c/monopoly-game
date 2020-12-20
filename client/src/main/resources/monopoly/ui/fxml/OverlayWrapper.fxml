@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+<?import monopoly.ui.UIUtil?>
+
+<fx:root xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane"
+	layout="center, wrap, fill" cols="push[0:50%, fill]push"
+	rows="push[0:90%, fill]push"
+	style="-fx-background-color: rgb(65, 72, 82, 0.5)">
+	<stylesheets>
+		<UIUtil fx:constant="COMMON_CSS" />
+	</stylesheets>
+</fx:root>

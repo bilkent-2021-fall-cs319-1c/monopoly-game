@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+<?import javafx.scene.control.*?>
+<?import monopoly.ui.UIUtil?>
+<?import monopoly.ui.controller.gameplay.board.dice.*?>
+
+<fx:root xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill"
+	cols="0[]push[]0" rows="0[0:, center]0" onMouseClicked="#roll">
+	<Die fx:id="die1" />
+	<Die fx:id="die2" />
+</fx:root>

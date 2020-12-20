@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import monopoly.ui.UIUtil?>
+<fx:root xmlns="http://javafx.com/javafx"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane"
+	cols="0%[0:, grow, fill]0%"
+	rows="0%[0:30%, fill]0[0:15%, fill]0[grow, fill]0%" layout="wrap" style="-fx-background-color: white; -fx-border-color: black; -fx-border-width: 3px;">
+
+	<MigPane fx:id="topWrapper" MigPane.cc="grow"
+		layout="fill, wrap">
+	</MigPane>
+
+	<Text fx:id="tileName" MigPane.cc="center" textAlignment="CENTER" />
+
+	<MigPane cols="3%[66%, left]0[28%, right]3%"
+		rows="0[grow][grow][grow][grow][grow]0" MigPane.cc="grow"
+		layout="wrap">
+
+		<Text fx:id="rentText" textAlignment="CENTER" text="Rent" />
+		<Text fx:id="rentValueText" textAlignment="CENTER" />
+
+		<Text fx:id="twoRailroadsText" textAlignment="CENTER"
+			text="If 2 railroads are owned" />
+		<Text fx:id="twoRailroadsValue" textAlignment="CENTER" />
+
+		<Text fx:id="threeRailroadsText" textAlignment="CENTER"
+			text="If 3 railroads are owned" />
+		<Text fx:id="threeRailroadsValue" textAlignment="CENTER" />
+
+		<Text fx:id="fourRailroadsText" textAlignment="CENTER"
+			text="If 4 railroads are owned" />
+		<Text fx:id="fourRailroadsValue" textAlignment="CENTER" />
+
+		<Text fx:id="mortgageValue" textAlignment="CENTER" text="lol"
+			MigPane.cc="span 2, center" />
+
+	</MigPane>
+
+
+</fx:root>
