@@ -71,6 +71,11 @@
     -fx-text-background-color: black;
     -fx-font-weight: bold;
 }
+.table-row-cell:selected {
+    -fx-background-color: rgba(255, 255, 255, 1);
+    -fx-text-background-color: black;
+    -fx-font-weight: bold;
+}
 .table-row-cell {
     -fx-background-color: rgba(255, 255, 255, 0.7);
 }

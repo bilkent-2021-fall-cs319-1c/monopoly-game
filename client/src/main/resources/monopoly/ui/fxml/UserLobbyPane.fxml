@@ -11,7 +11,7 @@
 <?import monopoly.ui.UIUtil?>
 
 <fx:root xmlns="http://javafx.com/javafx/15.0.1"
-	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill, wrap"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill, wrap, debug"
 	cols="[::19%]1%[::49%]1%[::30%]" rows="0[fill, grow]0"
 	style="-fx-background-color: indianred" styleClass="bordered">
 	<stylesheets>
@@ -29,10 +29,8 @@
 	<Text fx:id="playerName" MigPane.cc="left" />
 
 	<MigPane fx:id="buttonGroup" layout="center, fill"
-		rows="[fill]2%[fill]" cols="[fill]">
-		<Button fx:id="makeAdminButton" text="Make Admin"
-			MigPane.cc="wrap" />
-		<Button fx:id="removeButton" text="Remove" MigPane.cc="wrap" />
+			 rows="0[100%]0" cols="[grow]" MigPane.cc="center">
+		<Button fx:id="removeButton" text="Remove" MigPane.cc="center" />
 	</MigPane>
 
 </fx:root>
