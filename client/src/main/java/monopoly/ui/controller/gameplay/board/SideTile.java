@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.application.Platform;
-import javafx.beans.NamedArg;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
@@ -45,18 +44,20 @@ public class SideTile extends MigPane implements Tile {
 	private String tileTitleString;
 	private String tileValueString;
 	private TileType tileType;
+	@Getter
+	private int tileIndex;
 
 	private int tileTitleLineCount;
 
 	@Getter
 	private Token[] tileTokens;
 
-	public SideTile(@NamedArg("tileColor") String tileColor, @NamedArg("tileTitle") String tileTitle,
-			@NamedArg("tileValue") String tileValue, @NamedArg("tileType") TileType tileType) {
+	public SideTile(String tileColor, String tileTitle, String tileValue, TileType tileType, int tileIndex) {
 		this.tileColor = (tileColor != null ? tileColor : "red");
 		this.tileTitleString = tileTitle;
 		this.tileValueString = tileValue;
 		this.tileType = tileType;
+		this.tileIndex = tileIndex;
 
 		tileTitleLineCount = tileTitleString.split("\n").length;
 
@@ -74,7 +75,7 @@ public class SideTile extends MigPane implements Tile {
 	}
 
 	public SideTile(TilePacketData tileData) {
-		this("", tileData.getTitle(), tileData.getDescription(), tileData.getType());
+		this("", tileData.getTitle(), tileData.getDescription(), tileData.getType(), tileData.getIndex());
 
 		TitleDeedPacketData titleDeed = tileData.getTitleDeed();
 		if (titleDeed instanceof StreetTitleDeedPacketData) {

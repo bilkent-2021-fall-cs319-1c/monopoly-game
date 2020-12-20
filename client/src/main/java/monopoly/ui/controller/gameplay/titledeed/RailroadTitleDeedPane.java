@@ -1,11 +1,11 @@
-package monopoly.ui.controller.gameplay;
+package monopoly.ui.controller.gameplay.titledeed;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.application.Platform;
-import javafx.beans.NamedArg;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Background;
@@ -14,10 +14,11 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.text.Text;
+import lombok.Getter;
+import monopoly.network.packet.important.packet_data.gameplay.property.TitleDeedPacketData;
 import monopoly.ui.UIUtil;
 
 public class RailroadTitleDeedPane extends MigPane implements DeedCard {
-
 	@FXML
 	private MigPane topWrapper;
 	@FXML
@@ -41,29 +42,27 @@ public class RailroadTitleDeedPane extends MigPane implements DeedCard {
 	@FXML
 	private Text mortgageValue;
 
-	private String tileNameString;
+	@Getter
+	private String name;
 	private String rentString;
 	private String twoRailroadRent;
 	private String threeRailroadRent;
 	private String fourRailroadRent;
 	private String mortgageString;
 
-	public RailroadTitleDeedPane(@NamedArg("tileName") String tileName, @NamedArg("rent") String rent,
-			@NamedArg("twoRailroadRent") String twoRailroadRent,
-			@NamedArg("threeRailroadRent") String threeRailroadRent,
-			@NamedArg("fourRailroadRent") String fourRailroadRent, @NamedArg("mortgage") String mortgage) {
+	public RailroadTitleDeedPane(TitleDeedPacketData deedData) {
+		name = deedData.getTitle();
+		mortgageString = "" + deedData.getMortgagePrice();
+
+		List<Integer> rentCost = deedData.getRentCost();
+		rentString = "" + rentCost.get(0);
+		twoRailroadRent = "" + rentCost.get(1);
+		threeRailroadRent = "" + rentCost.get(2);
+		fourRailroadRent = "" + rentCost.get(3);
 
 		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/RailroadTitleDeedPane.fxml"));
 		loader.setController(this);
 		loader.setRoot(this);
-
-		tileNameString = tileName;
-		rentString = rent;
-		this.twoRailroadRent = twoRailroadRent;
-		this.threeRailroadRent = threeRailroadRent;
-		this.fourRailroadRent = fourRailroadRent;
-		mortgageString = mortgage;
-
 		try {
 			loader.load();
 		} catch (IOException e) {
@@ -73,7 +72,7 @@ public class RailroadTitleDeedPane extends MigPane implements DeedCard {
 
 	@FXML
 	private void initialize() {
-		tileName.setText(tileNameString);
+		tileName.setText(name);
 		topWrapper.setBackground(
 				new Background(new BackgroundImage(UIUtil.BOARD, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
 						BackgroundPosition.CENTER, new BackgroundSize(0.6, 0.8, true, true, false, false))));
@@ -85,11 +84,9 @@ public class RailroadTitleDeedPane extends MigPane implements DeedCard {
 		mortgageValue.setText("Mortgage: " + mortgageString);
 
 		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));
-
 	}
 
 	private void adjustSize() {
-
 		double width = getWidth();
 		double height = getHeight();
 
@@ -108,11 +105,5 @@ public class RailroadTitleDeedPane extends MigPane implements DeedCard {
 		UIUtil.fitFont(fourRailroadsValue, width * 0.1, height * 0.05);
 
 		UIUtil.fitFont(mortgageValue, width * 0.5, height * 0.04);
-
-	}
-
-	@Override
-	public String getName() {
-		return tileNameString;
 	}
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.tbee.javafx.scene.layout.fxml.*?>
+<?import monopoly.ui.UIUtil?>
+
+<fx:root xmlns="http://javafx.com/javafx/15.0.1"
+	xmlns:fx="http://javafx.com/fxml" type="MigPane"
+	layout="center, wrap, fill, debug" cols="0[center, grow, fill]0"
+	rows="0[10%][grow, fill][4%][4%][5%]0"
+	style="-fx-background-color: white">
+
+	<Text fx:id="paneTitle" text="You landed on"
+		textAlignment="CENTER" MigPane.cc="center" />
+	<MigPane fx:id="deedCardDisplay" layout="fill"
+		cols="0[grow, fill, center]0" rows="0[grow, fill, center]0" />
+
+	<Text fx:id="balanceText" textAlignment="CENTER"
+		MigPane.cc="center" />
+	<Text fx:id="infoText" textAlignment="CENTER" MigPane.cc="center" />
+
+	<MigPane fx:id="buttonGroup" layout="wrap, center"
+		cols="push[30%, fill, right]5%[ 30%,fill]push">
+		<Button fx:id="buyButton" text="Buy" onAction="#buy" />
+		<Button fx:id="auctionButton" text="Auction"
+			onAction="#auction" />
+	</MigPane>
+</fx:root>

@@ -1,11 +1,15 @@
 package monopoly.ui.controller;
 
-import javafx.scene.layout.*;
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.text.Text;
 import lombok.Setter;
 import monopoly.ui.ClientApplication;
@@ -46,9 +50,9 @@ public class MainMenuController implements MonopolyUIController {
 
 	@FXML
 	private void initialize() {
-		mainMigPane.setBackground(new Background(new BackgroundImage(UIUtil.BACKGROUND_IMAGE5, BackgroundRepeat.NO_REPEAT,
-				BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0,1.0,
-				true,true, false, true))));
+		mainMigPane.setBackground(new Background(
+				new BackgroundImage(UIUtil.BACKGROUND_IMAGE5, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+						BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, true))));
 	}
 
 	@FXML

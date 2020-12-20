@@ -6,11 +6,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
+import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 public class Token extends Circle {
+	public static final Duration MOVE_ANIMATION_DURATION = Duration.millis(500);
+
 	private Board board;
+	@Getter
 	private Tile currentTile;
 
 	private TranslateTransition translateTransition;
@@ -53,7 +57,7 @@ public class Token extends Circle {
 		double byX = toX - fromX;
 		double byY = toY - fromY;
 
-		translateTransition = new TranslateTransition(Duration.millis(1000), this);
+		translateTransition = new TranslateTransition(MOVE_ANIMATION_DURATION, this);
 		translateTransition.setByX(byX);
 		translateTransition.setByY(byY);
 		translateTransition.play();

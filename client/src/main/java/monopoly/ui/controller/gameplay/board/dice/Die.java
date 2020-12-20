@@ -8,12 +8,15 @@ import java.util.Random;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.ImageView;
+import lombok.Getter;
 import monopoly.ui.UIUtil;
 
 public class Die extends ImageView {
 	private DieCoordinate prevLocation;
 	private DieCoordinate currentLocation;
 	private Random random;
+	@Getter
+	private boolean rolling;
 
 	public Die() {
 		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/Die.fxml"));
@@ -29,6 +32,7 @@ public class Die extends ImageView {
 		prevLocation = null;
 		updateImage();
 		random = new Random();
+		rolling = false;
 	}
 
 	private void goToDestiantion(DieCoordinate dest) {
@@ -98,9 +102,11 @@ public class Die extends ImageView {
 	}
 
 	public void roll(int destination) {
+		rolling = true;
 		new Thread(() -> {
 			randomTraverse();
 			goToDestiantion(getCoordinateOfFace(destination));
+			rolling = false;
 		}).start();
 	}
 

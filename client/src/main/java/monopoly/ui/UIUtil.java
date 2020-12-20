@@ -20,6 +20,7 @@ public class UIUtil {
 	public static final Image BACKGROUND_IMAGE3 = loadImage("images/Background3.jpg");
 	public static final Image BACKGROUND_IMAGE4 = loadImage("images/Background4.png");
 	public static final Image BACKGROUND_IMAGE5 = loadImage("images/Background5.jpeg");
+	public static final Image BACKGROUND_IMAGE6 = loadImage("images/background6.png");
 
 	public static final Image DEFAULT_PLAYER_IMAGE = loadImage("images/PlayerIcon.png");
 	public static final Image DEFAULT_PLAYER_IMAGE_LOOKING_LEFT = loadImage("images/PlayerIconLookingLeft.png");
@@ -60,6 +61,7 @@ public class UIUtil {
 	public static final String AUCTION_PLAYER_PANE_CSS = loadStylesheet("css/auctionPlayerPane.css");
 	public static final String TRADE_PANE_CSS = loadStylesheet("css/tradePane.css");
 	public static final String LOBBY_CSS = loadStylesheet("css/lobby.css");
+	public static final String GAMEPLAY_CSS = loadStylesheet("css/gameplay.css");
 
 	public static final Image[][] DICE = loadDice();
 

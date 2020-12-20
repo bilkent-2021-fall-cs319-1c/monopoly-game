@@ -7,13 +7,13 @@
 }
 
 .wrapper {
-    -fx-background-color: rgba(255,255,255,0.7);
-    -fx-background-radius: 30px;
+    -fx-background-color: rgba(255.0,255.0,255.0,0.7);
+    -fx-background-radius: 30.0px;
 }
 
 .button {
-    -fx-padding: 7px;
-    -fx-border-radius: 5px;
+    -fx-padding: 7.0px;
+    -fx-border-radius: 5.0px;
 }
 
 .stackPane {

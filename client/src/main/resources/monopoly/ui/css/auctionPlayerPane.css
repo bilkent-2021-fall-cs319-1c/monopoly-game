@@ -1,6 +1,6 @@
 .yourTurnWrapper {
     -fx-background-color: lightgreen;
-    -fx-background-radius: 10px 10px 0 0;
+    -fx-background-radius: 10.0px 10.0px 0.0 0.0;
 }
 
 .playerNameWrapper {

@@ -11,7 +11,7 @@
 
 <fx:root xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" type="MigPane" layout="fill"
-	cols="0[]push[]0" rows="0[0:, center]0">
+	cols="0[]push[]0" rows="0[0:, center]0" onMouseClicked="#roll">
 	<Die fx:id="die1" />
 	<Die fx:id="die2" />
 </fx:root>

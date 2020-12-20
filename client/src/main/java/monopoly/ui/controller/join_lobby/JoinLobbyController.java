@@ -1,7 +1,5 @@
 package monopoly.ui.controller.join_lobby;
 
-import javafx.scene.layout.*;
-import javafx.scene.text.Font;
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
 import javafx.beans.binding.Bindings;
@@ -16,6 +14,13 @@ import javafx.scene.control.Pagination;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import lombok.Setter;
 import monopoly.Error;
@@ -95,16 +100,17 @@ public class JoinLobbyController implements MonopolyUIController {
 			}
 		});
 
-		mainPane.setBackground(new Background(new BackgroundImage(UIUtil.BACKGROUND_IMAGE5, BackgroundRepeat.NO_REPEAT,
-				BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0,1.0,
-				true,true, false, true))));
+		mainPane.setBackground(new Background(
+				new BackgroundImage(UIUtil.BACKGROUND_IMAGE5, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+						BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, true))));
 
+		String fontAvenir = "Avenir Next";
 		mainTitle.setFont(Font.font("Kabel"));
-		promptText.setFont(Font.font("Avenir Next"));
-		roomTitle.setFont(Font.font("Avenir Next"));
-		roomName.setFont(Font.font("Avenir Next"));
-		passwordTitle.setFont(Font.font("Avenir Next"));
-		passwordValue.setFont(Font.font("Avenir Next"));
+		promptText.setFont(Font.font(fontAvenir));
+		roomTitle.setFont(Font.font(fontAvenir));
+		roomName.setFont(Font.font(fontAvenir));
+		passwordTitle.setFont(Font.font(fontAvenir));
+		passwordValue.setFont(Font.font(fontAvenir));
 
 	}
 

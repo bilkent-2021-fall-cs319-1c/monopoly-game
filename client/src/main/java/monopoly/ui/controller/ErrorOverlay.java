@@ -20,12 +20,12 @@ import monopoly.ui.ClientApplication;
 import monopoly.ui.UIUtil;
 
 /**
- * An overlay pane. Can be used to display errors or notifications.
+ * An error overlay pane. Can be used to display errors or notifications.
  * 
  * @author Ziya Mukhtarov
  * @version Dec 13, 2020
  */
-public class Overlay extends MigPane implements MonopolyUIController {
+public class ErrorOverlay extends MigPane implements MonopolyUIController {
 	@FXML
 	private Label title;
 	@FXML
@@ -41,11 +41,11 @@ public class Overlay extends MigPane implements MonopolyUIController {
 	/**
 	 * Creates an overlay to display the given error
 	 */
-	public Overlay(Error error) {
+	public ErrorOverlay(Error error) {
 		this.error = error;
 		fadeLevel = new SimpleDoubleProperty(0);
 
-		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/Overlay.fxml"));
+		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/ErrorOverlay.fxml"));
 		loader.setController(this);
 		loader.setRoot(this);
 		try {

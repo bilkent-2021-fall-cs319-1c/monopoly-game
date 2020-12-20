@@ -58,6 +58,7 @@ public class PlayerPane extends MigPane {
 
 	@Getter
 	private boolean nameOnLeft;
+	@Getter
 	private boolean self;
 	private String username;
 	@Getter
@@ -166,9 +167,6 @@ public class PlayerPane extends MigPane {
 		setBackground(new Background(new BackgroundFill(color, null, null)));
 
 		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));
-
-		// TODO
-		setPlayerTurn(true);
 	}
 
 	@FXML
@@ -199,9 +197,16 @@ public class PlayerPane extends MigPane {
 		}
 	}
 
-	public void setPlayerTurn(boolean ownTurn) {
-		getStyleClass().removeAll("bordered");
-		getStyleClass().add("playerTurn");
+	public void setPlayerTurn(boolean isTurn) {
+		Platform.runLater(() -> {
+			if (isTurn) {
+				getStyleClass().removeAll("bordered");
+				getStyleClass().add("playerTurn");
+			} else {
+				getStyleClass().removeAll("playerTurn");
+				getStyleClass().add("bordered");
+			}
+		});
 	}
 
 	/**

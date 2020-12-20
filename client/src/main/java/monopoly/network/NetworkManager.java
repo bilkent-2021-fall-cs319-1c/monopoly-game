@@ -18,13 +18,16 @@ import monopoly.network.packet.important.packet_data.IntegerPacketData;
 import monopoly.network.packet.important.packet_data.UserListPacketData;
 import monopoly.network.packet.important.packet_data.UserPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.BoardPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerListPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyListPacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 import monopoly.ui.ClientApplication;
 import monopoly.ui.controller.gameplay.GameplayController;
-import monopoly.ui.controller.gameplay.GameplayDataHolder;
+import monopoly.ui.controller.gameplay.GameplayDataManager;
 import monopoly.ui.controller.in_lobby.LobbyController;
 
 /**
@@ -219,18 +222,27 @@ public class NetworkManager {
 	 * listeners are notified. Note that, this method may return before all the
 	 * listeners have been notified.
 	 * 
-	 * @param app The application which requests this game data
+	 * @param gameplayController The gameplay controller which requests this game
+	 *                           data
 	 * @return The game data
 	 */
-	public GameplayDataHolder getGameData(ClientApplication app) {
+	public GameplayDataManager getGameData(GameplayController gameplayController) {
 		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.GET_GAME_DATA);
 		ImportantNetworkPacket response = askAndGetResponse(request, PacketType.GAME_DATA);
 
 		if (response == null) {
 			return null;
 		}
-		return new GameplayDataHolder((PlayerListPacketData) response.getData().get(0),
-				(BoardPacketData) response.getData().get(1), app);
+		return new GameplayDataManager((PlayerListPacketData) response.getData().get(0),
+				(BoardPacketData) response.getData().get(1), gameplayController);
+	}
+
+	/**
+	 * Informs the server that this player wants to roll the dice
+	 */
+	public void askRollDice() {
+		ImportantNetworkPacket request = new ImportantNetworkPacket(PacketType.ROLL_DICE);
+		client.sendImportantPacket(request);
 	}
 
 	/**
@@ -312,11 +324,11 @@ public class NetworkManager {
 		@Override
 		public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
 			PacketType type = packet.getType();
-			logger.debug("Received: {}", packet.getType());
+			logger.debug("Received: {}", packet);
+			System.out.println(packet);
 			if ((type == waitingForResponseType && responsePacket == null) || packet.isErrorPacket()) {
 				responsePacket = packet;
 			} else {
-				logger.debug("Received not as a response: {}", packet.getType());
 				if (type == PacketType.PLAYER_JOIN) {
 					handleUserJoin((UserPacketData) packet.getData().get(0));
 
@@ -328,6 +340,19 @@ public class NetworkManager {
 
 				} else if (type == PacketType.GAME_START) {
 					handleGameStart();
+
+				} else if (type == PacketType.PLAYER_TURN) {
+					handlePlayerTurn((PlayerPacketData) packet.getData().get(0));
+
+				} else if (type == PacketType.DICE_RESULT) {
+					handleDiceRoll((DicePacketData) packet.getData().get(0));
+
+				} else if (type == PacketType.TOKEN_MOVED) {
+					handleTokenMove((PlayerPacketData) packet.getData().get(0),
+							(TilePacketData) packet.getData().get(1));
+
+				} else if (type == PacketType.ACT_BUY_OR_AUCTION) {
+					handleBuyOrAuctionOption((TilePacketData) packet.getData().get(0));
 				}
 			}
 		}
@@ -378,5 +403,59 @@ public class NetworkManager {
 				logger.error("Wrong controller. Expected LobbyController, displaying {}", uiController);
 			}
 		}
+
+		/**
+		 * Handles a player's turn change
+		 */
+		private void handlePlayerTurn(PlayerPacketData playerPacketData) {
+			Object uiController = app.getMainController();
+			if (uiController instanceof GameplayController) {
+				GameplayController gameplayController = (GameplayController) uiController;
+				gameplayController.getGameData().changePlayerTurn(playerPacketData);
+			} else {
+				logger.error("Wrong controller. Expected GameplayController, displaying {}", uiController);
+			}
+		}
+
+		/**
+		 * Handles a rolled dice result
+		 */
+		private void handleDiceRoll(DicePacketData dicePacketData) {
+			Object uiController = app.getMainController();
+			if (uiController instanceof GameplayController) {
+				GameplayController gameplayController = (GameplayController) uiController;
+				gameplayController.getGameData().rollDiceAndshowResult(dicePacketData);
+			} else {
+				logger.error("Wrong controller. Expected GameplayController, displaying {}", uiController);
+			}
+		}
+
+		/**
+		 * Handles a player's token moving
+		 */
+		private void handleTokenMove(PlayerPacketData playerPacketData, TilePacketData tilePacketData) {
+			Object uiController = app.getMainController();
+			if (uiController instanceof GameplayController) {
+				GameplayController gameplayController = (GameplayController) uiController;
+				gameplayController.getGameData().moveToken(playerPacketData, tilePacketData);
+			} else {
+				logger.error("Wrong controller. Expected GameplayController, displaying {}", uiController);
+			}
+		}
+
+		/**
+		 * Handles the option of buying or auctioning the property that is not owned by
+		 * anyone
+		 */
+		private void handleBuyOrAuctionOption(TilePacketData tilePacketData) {
+			Object uiController = app.getMainController();
+			if (uiController instanceof GameplayController) {
+				GameplayController gameplayController = (GameplayController) uiController;
+				gameplayController.getGameData().displayBuyOrAuctionPane(tilePacketData);
+			} else {
+				logger.error("Wrong controller. Expected GameplayController, displaying {}", uiController);
+			}
+		}
+
 	}
 }

@@ -10,38 +10,39 @@
 <?import monopoly.ui.controller.in_lobby.UserLobbyPane?>
 
 <MigPane xmlns="http://javafx.com/javafx/15.0.1"
-         xmlns:fx="http://javafx.com/fxml" layout="fill, wrap"
-         cols="[::39%]2%[::59%]" rows="0[]0" fx:id="root"
-         fx:controller="monopoly.ui.controller.in_lobby.LobbyController">
+	xmlns:fx="http://javafx.com/fxml" layout="fill, wrap"
+	cols="[::39%]2%[::59%]" rows="0[]0" fx:id="root"
+	fx:controller="monopoly.ui.controller.in_lobby.LobbyController">
 
-    <stylesheets>
-        <UIUtil fx:constant="COMMON_CSS"/>
-        <UIUtil fx:constant="LOBBY_CSS"/>
-    </stylesheets>
+	<stylesheets>
+		<UIUtil fx:constant="COMMON_CSS" />
+		<UIUtil fx:constant="LOBBY_CSS" />
+	</stylesheets>
 
-    <MigPane layout="fill, wrap, debug"
-             rows="[15%][grow][::10%, fill]"
-             cols="5%[fill]" MigPane.cc="height 100%, width 39%">
+	<MigPane layout="fill, wrap, debug"
+		rows="[15%][grow][::10%, fill]" cols="5%[fill]"
+		MigPane.cc="height 100%, width 39%">
 
-        <Text style="-fx-font-family: 'Kabel'" text="Lobby"
-              fx:id="lobbyText"/>
-        <MigPane rows="[10%][10%][10%][10%][20%][::10%, fill]" cols="2%[100%]2%" layout="wrap" styleClass="wrapper">
-            <Text text="Room Name" fx:id="nameText"/>
-            <Text text="xxxxx" fx:id="nameField"/>
-            <Text text="Room Password" fx:id="passwordText"/>
-            <Text text="xxxxx" fx:id="passwordField"/>
-            <Text fx:id="waitingText">
-                Waiting for players...
-            </Text>
-        </MigPane>
+		<Text style="-fx-font-family: 'Kabel'" text="Lobby"
+			fx:id="lobbyText" />
+		<MigPane rows="[10%][10%][10%][10%][20%][::10%, fill]"
+			cols="2%[100%]2%" layout="wrap" styleClass="wrapper">
+			<Text text="Room Name" fx:id="nameText" />
+			<Text text="xxxxx" fx:id="nameField" />
+			<Text text="Room Password" fx:id="passwordText" />
+			<Text text="xxxxx" fx:id="passwordField" />
+			<Text fx:id="waitingText">
+				Waiting for players...
+			</Text>
+		</MigPane>
 
-        <Button styleClass="buttonRegular" text="Make Public"
-                disable="true"/>
-        <Button styleClass="buttonRegular" text="Ready"
-                onAction="#changeReady" fx:id="readyButton"/>
-    </MigPane>
+		<Button styleClass="buttonRegular" text="Make Public"
+			disable="true" />
+		<Button styleClass="buttonRegular" text="Ready"
+			onAction="#changeReady" fx:id="readyButton" />
+	</MigPane>
 
-    <MigPane layout="fill, wrap" cols="5%[fill]5%"
-             MigPane.cc="grow, wrap" fx:id="players">
-    </MigPane>
+	<MigPane layout="fill, wrap" cols="5%[fill]5%"
+		MigPane.cc="grow, wrap" fx:id="players">
+	</MigPane>
 </MigPane>

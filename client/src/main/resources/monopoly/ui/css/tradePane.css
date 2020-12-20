@@ -1,5 +1,5 @@
 .playerAssetsWrapper {
     -fx-border-color: gray;
-    -fx-border-width: 2px;
+    -fx-border-width: 2.0px;
     -fx-background-color: white;
 }

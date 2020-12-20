@@ -15,6 +15,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.CacheHint;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import lombok.Getter;
@@ -32,6 +33,7 @@ import monopoly.ui.controller.gameplay.board.dice.Dice;
  * @version Dec 13, 2020
  */
 public class GameplayController implements MonopolyUIController {
+	@Getter
 	@Setter
 	private ClientApplication app;
 
@@ -51,6 +53,7 @@ public class GameplayController implements MonopolyUIController {
 	private ImageView chatIcon;
 	@FXML
 	private MigPane chatPane;
+	@Getter
 	@FXML
 	private Dice dice;
 
@@ -65,9 +68,13 @@ public class GameplayController implements MonopolyUIController {
 	private boolean boardRotating;
 
 	@Getter
-	private GameplayDataHolder gameData;
+	private GameplayDataManager gameData;
+
+	private OverlayWrapper currentPopup;
 
 	public GameplayController() {
+		currentPopup = null;
+
 		chatOpen = false;
 		boardRotating = false;
 
@@ -97,9 +104,11 @@ public class GameplayController implements MonopolyUIController {
 		closeChatPane.setNode(chatPane);
 		boardRoateAndScaleTransition.setNode(board);
 
-		gameData = app.getNetworkManager().getGameData(app);
+		gameData = app.getNetworkManager().getGameData(this);
 		addPlayers(gameData.getPlayerPanes());
 		board.buildBoard(gameData);
+
+		dice.setApp(app);
 
 		sizeChanged(stackPane.getWidth(), stackPane.getHeight());
 		Platform.runLater(this::boardRotateAndEnter);
@@ -237,5 +246,29 @@ public class GameplayController implements MonopolyUIController {
 
 		chatPane.setTranslateX(chatPane.getPrefWidth());
 		closeChatPane.setToX(chatPane.getPrefWidth());
+	}
+
+	public void setDiceDisable(boolean disable) {
+		dice.setDisable(disable);
+	}
+
+	public void showPopup(Pane popup) {
+		Platform.runLater(() -> {
+			OverlayWrapper overlay = new OverlayWrapper(popup);
+			currentPopup = overlay;
+			stackPane.getChildren().add(overlay);
+		});
+	}
+
+	public void closePopup() {
+		if (currentPopup != null) {
+			Platform.runLater(() -> {
+				currentPopup.setOnFadeFinished(e -> {
+					stackPane.getChildren().remove(currentPopup);
+					currentPopup = null;
+				});
+				currentPopup.fade(false);
+			});
+		}
 	}
 }
