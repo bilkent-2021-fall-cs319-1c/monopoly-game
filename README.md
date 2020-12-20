@@ -12,3 +12,6 @@ We will implement the “_Monopoly Classic_” game. Game rules will be taken fr
 ## Iteration 2
 [Analysis Report](docs/Iteration2_AnalysisReport.pdf)  
 [Design Report](docs/Iteration2_DesignReport.pdf)
+
+## Final
+[Final Report](docs/FinalReport.pdf)  
