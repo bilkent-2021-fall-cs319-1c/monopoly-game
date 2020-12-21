@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.tbee.javafx.scene.layout.fxml.MigPane;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -130,6 +131,6 @@ public class AuctionPane extends MigPane {
 
 	public void setHighestBid(int bid) {
 		highestBid = bid;
-		highestBidText.setText("Highest Bid: " + bid + "M");
+		Platform.runLater(() -> highestBidText.setText("Highest Bid: " + bid + "M"));
 	}
 }
