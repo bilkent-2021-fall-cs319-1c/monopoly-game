@@ -84,7 +84,7 @@ public class GameServer extends Server {
 
 	@Override
 	public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
-		System.out.println("From " + connectionID + " Received " + packet);
+//		System.out.println("From " + connectionID + " Received " + packet);
 		// Take action depending on the received packet type
 		if (packet.getType() == PacketType.CONNECT) {
 			handleConnect(connectionID);

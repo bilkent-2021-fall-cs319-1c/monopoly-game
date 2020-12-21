@@ -95,7 +95,7 @@ public abstract class Server {
 	 *                     packet should be sent
 	 */
 	public void sendRealTimePacket(RealTimeNetworkPacket packet, int connectionID) {
-		System.out.println("Send to " + connectionID + " Packet: " + packet);
+//		System.out.println("Send to " + connectionID + " Packet: " + packet);
 		kryoServer.sendToUDP(connectionID, packet);
 	}
 
