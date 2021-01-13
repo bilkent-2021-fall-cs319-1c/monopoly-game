@@ -1,7 +1,6 @@
 package monopoly.gameplay.properties;
 
 import lombok.Getter;
-import lombok.Setter;
 import monopoly.MonopolyException;
 import monopoly.network.packet.important.PacketType;
 
@@ -12,13 +11,11 @@ import monopoly.network.packet.important.PacketType;
  * @version Dec 16, 2020
  */
 @Getter
-@Setter
-public class Street extends Property {
-
+public class StreetProperty extends Property {
 	private int houseCount;
 	private boolean hasHotel;
 
-	public Street(String color) {
+	public StreetProperty(String color) {
 		super(color);
 		houseCount = 0;
 		hasHotel = false;
@@ -30,7 +27,8 @@ public class Street extends Property {
 			return 0;
 		}
 
-		int propertyCountWithColor = getOwner().getPropertyCountWithColor(getColorSet());
+		// TODO implement rent tier 1 (color set tier)
+//		int propertyCountWithColor = getOwner().getPropertyCountWithColor(getColorSet());
 
 		if (houseCount > 0) {
 			return getTitleDeed().getRentTierPrice(houseCount + 1);
@@ -41,33 +39,28 @@ public class Street extends Property {
 		}
 
 		return getTitleDeed().getRentTierPrice(0);
-
 	}
 
-	public boolean buildHouse() throws MonopolyException {
+	public void buildHouse() throws MonopolyException {
 		if (houseCount < 4) {
 			houseCount++;
-			getOwner().setBalance(getOwner().getBalance() - ((StreetTitleDeedData) getTitleDeed()).getHouseCost());
-			getOwner().getCurrentGame().sendBalanceChangeToPlayers(getOwner());
-
-			return true;
 		} else
 			throw new MonopolyException(PacketType.ERR_UNKNOWN);
 	}
 
-	public boolean buildHotel() throws MonopolyException {
+	public void buildHotel() throws MonopolyException {
 		if (houseCount == 4) {
-			if (hasHotel) {
+			if (!hasHotel) {
 				hasHotel = true;
-				getOwner().setBalance(getOwner().getBalance() - ((StreetTitleDeedData) getTitleDeed()).getHotelCost());
-				getOwner().getCurrentGame().sendBalanceChangeToPlayers(getOwner());
-
-				return true;
 			} else {
 				throw new MonopolyException(PacketType.ERR_ALREADY_HAS_HOTEL);
 			}
 		} else {
 			throw new MonopolyException(PacketType.ERR_NOT_ALL_HOUSES_BUILT);
 		}
+	}
+
+	public StreetTitleDeedData getTitleDeed() {
+		return (StreetTitleDeedData) getTile().getTitleDeed();
 	}
 }

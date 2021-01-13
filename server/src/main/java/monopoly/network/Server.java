@@ -2,6 +2,9 @@ package monopoly.network;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
@@ -18,6 +21,7 @@ import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 public abstract class Server {
 	private static final int WRITE_BUFFER_SIZE = 32768;
 	private static final int OBJECT_BUFFER_SIZE = 32768;
+	private static Logger logger = LoggerFactory.getLogger(Server.class);
 
 	private com.esotericsoftware.kryonet.Server kryoServer;
 
@@ -95,7 +99,6 @@ public abstract class Server {
 	 *                     packet should be sent
 	 */
 	public void sendRealTimePacket(RealTimeNetworkPacket packet, int connectionID) {
-//		System.out.println("Send to " + connectionID + " Packet: " + packet);
 		kryoServer.sendToUDP(connectionID, packet);
 	}
 
@@ -107,7 +110,7 @@ public abstract class Server {
 	 *                     string should be sent
 	 */
 	public void sendImportantPacket(ImportantNetworkPacket packet, int connectionID) {
-		System.out.println("Sending " + packet.getType());
+		logger.debug("Sending {} to connection {}", packet.getType(), connectionID);
 		kryoServer.sendToTCP(connectionID, packet);
 	}
 }

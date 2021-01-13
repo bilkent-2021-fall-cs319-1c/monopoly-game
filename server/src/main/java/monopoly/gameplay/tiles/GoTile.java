@@ -13,7 +13,7 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
  */
 @Getter
 public class GoTile extends Tile {
-	private final int MONEY_GAIN = 200;
+	private static final int MONEY_GAIN = 200;
 
 	public GoTile(TitleDeedData titleDeed, String name, String description, TileType type, int index) {
 		super(titleDeed, name, description, type, index);
@@ -22,6 +22,5 @@ public class GoTile extends Tile {
 	@Override
 	public void doAction(GamePlayer player) {
 		player.setBalance(player.getBalance() + MONEY_GAIN);
-		player.getCurrentGame().sendBalanceChangeToPlayers(player);
 	}
 }

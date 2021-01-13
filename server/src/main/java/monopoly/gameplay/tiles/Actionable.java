@@ -8,8 +8,6 @@ import monopoly.gameplay.GamePlayer;
  * @author Alper Sari
  * @version Dec 15, 2020
  */
-
 public interface Actionable {
-
-    public void doAction(GamePlayer player);
+	void doAction(GamePlayer player);
 }

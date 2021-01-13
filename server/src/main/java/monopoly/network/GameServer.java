@@ -3,6 +3,9 @@ package monopoly.network;
 import java.io.IOException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import lombok.Setter;
 import monopoly.Model;
 import monopoly.MonopolyException;
@@ -18,7 +21,6 @@ import monopoly.network.packet.important.packet_data.BooleanPacketData;
 import monopoly.network.packet.important.packet_data.IntegerPacketData;
 import monopoly.network.packet.important.packet_data.StringPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
-import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyListPacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
@@ -30,6 +32,7 @@ import monopoly.network.packet.realtime.RealTimeNetworkPacket;
  * @version Nov 29, 2020
  */
 public class GameServer extends Server {
+	private static Logger logger = LoggerFactory.getLogger(GameServer.class);
 	private static GameServer instance;
 
 	@Setter
@@ -55,7 +58,7 @@ public class GameServer extends Server {
 			try {
 				instance = new GameServer();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("The server could not be opened", e);
 				System.exit(0);
 			}
 		}
@@ -64,12 +67,12 @@ public class GameServer extends Server {
 
 	@Override
 	public void connected(int connectionID) {
-		// To be done in later versions
+		// Do nothing, since connected packet will be received later
 	}
 
 	@Override
 	public void disconnected(int connectionID) {
-
+		// TODO Handle unexpected disconnection
 	}
 
 	@Override
@@ -80,62 +83,6 @@ public class GameServer extends Server {
 		}
 
 		lobby.sendRealtimePacket(connectionID, packet);
-	}
-
-	@Override
-	public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
-//		System.out.println("From " + connectionID + " Received " + packet);
-		// Take action depending on the received packet type
-		if (packet.getType() == PacketType.CONNECT) {
-			handleConnect(connectionID);
-		} else if (packet.getType() == PacketType.GET_LOBBY_COUNT) {
-			handleGetLobbyCount(connectionID);
-
-		} else if (packet.getType() == PacketType.GET_LOBBIES) {
-			handleGetLobbies(connectionID, packet);
-
-		} else if (packet.getType() == PacketType.CREATE_LOBBY) {
-			handleCreate(connectionID, packet);
-
-		} else if (packet.getType() == PacketType.JOIN_LOBBY) {
-			handleJoin(connectionID, packet);
-
-		} else if (packet.getType() == PacketType.GET_USERS_IN_LOBBY) {
-			handleGetUsers(connectionID);
-
-		} else if (packet.getType() == PacketType.LEAVE_LOBBY) {
-			handleLeave(connectionID);
-
-		} else if (packet.getType() == PacketType.SET_READY) {
-			handleReady(connectionID, packet);
-
-		} else if (packet.getType() == PacketType.GET_GAME_DATA) {
-			handleGameData(connectionID);
-
-		} else if (packet.getType() == PacketType.ROLL_DICE) {
-			handleDiceRoll(connectionID);
-
-		} else if (packet.getType() == PacketType.BUY_PROPERTY) {
-			handleBuyProperty(connectionID);
-
-		} else if (packet.getType() == PacketType.BUILD_HOUSE) {
-			handleBuildHouse(connectionID);
-
-		} else if (packet.getType() == PacketType.BUILD_HOTEL) {
-			handleBuildHotel(connectionID);
-
-		} else if (packet.getType() == PacketType.INITIATE_AUCTION) {
-			handleInitiateAuction(connectionID);
-
-		} else if (packet.getType() == PacketType.INCREASE_BID) {
-			handleIncreaseBid(connectionID, packet);
-
-		} else if (packet.getType() == PacketType.SKIP_BID) {
-			handleSkipBid(connectionID);
-			
-		} else if (packet.getType() == PacketType.INITIATE_TRADE) {
-			handleSkipBid(connectionID);
-		}
 	}
 
 	/**
@@ -153,7 +100,7 @@ public class GameServer extends Server {
 
 	private void handleGetLobbyCount(int connectionID) {
 		sendImportantPacket(
-				new ImportantNetworkPacket(PacketType.LOBBY_COUNT, new IntegerPacketData(model.getLobbyCount())),
+				new ImportantNetworkPacket(PacketType.LOBBY_COUNT, new IntegerPacketData(model.getWaitingLobbyCount())),
 				connectionID);
 	}
 
@@ -256,7 +203,7 @@ public class GameServer extends Server {
 	 */
 	private void handleReady(int connectionID, ImportantNetworkPacket packet) {
 		User user = model.getUserByID(connectionID);
-		boolean ready = ((BooleanPacketData) packet.getData().get(0)).isData();
+		boolean ready = ((BooleanPacketData) packet.getData().get(0)).getData();
 
 		try {
 			user.setReady(ready);
@@ -266,40 +213,31 @@ public class GameServer extends Server {
 		}
 	}
 
-	private void handleGameData(int connectionID) {
-		GamePlayer player = model.getUserByID(connectionID).asPlayer();
+	private void handleGetGameData(int connectionID) {
+		Game game = model.getGameOfPlayer(connectionID);
 
-		sendGameDataNotification(player);
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.GAME_DATA, game.getPlayersAsPacket(),
+				game.getBoard().getAsPacket()), connectionID);
 	}
 
 	private void handleDiceRoll(int connectionID) {
-		Game game = model.getGameOfPlayer(connectionID);
-		GamePlayer player = game.getCurrentPlayer();
+		GamePlayer player = model.getUserByID(connectionID).asPlayer();
 
-		new Thread(() -> {
-			try {
-				player.rollDice();
-			} catch (MonopolyException e) {
-				sendImportantPacket(e.getAsPacket(), connectionID);
-			}
-		}).start();
+		try {
+			player.rollDice();
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
+		}
 	}
 
 	public void handleBuyProperty(int connectionID) {
-		Game game = model.getGameOfPlayer(connectionID);
-		GamePlayer player = game.getCurrentPlayer();
+		GamePlayer player = model.getUserByID(connectionID).asPlayer();
 
-		new Thread(() -> {
-			try {
-				if (player.buyProperty()) {
-					game.sendPropertyBoughtToPlayers((PropertyTile) player.getTile(), player);
-				}
-			} catch (MonopolyException e) {
-				sendImportantPacket(e.getAsPacket(), connectionID);
-			}
-
-			game.completeTurn();
-		}).start();
+		try {
+			player.buyProperty();
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
+		}
 	}
 
 	public void handleBuildHouse(int connectionID) {
@@ -308,9 +246,8 @@ public class GameServer extends Server {
 
 		new Thread(() -> {
 			try {
-				if (player.buildHouse()) {
-					game.sendHouseBuiltToPlayers();
-				}
+				player.buildHouse();
+				game.sendHouseBuiltToPlayers();
 			} catch (MonopolyException e) {
 				sendImportantPacket(e.getAsPacket(), connectionID);
 			}
@@ -324,9 +261,8 @@ public class GameServer extends Server {
 		GamePlayer player = game.getCurrentPlayer();
 
 		try {
-			if (player.buildHotel()) {
-				game.sendHotelBuiltToPlayers();
-			}
+			player.buildHotel();
+			game.sendHotelBuiltToPlayers();
 		} catch (MonopolyException e) {
 			sendImportantPacket(e.getAsPacket(), connectionID);
 		}
@@ -363,11 +299,9 @@ public class GameServer extends Server {
 			sendImportantPacket(e.getAsPacket(), connectionID);
 		}
 	}
-	
+
 	public void handleInitiateTrade(int connectionID) {
-		GamePlayer player = model.getUserByID(connectionID).asPlayer();
-		
-		
+		// TODO implement trading
 	}
 
 	/**
@@ -423,13 +357,6 @@ public class GameServer extends Server {
 		sendImportantPacket(new ImportantNetworkPacket(PacketType.GAME_START), user.getId());
 	}
 
-	private void sendGameDataNotification(GamePlayer player) {
-		Game game = model.getGameOfPlayer(player.getId());
-
-		sendImportantPacket(new ImportantNetworkPacket(PacketType.GAME_DATA, game.getPlayersAsPacket(),
-				game.getBoard().getAsBoardPacket()), player.getId());
-	}
-
 	public void sendPlayersTurnOrderNotification(GamePlayer player) {
 		Game game = model.getLobbyOfUser(player.getId()).getGame();
 
@@ -449,15 +376,13 @@ public class GameServer extends Server {
 		sendImportantPacket(new ImportantNetworkPacket(PacketType.DICE_RESULT, data), player.getId());
 	}
 
-	public void sendTokenMovedNotification(GamePlayer playerMoved, TilePacketData tileData, GamePlayer playerToNotify) {
-		sendImportantPacket(
-				new ImportantNetworkPacket(PacketType.TOKEN_MOVED, playerMoved.getAsPlayerPacket(), tileData),
-				playerToNotify.getId());
+	public void sendTokenMovedNotification(GamePlayer playerMoved, GamePlayer playerToNotify) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.TOKEN_MOVED, playerMoved.getAsPlayerPacket(),
+				playerMoved.getTile().getAsPacket()), playerToNotify.getId());
 	}
 
 	public void sendBuyOrAuctionNotification(GamePlayer player) {
-		sendImportantPacket(
-				new ImportantNetworkPacket(PacketType.ACT_BUY_OR_AUCTION, player.getTile().getAsTilePacket()),
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.ACT_BUY_OR_AUCTION, player.getTile().getAsPacket()),
 				player.getId());
 	}
 
@@ -468,12 +393,12 @@ public class GameServer extends Server {
 	}
 
 	public void sendPropertyBoughtNotification(PropertyTile tile, GamePlayer playerBuying, GamePlayer playerToNotify) {
-		sendImportantPacket(new ImportantNetworkPacket(PacketType.PROPERTY_BOUGHT, tile.getAsTilePacket(),
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.PROPERTY_BOUGHT, tile.getAsPacket(),
 				playerBuying.getAsPlayerPacket()), playerToNotify.getId());
 	}
 
 	public void sendAuctionInitiatedNotification(PropertyTile tile, GamePlayer playerToNotify) {
-		sendImportantPacket(new ImportantNetworkPacket(PacketType.AUCTION_INITIATED, tile.getAsTilePacket()),
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.AUCTION_INITIATED, tile.getAsPacket()),
 				playerToNotify.getId());
 	}
 
@@ -520,5 +445,63 @@ public class GameServer extends Server {
 	public void sendPlayerBankruptNotification(GamePlayer playerBankrupt, GamePlayer playerToNotify) {
 		sendImportantPacket(new ImportantNetworkPacket(PacketType.PLAYER_BANKRUPT, playerBankrupt.getAsPlayerPacket()),
 				playerToNotify.getId());
+	}
+
+	@Override
+	public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
+		logger.debug("From {} received {}", connectionID, packet);
+
+		// Take action depending on the received packet type
+		if (packet.getType() == PacketType.CONNECT) {
+			handleConnect(connectionID);
+
+		} else if (packet.getType() == PacketType.GET_LOBBY_COUNT) {
+			handleGetLobbyCount(connectionID);
+
+		} else if (packet.getType() == PacketType.GET_LOBBIES) {
+			handleGetLobbies(connectionID, packet);
+
+		} else if (packet.getType() == PacketType.CREATE_LOBBY) {
+			handleCreate(connectionID, packet);
+
+		} else if (packet.getType() == PacketType.JOIN_LOBBY) {
+			handleJoin(connectionID, packet);
+
+		} else if (packet.getType() == PacketType.GET_USERS_IN_LOBBY) {
+			handleGetUsers(connectionID);
+
+		} else if (packet.getType() == PacketType.LEAVE_LOBBY) {
+			handleLeave(connectionID);
+
+		} else if (packet.getType() == PacketType.SET_READY) {
+			handleReady(connectionID, packet);
+
+		} else if (packet.getType() == PacketType.GET_GAME_DATA) {
+			handleGetGameData(connectionID);
+
+		} else if (packet.getType() == PacketType.ROLL_DICE) {
+			handleDiceRoll(connectionID);
+
+		} else if (packet.getType() == PacketType.BUY_PROPERTY) {
+			handleBuyProperty(connectionID);
+
+		} else if (packet.getType() == PacketType.BUILD_HOUSE) {
+			handleBuildHouse(connectionID);
+
+		} else if (packet.getType() == PacketType.BUILD_HOTEL) {
+			handleBuildHotel(connectionID);
+
+		} else if (packet.getType() == PacketType.INITIATE_AUCTION) {
+			handleInitiateAuction(connectionID);
+
+		} else if (packet.getType() == PacketType.INCREASE_BID) {
+			handleIncreaseBid(connectionID, packet);
+
+		} else if (packet.getType() == PacketType.SKIP_BID) {
+			handleSkipBid(connectionID);
+
+		} else if (packet.getType() == PacketType.INITIATE_TRADE) {
+			handleInitiateTrade(connectionID);
+		}
 	}
 }

@@ -2,7 +2,6 @@ package monopoly.gameplay.properties;
 
 import lombok.Getter;
 import lombok.Setter;
-import monopoly.MonopolyException;
 import monopoly.gameplay.GamePlayer;
 import monopoly.gameplay.tiles.PropertyTile;
 import monopoly.network.packet.important.packet_data.gameplay.property.PropertyPacketData;
@@ -13,15 +12,14 @@ import monopoly.network.packet.important.packet_data.gameplay.property.PropertyP
  * @author Alper Sari
  * @version Dec 16, 2020
  */
-
 @Getter
-@Setter
 public abstract class Property implements Auctionable, Tradeable {
-	private PropertyTile tile;
+	@Setter
 	private GamePlayer owner;
-	private boolean mortgaged;
 	private TitleDeedData titleDeed;
 	private String colorSet;
+	private boolean mortgaged;
+	private PropertyTile tile;
 
 	Property(String colorSet) {
 		owner = null;
@@ -49,20 +47,18 @@ public abstract class Property implements Auctionable, Tradeable {
 		if (from.equals(owner))
 			give(to);
 	}
-	
-	public void setTile( PropertyTile tile) {
+
+	public void setTile(PropertyTile tile) {
 		this.tile = tile;
-		tile.setProperty( this);
+		tile.setProperty(this);
 	}
-	
-	public void setTitleDeed( TitleDeedData titleDeed) {
+
+	public void setTitleDeed(TitleDeedData titleDeed) {
 		this.titleDeed = titleDeed;
-		titleDeed.setProperty( this);
+		titleDeed.setProperty(this);
 	}
-	
-	
-	
-	public PropertyPacketData getAsPropertyPacket() {
-		return new PropertyPacketData(tile.getAsTilePacket(), owner.getAsPlayerPacket(), mortgaged);
+
+	public PropertyPacketData getAsPacket() {
+		return new PropertyPacketData(tile.getAsPacket(), owner.getAsPlayerPacket(), mortgaged);
 	}
 }

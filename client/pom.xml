@@ -66,6 +66,25 @@
 			<artifactId>javafx-swing</artifactId>
 			<version>${javafx.version}</version>
 		</dependency>
+		<!-- https://stackoverflow.com/a/52654791/2463035 -->
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>${javafx.version}</version>
+			<classifier>win</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>${javafx.version}</version>
+			<classifier>linux</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>${javafx.version}</version>
+			<classifier>mac</classifier>
+		</dependency>
 
 		<dependency>
 			<groupId>com.miglayout</groupId>

@@ -1,6 +1,5 @@
 package monopoly.lobby;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +27,7 @@ public class Lobby implements Identifiable {
 	public static final int MIN_LOBBY_LIMIT = 2;
 	public static final int MAX_LOBBY_LIMIT = 6;
 
-	private static int lastUsedId = 0;
+	private static int lastLobbyId = 0;
 
 	@Getter
 	private int id;
@@ -37,6 +36,7 @@ public class Lobby implements Identifiable {
 	private int playerLimit;
 	@Setter(AccessLevel.PACKAGE)
 	private String password;
+	@Getter
 	@Setter(AccessLevel.PACKAGE)
 	private boolean isPublic;
 
@@ -48,8 +48,6 @@ public class Lobby implements Identifiable {
 	@Setter
 	private GameStartListener gameStartListener;
 
-	@Getter
-	private boolean inGame;
 	@Getter
 	private Game game;
 
@@ -70,16 +68,14 @@ public class Lobby implements Identifiable {
 	 *                           minimum or maximum limits
 	 */
 	public Lobby(String title, int limit, boolean isPublic, String password) throws MonopolyException {
-
 		users = Collections.synchronizedList(new ArrayList<User>());
 		bannedUsers = Collections.synchronizedList(new ArrayList<User>());
-		id = ++lastUsedId;
+		id = ++lastLobbyId;
 
 		name = title;
 		setPlayerLimit(limit);
 		this.isPublic = isPublic;
 		this.password = password;
-		inGame = false;
 		owner = null;
 		game = null;
 	}
@@ -100,15 +96,21 @@ public class Lobby implements Identifiable {
 	}
 
 	/**
-	 * A user joins to the current lobby
+	 * A user joins to the current lobby. If it is the first user, becomes the owner
+	 * of this lobby
 	 * 
 	 * @param userJoining      the joining user
-	 * @param providedPassword the pass code specified by the user
-	 * @throws MonopolyException when either the user is banned, the lobby is full,
-	 *                           the passwords do not match or the user is already
-	 *                           in the lobby
+	 * @param providedPassword the pass code specified by the user, will not be
+	 *                         considered for public lobbies
+	 * @throws MonopolyException when either the user is null, the user is banned,
+	 *                           the lobby is full, the passwords do not match (if
+	 *                           the lobby is private), the user is already in the
+	 *                           lobby, or game has started on this lobby
 	 */
 	void userJoin(User userJoining, String providedPassword) throws MonopolyException {
+		if (userJoining == null) {
+			throw new MonopolyException();
+		}
 		if (bannedUsers.contains(userJoining)) {
 			throw new MonopolyException(PacketType.ERR_BANNED);
 		}
@@ -118,14 +120,16 @@ public class Lobby implements Identifiable {
 		if (!isPublic && !password.equals(providedPassword)) {
 			throw new MonopolyException(PacketType.ERR_WRONG_PASSWORD);
 		}
-		if (userJoining == null || users.contains(userJoining)) {
+		if (users.contains(userJoining)) {
 			throw new MonopolyException(PacketType.ERR_ALREADY_IN_LOBBY);
+		}
+		if (isInGame()) {
+			throw new MonopolyException(PacketType.ERR_LOBBY_IN_GAME);
 		}
 
 		if (users.isEmpty()) {
 			owner = new LobbyOwner(userJoining);
 		}
-
 		users.add(userJoining);
 
 		// Send join success notification to the joining user
@@ -141,9 +145,12 @@ public class Lobby implements Identifiable {
 	 * 
 	 * @param user  the user to be notified
 	 * @param ready new state of the user
-	 * @throws NoSuchAlgorithmException
+	 * @throws MonopolyException if game already started in this lobby
 	 */
-	void userReadyChange(User user, boolean ready) {
+	void userReadyChange(User user, boolean ready) throws MonopolyException {
+		if (isInGame()) {
+			throw new MonopolyException(PacketType.ERR_LOBBY_IN_GAME);
+		}
 		sendReadyNotification(user);
 
 		if (ready)
@@ -157,15 +164,12 @@ public class Lobby implements Identifiable {
 	 */
 	void userLeft(User user) {
 		users.remove(user);
+		// TODO handle all conditions, such as if the game has already started
 		sendLeftNotification(user);
 	}
 
 	public int getPlayerCount() {
 		return users.size();
-	}
-
-	public boolean getPublic() {
-		return isPublic;
 	}
 
 	/**
@@ -181,18 +185,17 @@ public class Lobby implements Identifiable {
 	 * The game is initiated for the current lobby and the users are notified. This
 	 * method runs in a new thread
 	 * 
-	 * @throws NoSuchAlgorithmException
-	 * 
+	 * @throws MonopolyException if the game has already started in this lobby
 	 */
-	public void startGame() {
-		inGame = true;
-
-		if (gameStartListener != null) {
-			gameStartListener.gameStarted( this);
+	private void startGame() throws MonopolyException {
+		if (isInGame()) {
+			throw new MonopolyException(PacketType.ERR_LOBBY_IN_GAME);
 		}
-		
-		game = new Game(this);
-		game.updatePlayerLocations();
+
+		game = new Game(users);
+		if (gameStartListener != null) {
+			gameStartListener.gameStarted(this);
+		}
 
 		// Notify everyone that the game started
 		new Thread(
@@ -200,14 +203,19 @@ public class Lobby implements Identifiable {
 						.start();
 	}
 
-	public void checkGameStart() {
-		// if ( getPlayerCount() >= 2) {
-		for (User user : users) {
-			if (!user.isReady())
-				return;
+	/**
+	 * @throws MonopolyException if the game has already started in this lobby
+	 */
+	private void checkGameStart() throws MonopolyException {
+		if (getPlayerCount() >= 2) {
+			synchronized (users) {
+				for (User user : users) {
+					if (!user.isReady())
+						return;
+				}
+			}
+			startGame();
 		}
-		startGame();
-		// }
 	}
 
 	public boolean checkLobbyClose() {
@@ -257,6 +265,10 @@ public class Lobby implements Identifiable {
 				GameServer.getInstance().sendRealTimePacket(packet, user.getId());
 			}
 		})).start();
+	}
+
+	public boolean isInGame() {
+		return game != null;
 	}
 
 	public LobbyPacketData getAsPacket() {

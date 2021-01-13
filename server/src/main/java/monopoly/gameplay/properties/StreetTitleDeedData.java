@@ -11,24 +11,23 @@ import monopoly.network.packet.important.packet_data.gameplay.property.StreetTit
  * @author Alper Sari
  * @version Dec 16, 2020
  */
-
 @Getter
-public class StreetTitleDeedData extends TitleDeedData{
+public class StreetTitleDeedData extends TitleDeedData {
+	private int houseCost;
+	private int hotelCost;
+	private String color;
 
-    private int houseCost;
-    private int hotelCost;
-    private String color;
+	public StreetTitleDeedData(String title, int buyCost, int mortgageCost, List<Integer> rentPrice, int houseCost,
+			int hotelCost, String color) {
+		super(title, buyCost, mortgageCost, rentPrice);
+		this.houseCost = houseCost;
+		this.hotelCost = hotelCost;
+		this.color = color;
+	}
 
-    public StreetTitleDeedData(String title, int buyCost, int mortgageCost, List<Integer> rentPrice, int houseCost, int hotelCost, String color) {
-        super(title, buyCost, mortgageCost, rentPrice);
-        this.color = color;
-        this.houseCost = houseCost;
-        this.hotelCost = hotelCost;
-    }
-    
-    @Override
-    public StreetTitleDeedPacketData getAsTitleDeedPacket() {
-		return new StreetTitleDeedPacketData(super.getTitle(), getBuyCost(), getMortgageCost(),
-				getRentPrice(), houseCost, hotelCost, color);
-    }
+	@Override
+	public StreetTitleDeedPacketData getAsPacket() {
+		return new StreetTitleDeedPacketData(super.getTitle(), getBuyCost(), getMortgageCost(), getRentPrice(),
+				houseCost, hotelCost, color);
+	}
 }

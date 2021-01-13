@@ -23,7 +23,6 @@ import monopoly.network.packet.important.PacketType;
 @Getter
 @Setter
 public class Auction {
-
 	private int currentBid;
 	private Auctionable item;
 	private int bidderIndex;
@@ -114,7 +113,7 @@ public class Auction {
 
 	public boolean completeAuction(int result) {
 		if (result == 0) {
-			//Everyone skipped the auction
+			// Everyone skipped the auction
 			game.completeTurn();
 
 			game.setAuction(null);
@@ -122,11 +121,9 @@ public class Auction {
 
 			return true;
 		} else if (result == 1) {
-			//Someone won the auction
+			// Someone won the auction
 			lastBidder.setBalance(lastBidder.getBalance() - currentBid);
-			game.sendBalanceChangeToPlayers(getCurrentBidder());
 
-			game.sendBalanceChangeToPlayers(lastBidder);
 			game.completeTurn();
 
 			item.give(lastBidder);
@@ -137,7 +134,7 @@ public class Auction {
 
 			return true;
 		} else
-			//Auction is still going
+			// Auction is still going
 			return false;
 	}
 

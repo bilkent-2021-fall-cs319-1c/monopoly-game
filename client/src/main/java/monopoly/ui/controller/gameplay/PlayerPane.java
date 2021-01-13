@@ -105,29 +105,34 @@ public class PlayerPane extends MigPane {
 
 		if (self) {
 			Client client = app.getNetworkManager().getClient();
-			webcamSender = new WebcamSender(client, Webcam.getDefault());
 
-			webcamSender.getWebcam().addWebcamListener(new WebcamListener() {
-				@Override
-				public void webcamOpen(WebcamEvent we) {
-					// Do nothing
-				}
+			// TODO Webcam issues with new Mac OS versions. Fix when
+			// https://github.com/sarxos/webcam-capture/issues/723 is fixed.
+			if (!System.getProperty("os.name").toLowerCase().startsWith("mac")) {
+				webcamSender = new WebcamSender(client, Webcam.getDefault());
 
-				@Override
-				public void webcamImageObtained(WebcamEvent we) {
-					Platform.runLater(() -> playerImage.setImage(SwingFXUtils.toFXImage(we.getImage(), null)));
-				}
+				webcamSender.getWebcam().addWebcamListener(new WebcamListener() {
+					@Override
+					public void webcamOpen(WebcamEvent we) {
+						// Do nothing
+					}
 
-				@Override
-				public void webcamDisposed(WebcamEvent we) {
-					// Do nothing
-				}
+					@Override
+					public void webcamImageObtained(WebcamEvent we) {
+						Platform.runLater(() -> playerImage.setImage(SwingFXUtils.toFXImage(we.getImage(), null)));
+					}
 
-				@Override
-				public void webcamClosed(WebcamEvent we) {
-					// Do nothing
-				}
-			});
+					@Override
+					public void webcamDisposed(WebcamEvent we) {
+						// Do nothing
+					}
+
+					@Override
+					public void webcamClosed(WebcamEvent we) {
+						// Do nothing
+					}
+				});
+			}
 
 			try {
 				micSender = new MicSender(client);
@@ -194,6 +199,12 @@ public class PlayerPane extends MigPane {
 
 	@FXML
 	private void toggleWebcam() {
+		if (webcamSender == null) {
+			app.displayError(new Error("Unable to Access a Webcam Device",
+					"We could not identify any available webcam devices. Please check whether you have given access to a webcam device. Note: If your OS is Mac, there is a known issue with webcam access. We are working on a fix."));
+			return;
+		}
+
 		if (webcamIcon.getImage() == UIUtil.WEBCAM_CROSSED_ICON) {
 			webcamIcon.setImage(UIUtil.WEBCAM_ICON);
 			webcamSender.start();

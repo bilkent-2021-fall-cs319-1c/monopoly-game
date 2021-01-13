@@ -29,14 +29,13 @@ public class Model implements GameStartListener {
 	 * 
 	 * @throws IOException if the server could not be opened
 	 */
-	public Model() throws IOException {
+	public Model() {
 		lobbies = new EntitiesWithId<>();
 		users = new EntitiesWithId<>();
 
 		waitingLobbies = Collections.synchronizedList(new ArrayList<Lobby>());
 
 		// Creates a game server
-		GameServer.getInstance();
 		GameServer.getInstance().setModel(this);
 	}
 
@@ -57,11 +56,11 @@ public class Model implements GameStartListener {
 	 * @param limit    specified player limit
 	 * @param isPublic status of being either public or private
 	 * @param password specified pass code
-	 * @param userId   the id of the user
+	 * @param userId   the id of the creator (owner)
 	 * 
-	 * @throws MonopolyException when user is already in the specified lobby, the
-	 *                           lobby do not exist, the user is banned, the lobby
-	 *                           is full or the passwords do not match
+	 * @throws MonopolyException when the specified limit is out of bounds of
+	 *                           minimum or maximum limits, or the owner is already
+	 *                           in a lobby
 	 */
 	public void createLobby(String name, int limit, boolean isPublic, String password, int userId)
 			throws MonopolyException {
@@ -87,19 +86,14 @@ public class Model implements GameStartListener {
 	}
 
 	public List<Lobby> getWaitingLobbies(int from, int to) {
-
 		if (from < 0)
 			from = 0;
 		if (to > waitingLobbies.size())
 			to = waitingLobbies.size();
 
-		ArrayList<Lobby> result = new ArrayList<>();
-		synchronized (waitingLobbies) {
-			for (int i = from; i < to; i++) {
-				result.add(waitingLobbies.get(i));
-			}
-		}
-		return result;
+		if (from > to)
+			return Collections.emptyList();
+		return new ArrayList<>(waitingLobbies.subList(from, to));
 	}
 
 	/**
@@ -124,8 +118,8 @@ public class Model implements GameStartListener {
 		return getUserByID(userId).getLobby();
 	}
 
-	public int getLobbyCount() {
-		return lobbies.size();
+	public int getWaitingLobbyCount() {
+		return waitingLobbies.size();
 	}
 
 	/**
@@ -145,8 +139,7 @@ public class Model implements GameStartListener {
 
 	@Override
 	public void gameStarted(Lobby lobby) {
-		// TODO Uncomment to update waiting lobbies when the game starts
-//		waitingLobbies.remove( lobby);
+		waitingLobbies.remove(lobby);
 	}
 
 }

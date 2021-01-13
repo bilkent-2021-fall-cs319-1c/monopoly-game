@@ -58,15 +58,23 @@ public class User implements Identifiable {
 	 * Changes the state of being ready
 	 * 
 	 * @param ready the new state to be set to
-	 * @throws MonopolyException when the user is not in a lobby
+	 * @throws MonopolyException when the user is not in a lobby, or if game already
+	 *                           started in this lobby
 	 */
 	public void setReady(boolean ready) throws MonopolyException {
 		if (lobby == null) {
 			throw new MonopolyException(PacketType.ERR_NOT_IN_LOBYY);
 		}
 
+		boolean prevReady = this.ready;
 		this.ready = ready;
-		lobby.userReadyChange(this, ready);
+
+		try {
+			lobby.userReadyChange(this, ready);
+		} catch (MonopolyException e) {
+			this.ready = prevReady;
+			throw e;
+		}
 	}
 
 	/**
@@ -75,16 +83,16 @@ public class User implements Identifiable {
 	 * @param lobby    the lobby to be joined
 	 * @param password the specified pass code
 	 * 
-	 * @throws MonopolyException when user is already in the specified lobby, the
-	 *                           lobby do not exist, the user is banned, the lobby
-	 *                           is full or the passwords do not match
+	 * @throws MonopolyException when user is already in a lobby, the lobby is null,
+	 *                           the user is banned, the lobby is full, or the
+	 *                           passwords do not match (if the lobby is private)
 	 */
 	public void joinLobby(Lobby lobby, String password) throws MonopolyException {
 		if (this.lobby != null) {
 			throw new MonopolyException(PacketType.ERR_ALREADY_IN_LOBBY);
 		}
 		if (lobby == null) {
-			throw new MonopolyException(PacketType.ERR_UNKNOWN);
+			throw new MonopolyException();
 		}
 
 		this.lobby = lobby;

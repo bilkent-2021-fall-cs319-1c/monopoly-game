@@ -1,7 +1,5 @@
 package monopoly;
 
-import java.io.IOException;
-
 /**
  * A test runner for game server
  * 
@@ -10,10 +8,6 @@ import java.io.IOException;
  */
 public class Runner {
 	public static void main(String[] args) {
-		try {
-			new Model();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		new Model();
 	}
 }

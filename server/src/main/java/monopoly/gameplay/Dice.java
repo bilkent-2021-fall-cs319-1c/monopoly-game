@@ -4,7 +4,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 import monopoly.network.GameServer;
 import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
 
@@ -16,7 +15,6 @@ import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
  */
 public class Dice {
 	@Getter
-	@Setter
 	private int result;
 
 	private Die firstDie;
@@ -33,10 +31,8 @@ public class Dice {
 		secondDie = new Die();
 	}
 
-	public int roll() {
+	public void roll() {
 		result = firstDie.roll() + secondDie.roll();
-
-		return result;
 	}
 
 	public DicePacketData getDiceAsPacket() {

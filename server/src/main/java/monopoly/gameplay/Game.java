@@ -1,9 +1,8 @@
 package monopoly.gameplay;
 
-import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,12 +12,10 @@ import monopoly.gameplay.properties.Property;
 import monopoly.gameplay.properties.Trade;
 import monopoly.gameplay.tiles.PropertyTile;
 import monopoly.gameplay.tiles.Tile;
-import monopoly.lobby.Lobby;
 import monopoly.lobby.User;
 import monopoly.network.GameServer;
 import monopoly.network.packet.important.PacketType;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerListPacketData;
-import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 
 /**
@@ -27,10 +24,7 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
  * @author Javid Baghirov
  * @version Dec 12, 2020
  */
-
 public class Game {
-	private Lobby lobby;
-
 	private Dice dice;
 	@Getter
 	private Board board;
@@ -49,34 +43,27 @@ public class Game {
 	/**
 	 * Creates a game object
 	 * 
-	 * @param lobby the specified lobby that the game starts in
-	 * @throws NoSuchAlgorithmException when the requested algorithm is not
-	 *                                  available
+	 * @param players the players that will play in this game
 	 */
-	public Game(Lobby lobby) {
-		this.lobby = lobby;
+	public Game(List<User> players) {
 		turnNumber = 0;
-
-		playersByTurn = lobby.getUsers().parallelStream().map(User::asPlayer).collect(Collectors.toList());
-		initializeGamePlayers();
-
-		// Randomize the turns
-		Collections.shuffle(playersByTurn);
-
 		dice = new Dice();
 		board = new Board();
 		auction = null;
 		trade = null;
+
+		initializeGamePlayers(players);
 	}
 
-	private void initializeGamePlayers() {
-		for (int i = 0; i < playersByTurn.size(); i++) {
-			playersByTurn.set(i, new GamePlayer(lobby.getUsers().get(i)));
+	private void initializeGamePlayers(List<User> players) {
+		playersByTurn = new ArrayList<>();
+
+		for (int i = 0; i < players.size(); i++) {
+			playersByTurn.add(new GamePlayer(players.get(i), this));
 		}
-	}
 
-	public void updatePlayerLocations() {
-		new Thread(() -> playersByTurn.parallelStream().forEach(GamePlayer::updateTile)).start();
+		// Randomize the turns
+		Collections.shuffle(playersByTurn);
 	}
 
 	public GamePlayer nextTurn() {
@@ -101,33 +88,25 @@ public class Game {
 		dice.roll();
 		dice.sendDiceResultToPlayers(playersByTurn);
 
-		moveToken();
-	}
-
-	public void move(GamePlayer player) throws MonopolyException {
-		if (!isPlayerTurn(player)) {
-			throw new MonopolyException(PacketType.ERR_NOT_PLAYER_TURN);
-		}
-
-		board.move(player, dice.getResult());
-		player.updateTile();
+		// TODO dice can be rolled for getting out of jail, or other situations.
+		moveCurrentPlayerToken(dice.getResult());
 	}
 
 	/**
-	 * The main method to handle turn operations. It is called every time the dice
-	 * are rolled
+	 * Moves the token of current player
+	 * 
+	 * @param steps The number of steps to move the token
 	 */
-	public void moveToken() {
-		TilePacketData tileData = getCurrentPlayer().move();
+	private void moveCurrentPlayerToken(int steps) {
+		board.move(getCurrentPlayer(), steps);
 
 		// Notify everyone about the token move
-		sendTokenMoveToPlayers(getCurrentPlayer(), tileData);
+		sendTokenMoveToPlayers(getCurrentPlayer());
 
 		decideOnAction(getCurrentPlayer());
-
 	}
 
-	public void decideOnAction(GamePlayer player) {
+	private void decideOnAction(GamePlayer player) {
 		Tile tile = player.getTile();
 
 		if (tile instanceof PropertyTile) {
@@ -140,6 +119,7 @@ public class Game {
 				completeTurn();
 			}
 		} else {
+			// TODO maybe tile.doAction() is enough?
 			int balance = player.getBalance();
 			int amount;
 
@@ -150,12 +130,38 @@ public class Game {
 
 			if (balance >= amount) {
 				player.setBalance(balance - amount);
-				sendBalanceChangeToPlayers(player);
 			} else {
 				bankrupt(player);
 			}
 			completeTurn();
 		}
+	}
+
+	public void buyProperty(GamePlayer player) throws MonopolyException {
+		if (!isPlayerTurn(player)) {
+			throw new MonopolyException(PacketType.ERR_NOT_PLAYER_TURN);
+		}
+
+		Tile tile = player.getTile();
+		if (!(tile instanceof PropertyTile)) {
+			throw new MonopolyException();
+		}
+
+		PropertyTile propertyTile = (PropertyTile) tile;
+		int buyCost = propertyTile.getProperty().getTitleDeed().getBuyCost();
+
+		if (propertyTile.getProperty().isOwned()) {
+			throw new MonopolyException();
+		}
+		if (buyCost > player.getBalance()) {
+			throw new MonopolyException(PacketType.ERR_NOT_ENOUGH_BALANCE);
+		}
+
+		propertyTile.getProperty().setOwner(player);
+		player.setBalance(player.getBalance() - buyCost);
+
+		sendPropertyBoughtToPlayers((PropertyTile) player.getTile(), player);
+		completeTurn();
 	}
 
 	public void auction(Property item) throws MonopolyException {
@@ -166,7 +172,7 @@ public class Game {
 	}
 
 	public void trade(GamePlayer playerFrom, GamePlayer playerTo) {
-
+		// TODO implement trading
 	}
 
 	public void completeTurn() {
@@ -188,9 +194,9 @@ public class Game {
 				.forEach(player -> GameServer.getInstance().sendPlayerTurnNotification(player))).start();
 	}
 
-	public void sendTokenMoveToPlayers(GamePlayer playerMoved, TilePacketData tileData) {
+	public void sendTokenMoveToPlayers(GamePlayer playerMoved) {
 		playersByTurn.parallelStream()
-				.forEach(player -> GameServer.getInstance().sendTokenMovedNotification(playerMoved, tileData, player));
+				.forEach(player -> GameServer.getInstance().sendTokenMovedNotification(playerMoved, player));
 	}
 
 	public void sendBalanceChangeToPlayers(GamePlayer playerWithNewBalance) {
@@ -222,10 +228,7 @@ public class Game {
 
 	public PlayerListPacketData getPlayersAsPacket() {
 		PlayerListPacketData playerList = new PlayerListPacketData();
-		playersByTurn.forEach(player -> {
-			playerList.add(player.getAsPlayerPacket());
-		});
-
+		playersByTurn.forEach(player -> playerList.add(player.getAsPlayerPacket()));
 		return playerList;
 	}
 }

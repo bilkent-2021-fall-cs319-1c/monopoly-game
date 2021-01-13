@@ -8,8 +8,8 @@ package monopoly.network.packet.important.packet_data.gameplay.property;
  */
 public enum TileType {
 	GO, JAIL, GO_TO_JAIL, PARKING, TAX, RAILROAD, STREET, UTILITY, COMMUNITY_CHEST, CHANCE;
-	
+
 	public static TileType getAsTileType(String type) {
-		return TileType.valueOf( type);
+		return TileType.valueOf(type);
 	}
 }

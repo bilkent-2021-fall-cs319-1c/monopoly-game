@@ -7,8 +7,8 @@ package monopoly.gameplay.properties;
  * @version Dec 16, 2020
  */
 
-public class Railroad extends Property {
-	public Railroad(String color){
+public class RailroadProperty extends Property {
+	public RailroadProperty(String color) {
 		super(color);
 	}
 
@@ -17,9 +17,9 @@ public class Railroad extends Property {
 		int ownedRailroads = 0;
 
 		for (int i = 0; i < getOwner().getProperties().size(); i++) {
-			if (getOwner().getProperties().get(i) instanceof Railroad)
+			if (getOwner().getProperties().get(i) instanceof RailroadProperty)
 				ownedRailroads++;
 		}
-		return getTitleDeed().getRentTierPrice(ownedRailroads);
+		return getTile().getTitleDeed().getRentTierPrice(ownedRailroads);
 	}
 }

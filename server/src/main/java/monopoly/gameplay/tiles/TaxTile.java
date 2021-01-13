@@ -15,7 +15,6 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 @Getter
 @Setter
 public class TaxTile extends Tile {
-
 	private int amount;
 
 	public TaxTile(TitleDeedData titleDeed, String name, String description, TileType type, int index, int amount) {
@@ -26,6 +25,5 @@ public class TaxTile extends Tile {
 	@Override
 	public void doAction(GamePlayer player) {
 		player.setBalance(player.getBalance() - amount);
-		player.getCurrentGame().sendBalanceChangeToPlayers(player);
 	}
 }

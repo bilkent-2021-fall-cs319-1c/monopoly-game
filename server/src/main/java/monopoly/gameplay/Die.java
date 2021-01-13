@@ -1,11 +1,8 @@
 package monopoly.gameplay;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.Random;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * A single die with a roll functionality
@@ -15,29 +12,19 @@ import lombok.Setter;
  */
 public class Die {
 	@Getter
-	@Setter
 	private int value;
-	
 	private Random random;
-	
+
 	/**
 	 * Creates a die object
-	 * 
-	 * @throws NoSuchAlgorithmException when the requested algorithm is not
-	 *                                  available
 	 */
-	public Die () {
+	public Die() {
 		value = 0;
-		try {
-			random = SecureRandom.getInstanceStrong();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
+		random = new Random();
 	}
-	
-	public int roll() {	
+
+	public int roll() {
 		value = random.nextInt(6) + 1;
-		
 		return value;
 	}
 }

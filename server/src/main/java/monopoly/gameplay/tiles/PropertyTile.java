@@ -18,7 +18,6 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 @Getter
 @Setter
 public class PropertyTile extends Tile {
-
 	private Property property;
 
 	public PropertyTile(TitleDeedData titleDeed, String name, String description, TileType type, int index,
@@ -31,7 +30,7 @@ public class PropertyTile extends Tile {
 
 	@Override
 	public void doAction(GamePlayer player) {
-		Game game = player.getCurrentGame();
+		Game game = player.getGame();
 		GamePlayer owner = property.getOwner();
 		int balance = player.getBalance();
 		int rent = property.getRentCost();
@@ -39,10 +38,7 @@ public class PropertyTile extends Tile {
 		if (!player.equals(owner)) {
 			if (balance >= rent) {
 				player.setBalance(balance - rent);
-				game.sendBalanceChangeToPlayers(player);
-
 				owner.setBalance(owner.getBalance() + rent);
-				game.sendBalanceChangeToPlayers(owner);
 			} else {
 				game.bankrupt(player);
 			}
@@ -51,8 +47,7 @@ public class PropertyTile extends Tile {
 	}
 
 	@Override
-	public TilePacketData getAsTilePacket() {
-		return new TilePacketData(getTitleDeed().getAsTitleDeedPacket(), getName(), getDescription(), getType(),
-				getIndex());
+	public TilePacketData getAsPacket() {
+		return new TilePacketData(getTitleDeed().getAsPacket(), getName(), getDescription(), getType(), getIndex());
 	}
 }

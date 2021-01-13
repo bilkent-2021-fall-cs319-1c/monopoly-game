@@ -3,22 +3,19 @@ package monopoly.gameplay;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 import monopoly.MonopolyException;
 import monopoly.gameplay.properties.Property;
-import monopoly.gameplay.properties.Street;
-import monopoly.gameplay.properties.StreetTitleDeedData;
+import monopoly.gameplay.properties.StreetProperty;
 import monopoly.gameplay.tiles.PropertyTile;
 import monopoly.gameplay.tiles.Tile;
 import monopoly.lobby.User;
-import monopoly.network.GameServer;
 import monopoly.network.packet.important.PacketType;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.PropertyPacketData;
-import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 
 /**
  * A game player
@@ -26,81 +23,55 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TilePacke
  * @author Javid Baghirov
  * @version Dec 13, 2020
  */
-
 @Getter
-@Setter
 public class GamePlayer extends User {
 	private static final int START_BALANCE = 1500;
 
+	private Game game;
+
 	private int balance;
-	private int tileIndex;
 	private Tile tile;
-	private List<Property> properties;
 	private boolean inJail;
+	private List<Property> properties;
 	private boolean rolledDouble;
 	private boolean micOpen;
 	private boolean camOpen;
 
-	public GamePlayer(User user) {
+	public GamePlayer(User user, Game game) {
 		super(user);
 		user.setGamePlayerInstance(this);
 		setGamePlayerInstance(this);
 
-		balance = START_BALANCE;
-		tileIndex = 0;
-		tile = null;
-		properties = Collections.synchronizedList(new ArrayList<>());
+		this.game = game;
+		tile = game.getBoard().getStartTile();
 		inJail = false;
+
+		balance = START_BALANCE;
+		properties = Collections.synchronizedList(new ArrayList<>());
+
 		micOpen = false;
 		camOpen = false;
 	}
 
 	public void rollDice() throws MonopolyException {
-		getCurrentGame().rollDice(this);
+		game.rollDice(this);
 	}
 
-	public TilePacketData move() {
-		try {
-			getCurrentGame().move(this);
-		} catch (MonopolyException e) {
-			GameServer.getInstance().sendImportantPacket(e.getAsPacket(), getId());
-		}
-
-		return tile.getAsTilePacket();
-	}
-
-	public void updateTile() {
-		Board board = getCurrentGame().getBoard();
-
-		tile = board.getTiles().get(tileIndex);
-	}
-
+	// TODO Should be moved to Board or Game?
 	public void goToJail() {
-		if (!inJail) {
-			Board board = getCurrentGame().getBoard();
-			tile = board.getTiles().get(board.getJAIL_POSITION());
-			tileIndex = tile.getIndex();
+		if (!isInJail()) {
+			tile = game.getBoard().getJailTile();
 			inJail = true;
 		}
 	}
 
-	public boolean buyProperty() throws MonopolyException {
-		if (tile instanceof PropertyTile) {
-			if (properties.contains(((PropertyTile) tile).getProperty())) {
-				throw new MonopolyException(PacketType.ERR_UNKNOWN);
+	public void setTile(Tile tile) {
+		this.tile = tile;
+		inJail = false;
+	}
 
-			} else if (((PropertyTile) tile).getProperty().getTitleDeed().getBuyCost() > balance) {
-				throw new MonopolyException(PacketType.ERR_NOT_ENOUGH_BALANCE);
-			}
-
-			((PropertyTile) tile).getProperty().setOwner(this);
-			balance -= ((PropertyTile) tile).getProperty().getTitleDeed().getBuyCost();
-			getCurrentGame().sendBalanceChangeToPlayers(this);
-
-			return true;
-		}
-
-		return false;
+	public void buyProperty() throws MonopolyException {
+		game.buyProperty(this);
 	}
 
 	public int getPropertyCountWithColor(String colorSet) {
@@ -117,52 +88,49 @@ public class GamePlayer extends User {
 		return counter[0];
 	}
 
-	public boolean buildHouse() throws MonopolyException {
-		boolean success = false;
-
-		if (tile instanceof PropertyTile && ((PropertyTile) tile).getProperty() instanceof Street) {
-			if ((((StreetTitleDeedData) (((PropertyTile) tile).getProperty().getTitleDeed()))
-					.getHouseCost() > balance)) {
-				throw new MonopolyException(PacketType.ERR_NOT_ENOUGH_BALANCE);
-			}
-			success = ((Street) (((PropertyTile) tile).getProperty())).buildHouse();
+	public void buildHouse() throws MonopolyException {
+		if (tile.getType() != TileType.STREET) {
+			throw new MonopolyException();
 		}
 
-		return success;
+		PropertyTile propertyTile = (PropertyTile) tile;
+		StreetProperty streetProperty = (StreetProperty) propertyTile.getProperty();
+		int cost = streetProperty.getTitleDeed().getHouseCost();
+		if (cost > balance) {
+			throw new MonopolyException(PacketType.ERR_NOT_ENOUGH_BALANCE);
+		}
+
+		streetProperty.buildHouse();
+		setBalance(balance - cost);
 	}
 
-	public boolean buildHotel() throws MonopolyException {
-		boolean flag = false;
-
-		if (tile instanceof PropertyTile && ((PropertyTile) tile).getProperty() instanceof Street
-				&& ((StreetTitleDeedData) (((PropertyTile) tile).getProperty().getTitleDeed()))
-						.getHotelCost() <= balance) {
-			flag = ((Street) (((PropertyTile) tile).getProperty())).buildHotel();
+	public void buildHotel() throws MonopolyException {
+		if (tile.getType() != TileType.STREET) {
+			throw new MonopolyException();
 		}
 
-		return flag;
+		PropertyTile propertyTile = (PropertyTile) tile;
+		StreetProperty streetProperty = (StreetProperty) propertyTile.getProperty();
+		int cost = streetProperty.getTitleDeed().getHotelCost();
+		if (cost > balance) {
+			throw new MonopolyException(PacketType.ERR_NOT_ENOUGH_BALANCE);
+		}
+
+		streetProperty.buildHotel();
+		setBalance(balance - cost);
 	}
 
 	public void bid(int bidAmount) throws MonopolyException {
-		getCurrentGame().getAuction().bid(bidAmount, this);
+		game.getAuction().bid(bidAmount, this);
 	}
 
 	public void skipBid() throws MonopolyException {
-		getCurrentGame().getAuction().skip(this);
+		game.getAuction().skip(this);
 	}
 
-	public Game getCurrentGame() {
-		return getLobby().getGame();
-	}
-
-	public List<PropertyPacketData> getPropertiesAsPacket() {
-		List<PropertyPacketData> propertiesData = new ArrayList<>();
-
-		if (!properties.isEmpty()) {
-			properties.forEach(property -> propertiesData.add(property.getAsPropertyPacket()));
-		}
-
-		return propertiesData;
+	public void setBalance(int balance) {
+		this.balance = balance;
+		game.sendBalanceChangeToPlayers(this);
 	}
 
 	@Override
@@ -176,7 +144,11 @@ public class GamePlayer extends User {
 	}
 
 	public PlayerPacketData getAsPlayerPacket() {
-		return new PlayerPacketData(getAsPacket(), balance, tile.getAsTilePacket(), getPropertiesAsPacket(), micOpen,
+		return new PlayerPacketData(getAsPacket(), balance, tile.getAsPacket(), getPropertiesAsPacket(), micOpen,
 				camOpen);
+	}
+
+	public List<PropertyPacketData> getPropertiesAsPacket() {
+		return properties.parallelStream().map(Property::getAsPacket).collect(Collectors.toList());
 	}
 }

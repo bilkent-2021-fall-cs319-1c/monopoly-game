@@ -8,13 +8,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import lombok.Getter;
-import lombok.Setter;
-import monopoly.gameplay.properties.Railroad;
-import monopoly.gameplay.properties.Street;
+import monopoly.gameplay.properties.RailroadProperty;
+import monopoly.gameplay.properties.StreetProperty;
 import monopoly.gameplay.properties.StreetTitleDeedData;
 import monopoly.gameplay.properties.TitleDeedData;
-import monopoly.gameplay.properties.Utility;
+import monopoly.gameplay.properties.UtilityProperty;
 import monopoly.gameplay.tiles.CardTile;
 import monopoly.gameplay.tiles.GoTile;
 import monopoly.gameplay.tiles.GoToJailTile;
@@ -32,17 +30,10 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
  * @author Alper Sari
  * @version Dec 15, 2020
  */
-
-@Setter
-@Getter
 public class Board {
-	private final int MAX_TILE_INDEX = 39;
-	private final int JAIL_POSITION = 10;
 	private List<Tile> tiles;
 
 	public Board() {
-		tiles = new ArrayList<>();
-
 		initialize();
 	}
 
@@ -53,24 +44,14 @@ public class Board {
 	 * @param steps  amount of steps
 	 */
 	public void move(GamePlayer player, int steps) {
-
-		if (!player.isInJail() || (player.isRolledDouble() && player.isInJail())) {
+		if (!player.isInJail() || player.isRolledDouble()) {
 			for (int i = 0; i < steps; i++) {
-				if (player.getTileIndex() < MAX_TILE_INDEX) {
-					player.setTileIndex(player.getTileIndex() + 1);
+				int currentTokenIndex = player.getTile().getIndex();
+				player.setTile(tiles.get((currentTokenIndex + 1) % tiles.size()));
 
-				} else {
-					player.setTileIndex(0);
-					// TODO player.getTile().doAction(player);
-				}
-
-				// TODO
-//				if (!(player.getTile() instanceof GoTile))
-//					//player.getTile().doAction(player);
+				if (player.getTile().getType() == TileType.GO)
+					player.getTile().doAction(player);
 			}
-
-			if (player.isInJail())
-				player.setInJail(false);
 		}
 	}
 
@@ -80,62 +61,67 @@ public class Board {
 	private void initialize() {
 		JSONTokener tokener = new JSONTokener(Board.class.getResourceAsStream("monopoly_board.json"));
 		JSONArray gameData = new JSONArray(tokener);
+		tiles = new ArrayList<>();
 
 		for (int i = 0; i < gameData.length(); i++) {
-			JSONObject tile = gameData.getJSONObject(i);
+			Tile tile;
+			JSONObject tileJSONData = gameData.getJSONObject(i);
 
-			String name = tile.getString("name").toUpperCase(Locale.ENGLISH);
-			String description = tile.getString("description");
-			String type = tile.getString("type");
-			TileType tileType = TileType.getAsTileType(type);
-			TitleDeedData titleDeed = new TitleDeedData(name, 0, 0, null);
+			String name = tileJSONData.getString("name").toUpperCase(Locale.ENGLISH);
+			String description = tileJSONData.getString("description");
+			TileType tileType = TileType.getAsTileType(tileJSONData.getString("type"));
 
 			if (tileType == TileType.STREET) {
-				int buyPrice = tile.getInt("cost");
-				int buildPrice = tile.getInt("house");
-				// TODO Find and write mortgage prices to the json file
+				int buyPrice = tileJSONData.getInt("cost");
+				int buildPrice = tileJSONData.getInt("house");
+				// TODO Find and write mortgage prices to the JSON file
 				int mortgagePrice = 0;
-				String color = tile.getString("color");
+				String color = tileJSONData.getString("color");
 
-				tiles.add(new PropertyTile(new StreetTitleDeedData(name, buyPrice, mortgagePrice, getRentPrices(tile),
-						buildPrice, buildPrice, color), name, description, tileType, i, new Street(color)));
+				tile = new PropertyTile(new StreetTitleDeedData(name, buyPrice, mortgagePrice,
+						getRentPrices(tileJSONData), buildPrice, buildPrice, color), name, description, tileType, i,
+						new StreetProperty(color));
 
 			} else if (tileType == TileType.RAILROAD) {
-				int buyPrice = tile.getInt("cost");
+				int buyPrice = tileJSONData.getInt("cost");
 				int mortgagePrice = 0;
 
-				tiles.add(new PropertyTile(new TitleDeedData(name, buyPrice, mortgagePrice, getRentPrices(tile)), name,
-						description, tileType, i, new Railroad("RAILROAD")));
+				tile = new PropertyTile(new TitleDeedData(name, buyPrice, mortgagePrice, getRentPrices(tileJSONData)),
+						name, description, tileType, i, new RailroadProperty("RAILROAD"));
 
 			} else if (tileType == TileType.UTILITY) {
-				int buyPrice = tile.getInt("cost");
+				int buyPrice = tileJSONData.getInt("cost");
 				int mortgagePrice = 0;
 
-				tiles.add(new PropertyTile(new TitleDeedData(name, buyPrice, mortgagePrice, null), name, description,
-						tileType, i, new Utility("UTILITY")));
-
-			}
-
-			else if (tileType == TileType.GO) {
-				tiles.add(new GoTile(titleDeed, name, description, tileType, i));
-
-			} else if (tileType == TileType.TAX) {
-				int taxCost = tile.getInt("cost");
-
-				tiles.add(new TaxTile(titleDeed, name, description, tileType, i, taxCost));
-
-			} else if (tileType == TileType.JAIL) {
-				tiles.add(new JailTile(titleDeed, name, description, tileType, i));
-
-			} else if (tileType == TileType.PARKING) {
-				tiles.add(new ParkingTile(titleDeed, name, description, tileType, i));
-
-			} else if (tileType == TileType.GO_TO_JAIL) {
-				tiles.add(new GoToJailTile(titleDeed, name, description, tileType, i));
+				tile = new PropertyTile(new TitleDeedData(name, buyPrice, mortgagePrice, null), name, description,
+						tileType, i, new UtilityProperty("UTILITY"));
 
 			} else {
-				tiles.add(new CardTile(titleDeed, name, description, tileType, i));
+				// Not a property tile
+				TitleDeedData titleDeed = new TitleDeedData(name, 0, 0, null);
+
+				if (tileType == TileType.TAX) {
+					int taxCost = tileJSONData.getInt("cost");
+					tile = new TaxTile(titleDeed, name, description, tileType, i, taxCost);
+
+				} else if (tileType == TileType.GO) {
+					tile = new GoTile(titleDeed, name, description, tileType, i);
+
+				} else if (tileType == TileType.JAIL) {
+					tile = new JailTile(titleDeed, name, description, tileType, i);
+
+				} else if (tileType == TileType.PARKING) {
+					tile = new ParkingTile(titleDeed, name, description, tileType, i);
+
+				} else if (tileType == TileType.GO_TO_JAIL) {
+					tile = new GoToJailTile(titleDeed, name, description, tileType, i);
+
+				} else {
+					tile = new CardTile(titleDeed, name, description, tileType, i);
+				}
 			}
+
+			tiles.add(tile);
 		}
 	}
 
@@ -146,16 +132,28 @@ public class Board {
 		for (int j = 0; j < rentCosts.length(); j++) {
 			rentPrice.add(rentCosts.getInt(j));
 		}
+		// Rent with color set is twice the amount of regular rent price
 		rentPrice.add(1, 2 * rentPrice.get(0));
 
 		return rentPrice;
 	}
 
-	public BoardPacketData getAsBoardPacket() {
+	/**
+	 * @return A tile with {@link TileType}.JAIL
+	 */
+	public Tile getJailTile() {
+		return tiles.stream().filter(tile -> tile.getType() == TileType.JAIL).findAny().orElse(null);
+	}
+
+	public Tile getStartTile() {
+		return tiles.get(0);
+	}
+
+	public BoardPacketData getAsPacket() {
 		BoardPacketData boardData = new BoardPacketData();
 
 		for (int i = 0; i < tiles.size(); i++) {
-			boardData.add(tiles.get(i).getAsTilePacket());
+			boardData.add(tiles.get(i).getAsPacket());
 		}
 
 		return boardData;
