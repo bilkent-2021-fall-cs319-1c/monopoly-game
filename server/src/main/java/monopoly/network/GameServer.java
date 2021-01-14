@@ -241,39 +241,30 @@ public class GameServer extends Server {
 	}
 
 	public void handleBuildHouse(int connectionID) {
-		Game game = model.getGameOfPlayer(connectionID);
-		GamePlayer player = game.getCurrentPlayer();
+		GamePlayer player = model.getUserByID(connectionID).asPlayer();
 
-		new Thread(() -> {
-			try {
-				player.buildHouse();
-				game.sendHouseBuiltToPlayers();
-			} catch (MonopolyException e) {
-				sendImportantPacket(e.getAsPacket(), connectionID);
-			}
-
-			game.completeTurn();
-		}).start();
+		try {
+			player.buildHouse();
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
+		}
 	}
 
 	public void handleBuildHotel(int connectionID) {
-		Game game = model.getGameOfPlayer(connectionID);
-		GamePlayer player = game.getCurrentPlayer();
+		GamePlayer player = model.getUserByID(connectionID).asPlayer();
 
 		try {
 			player.buildHotel();
-			game.sendHotelBuiltToPlayers();
 		} catch (MonopolyException e) {
 			sendImportantPacket(e.getAsPacket(), connectionID);
 		}
 	}
 
 	public void handleInitiateAuction(int connectionID) {
-		Game game = model.getGameOfPlayer(connectionID);
-		PropertyTile item = (PropertyTile) game.getCurrentPlayer().getTile();
+		GamePlayer player = model.getUserByID(connectionID).asPlayer();
 
 		try {
-			game.auction(item.getProperty());
+			player.initiateAuction();
 		} catch (MonopolyException e) {
 			sendImportantPacket(e.getAsPacket(), connectionID);
 		}

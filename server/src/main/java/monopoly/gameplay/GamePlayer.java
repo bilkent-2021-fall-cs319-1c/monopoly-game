@@ -7,15 +7,12 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import monopoly.MonopolyException;
+import monopoly.gameplay.properties.Auction;
 import monopoly.gameplay.properties.Property;
-import monopoly.gameplay.properties.StreetProperty;
-import monopoly.gameplay.tiles.PropertyTile;
 import monopoly.gameplay.tiles.Tile;
 import monopoly.lobby.User;
-import monopoly.network.packet.important.PacketType;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.PropertyPacketData;
-import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 
 /**
  * A game player
@@ -89,43 +86,33 @@ public class GamePlayer extends User {
 	}
 
 	public void buildHouse() throws MonopolyException {
-		if (tile.getType() != TileType.STREET) {
-			throw new MonopolyException();
-		}
-
-		PropertyTile propertyTile = (PropertyTile) tile;
-		StreetProperty streetProperty = (StreetProperty) propertyTile.getProperty();
-		int cost = streetProperty.getHouseCost();
-		if (cost > balance) {
-			throw new MonopolyException(PacketType.ERR_NOT_ENOUGH_BALANCE);
-		}
-
-		streetProperty.buildHouse();
-		setBalance(balance - cost);
+		game.buildHouse(this);
 	}
 
 	public void buildHotel() throws MonopolyException {
-		if (tile.getType() != TileType.STREET) {
-			throw new MonopolyException();
-		}
+		game.buildHotel(this);
+	}
 
-		PropertyTile propertyTile = (PropertyTile) tile;
-		StreetProperty streetProperty = (StreetProperty) propertyTile.getProperty();
-		int cost = streetProperty.getHotelCost();
-		if (cost > balance) {
-			throw new MonopolyException(PacketType.ERR_NOT_ENOUGH_BALANCE);
-		}
-
-		streetProperty.buildHotel();
-		setBalance(balance - cost);
+	public void initiateAuction() throws MonopolyException {
+		game.initiateAuction(this);
 	}
 
 	public void bid(int bidAmount) throws MonopolyException {
-		game.getAuction().bid(bidAmount, this);
+		Auction auction = game.getAuction();
+		if (auction == null) {
+			throw new MonopolyException();
+		}
+
+		auction.bid(bidAmount, this);
 	}
 
 	public void skipBid() throws MonopolyException {
-		game.getAuction().skip(this);
+		Auction auction = game.getAuction();
+		if (auction == null) {
+			throw new MonopolyException();
+		}
+
+		auction.skip(this);
 	}
 
 	public void setBalance(int balance) {

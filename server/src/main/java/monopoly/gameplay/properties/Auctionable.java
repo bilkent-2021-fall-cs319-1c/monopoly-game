@@ -9,5 +9,5 @@ import monopoly.gameplay.GamePlayer;
  * @version Dec 16, 2020
  */
 public interface Auctionable {
-    public void give(GamePlayer player);
+	void give(GamePlayer player);
 }

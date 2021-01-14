@@ -44,6 +44,7 @@ public abstract class Property implements Auctionable, Tradeable {
 	@Override
 	public void give(GamePlayer player) {
 		owner = player;
+		player.getGame().sendPropertyBoughtToPlayers(tile, player);
 	}
 
 	@Override

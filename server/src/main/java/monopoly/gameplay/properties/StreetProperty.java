@@ -53,7 +53,7 @@ public class StreetProperty extends Property {
 		if (houseCount < 4) {
 			houseCount++;
 		} else
-			throw new MonopolyException(PacketType.ERR_UNKNOWN);
+			throw new MonopolyException();
 	}
 
 	public void buildHotel() throws MonopolyException {

@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 import monopoly.MonopolyException;
 import monopoly.gameplay.Game;
 import monopoly.gameplay.GamePlayer;
@@ -19,14 +18,15 @@ import monopoly.network.packet.important.PacketType;
  * @author Alper Sari, Javid Baghirov
  * @version Dec 20, 2020
  */
-
 @Getter
-@Setter
 public class Auction {
-	private int currentBid;
-	private Auctionable item;
-	private int bidderIndex;
+	private static final int INITIAL_BID = 10;
+
 	private Game game;
+	private Auctionable item;
+
+	private int currentBid;
+	private int bidderIndex;
 	private GamePlayer lastBidder;
 	private List<GamePlayer> satisfiedPlayers;
 
@@ -35,19 +35,18 @@ public class Auction {
 		this.item = item;
 
 		bidderIndex = 0;
-		currentBid = 10;
+		currentBid = INITIAL_BID;
 		lastBidder = null;
 		satisfiedPlayers = Collections.synchronizedList(new ArrayList<GamePlayer>());
 
 		sendAuctionInitiatedToPlayers(item.getTile());
-		sendAuctionTurnToPlayers(getCurrentBidder());
+		sendAuctionTurnToPlayers();
 	}
 
 	public void bid(int increaseAmount, GamePlayer player) throws MonopolyException {
 		if (!getCurrentBidder().equals(player)) {
 			throw new MonopolyException(PacketType.ERR_NOT_BID_TURN);
 		}
-
 		if (currentBid + increaseAmount > player.getBalance()) {
 			throw new MonopolyException(PacketType.ERR_NOT_ENOUGH_BALANCE);
 		}
@@ -56,8 +55,7 @@ public class Auction {
 		lastBidder = player;
 
 		sendBidUpdateToPlayers(player, currentBid);
-		updateCurrentBidder();
-		sendAuctionTurnToPlayers(getCurrentBidder());
+		moveToNextBidder();
 	}
 
 	public void skip(GamePlayer player) throws MonopolyException {
@@ -66,26 +64,23 @@ public class Auction {
 		}
 
 		setSatisfied(player);
-
 		sendBidSkipToPlayers(player);
-		updateCurrentBidder();
 
-		int result = isEveryoneSatisfied();
-		if (!completeAuction(result)) {
-			sendAuctionTurnToPlayers(getCurrentBidder());
+		if (!checkAndCompleteAuction()) {
+			moveToNextBidder();
 		}
 	}
 
-	public void setSatisfied(GamePlayer player) {
+	private void setSatisfied(GamePlayer player) {
 		if (!satisfiedPlayers.contains(player))
 			satisfiedPlayers.add(player);
 	}
 
-	public boolean isSatisfied(GamePlayer player) {
-		return satisfiedPlayers.contains(player);
-	}
-
-	public int isEveryoneSatisfied() {
+	/**
+	 * @return 0 if everyone skipped, 1 if there is a bidder and everyone else has
+	 *         skipped, or -1 if the auction should continue
+	 */
+	private int checkAuctionStatus() {
 		int playerCount = game.getPlayersByTurn().size();
 
 		if (lastBidder == null && satisfiedPlayers.size() == playerCount) {
@@ -99,71 +94,58 @@ public class Auction {
 			return -1;
 	}
 
-	public void updateCurrentBidder() {
-		increaseBidderIndex();
-
-		while (satisfiedPlayers.contains(getCurrentBidder())) {
-			increaseBidderIndex();
-		}
+	private void moveToNextBidder() {
+		do {
+			bidderIndex = (bidderIndex + 1) % game.getPlayersByTurn().size();
+		} while (satisfiedPlayers.contains(getCurrentBidder()));
+		sendAuctionTurnToPlayers();
 	}
 
-	private void increaseBidderIndex() {
-		bidderIndex = (bidderIndex + 1) % game.getPlayersByTurn().size();
-	}
+	private boolean checkAndCompleteAuction() throws MonopolyException {
+		int status = checkAuctionStatus();
 
-	public boolean completeAuction(int result) {
-		if (result == 0) {
-			// Everyone skipped the auction
-			game.completeTurn();
-
-			game.setAuction(null);
-			sendAuctionCompleteToPlayers();
-
-			return true;
-		} else if (result == 1) {
-			// Someone won the auction
-			lastBidder.setBalance(lastBidder.getBalance() - currentBid);
-
-			game.completeTurn();
-
-			item.give(lastBidder);
-			game.sendPropertyBoughtToPlayers(((Property) item).getTile(), lastBidder);
-
-			game.setAuction(null);
-			sendAuctionCompleteToPlayers();
-
-			return true;
-		} else
-			// Auction is still going
+		if (status == -1) {
+			// Auction should continue
 			return false;
-	}
+		}
 
-	public void sendAuctionInitiatedToPlayers(PropertyTile tile) {
-		game.getPlayersByTurn().parallelStream()
-				.forEach(player -> GameServer.getInstance().sendAuctionInitiatedNotification(tile, player));
-	}
+		if (status == 1) {
+			// lastbidder won the auction
+			lastBidder.setBalance(lastBidder.getBalance() - currentBid);
+			item.give(lastBidder);
+		}
 
-	public void sendAuctionTurnToPlayers(GamePlayer playerTurn) {
-		game.getPlayersByTurn().parallelStream()
-				.forEach(player -> GameServer.getInstance().sendAuctionTurnNotification(playerTurn, player));
-	}
-
-	public void sendBidUpdateToPlayers(GamePlayer playerBid, int bidAmount) {
-		game.getPlayersByTurn().parallelStream()
-				.forEach(player -> GameServer.getInstance().sendUpdatedBidNotification(playerBid, player, bidAmount));
-	}
-
-	public void sendBidSkipToPlayers(GamePlayer playerSkipped) {
-		game.getPlayersByTurn().parallelStream()
-				.forEach(player -> GameServer.getInstance().sendSkipBidNotification(playerSkipped, player));
-	}
-
-	public void sendAuctionCompleteToPlayers() {
-		game.getPlayersByTurn().parallelStream()
-				.forEach(player -> GameServer.getInstance().sendAuctionCompleteNotification(player));
+		game.finishAuction();
+		sendAuctionCompleteToPlayers();
+		return true;
 	}
 
 	private GamePlayer getCurrentBidder() {
 		return game.getPlayersByTurn().get(bidderIndex);
+	}
+
+	private void sendAuctionInitiatedToPlayers(PropertyTile tile) {
+		game.getPlayersByTurn().parallelStream()
+				.forEach(player -> GameServer.getInstance().sendAuctionInitiatedNotification(tile, player));
+	}
+
+	private void sendAuctionTurnToPlayers() {
+		game.getPlayersByTurn().parallelStream()
+				.forEach(player -> GameServer.getInstance().sendAuctionTurnNotification(getCurrentBidder(), player));
+	}
+
+	private void sendBidUpdateToPlayers(GamePlayer playerBid, int bidAmount) {
+		game.getPlayersByTurn().parallelStream()
+				.forEach(player -> GameServer.getInstance().sendUpdatedBidNotification(playerBid, player, bidAmount));
+	}
+
+	private void sendBidSkipToPlayers(GamePlayer playerSkipped) {
+		game.getPlayersByTurn().parallelStream()
+				.forEach(player -> GameServer.getInstance().sendSkipBidNotification(playerSkipped, player));
+	}
+
+	private void sendAuctionCompleteToPlayers() {
+		game.getPlayersByTurn().parallelStream()
+				.forEach(player -> GameServer.getInstance().sendAuctionCompleteNotification(player));
 	}
 }

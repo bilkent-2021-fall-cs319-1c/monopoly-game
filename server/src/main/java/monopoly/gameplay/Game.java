@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 import monopoly.MonopolyException;
 import monopoly.gameplay.properties.Auction;
 import monopoly.gameplay.properties.Property;
+import monopoly.gameplay.properties.StreetProperty;
 import monopoly.gameplay.properties.Trade;
 import monopoly.gameplay.tiles.PropertyTile;
 import monopoly.gameplay.tiles.Tile;
@@ -34,7 +34,6 @@ public class Game {
 	private int turnNumber;
 
 	@Getter
-	@Setter
 	private Auction auction;
 
 	@Getter
@@ -164,11 +163,71 @@ public class Game {
 		completeTurn();
 	}
 
-	public void auction(Property item) throws MonopolyException {
+	public void buildHouse(GamePlayer player) throws MonopolyException {
+		if (!isPlayerTurn(player)) {
+			throw new MonopolyException(PacketType.ERR_NOT_PLAYER_TURN);
+		}
+		if (player.getTile().getType() != TileType.STREET) {
+			throw new MonopolyException();
+		}
+
+		PropertyTile propertyTile = (PropertyTile) player.getTile();
+		StreetProperty streetProperty = (StreetProperty) propertyTile.getProperty();
+		int cost = streetProperty.getHouseCost();
+		if (cost > player.getBalance()) {
+			throw new MonopolyException(PacketType.ERR_NOT_ENOUGH_BALANCE);
+		}
+
+		streetProperty.buildHouse();
+		player.setBalance(player.getBalance() - cost);
+		sendHouseBuiltToPlayers();
+		completeTurn();
+	}
+
+	public void buildHotel(GamePlayer player) throws MonopolyException {
+		if (!isPlayerTurn(player)) {
+			throw new MonopolyException(PacketType.ERR_NOT_PLAYER_TURN);
+		}
+		if (player.getTile().getType() != TileType.STREET) {
+			throw new MonopolyException();
+		}
+
+		PropertyTile propertyTile = (PropertyTile) player.getTile();
+		StreetProperty streetProperty = (StreetProperty) propertyTile.getProperty();
+		int cost = streetProperty.getHotelCost();
+		if (cost > player.getBalance()) {
+			throw new MonopolyException(PacketType.ERR_NOT_ENOUGH_BALANCE);
+		}
+
+		streetProperty.buildHotel();
+		player.setBalance(player.getBalance() - cost);
+		sendHotelBuiltToPlayers();
+		completeTurn();
+	}
+
+	public void initiateAuction(GamePlayer player) throws MonopolyException {
+		Tile tile = player.getTile();
+		if (!(tile instanceof PropertyTile)) {
+			throw new MonopolyException();
+		}
+
+		PropertyTile propertyTile = (PropertyTile) tile;
+		initiateAuction(propertyTile.getProperty());
+	}
+
+	private void initiateAuction(Property item) throws MonopolyException {
 		if (auction != null) {
-			throw new MonopolyException(PacketType.ERR_UNKNOWN);
+			throw new MonopolyException();
 		}
 		auction = new Auction(this, item);
+	}
+
+	public void finishAuction() throws MonopolyException {
+		if (auction == null) {
+			throw new MonopolyException();
+		}
+		auction = null;
+		completeTurn();
 	}
 
 	public void trade(GamePlayer playerFrom, GamePlayer playerTo) {
