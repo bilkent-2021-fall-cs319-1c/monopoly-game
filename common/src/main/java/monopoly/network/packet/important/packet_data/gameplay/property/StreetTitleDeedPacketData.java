@@ -19,6 +19,10 @@ import lombok.NoArgsConstructor;
 public class StreetTitleDeedPacketData extends TitleDeedPacketData {
 	private static final long serialVersionUID = 2506393575254715525L;
 
+	private int housePrice;
+	private int hotelPrice;
+	private String color;
+
 	public StreetTitleDeedPacketData(String title, int buyPrice, int mortgagePrice, List<Integer> rentCost,
 			int housePrice, int hotelPrice, String color) {
 		super(title, buyPrice, mortgagePrice, rentCost);
@@ -27,7 +31,4 @@ public class StreetTitleDeedPacketData extends TitleDeedPacketData {
 		this.color = color;
 	}
 
-	private int housePrice;
-	private int hotelPrice;
-	private String color;
 }

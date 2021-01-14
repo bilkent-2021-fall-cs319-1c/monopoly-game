@@ -3,7 +3,6 @@ package monopoly.gameplay.tiles;
 import lombok.Getter;
 import lombok.Setter;
 import monopoly.gameplay.GamePlayer;
-import monopoly.gameplay.properties.TitleDeedData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 
 /**
@@ -17,8 +16,8 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 public class TaxTile extends Tile {
 	private int amount;
 
-	public TaxTile(TitleDeedData titleDeed, String name, String description, TileType type, int index, int amount) {
-		super(titleDeed, name, description, type, index);
+	public TaxTile(String name, String description, TileType type, int index, int amount) {
+		super(name, description, type, index);
 		this.amount = amount;
 	}
 

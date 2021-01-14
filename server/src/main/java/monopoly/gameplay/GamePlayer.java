@@ -95,7 +95,7 @@ public class GamePlayer extends User {
 
 		PropertyTile propertyTile = (PropertyTile) tile;
 		StreetProperty streetProperty = (StreetProperty) propertyTile.getProperty();
-		int cost = streetProperty.getTitleDeed().getHouseCost();
+		int cost = streetProperty.getHouseCost();
 		if (cost > balance) {
 			throw new MonopolyException(PacketType.ERR_NOT_ENOUGH_BALANCE);
 		}
@@ -111,7 +111,7 @@ public class GamePlayer extends User {
 
 		PropertyTile propertyTile = (PropertyTile) tile;
 		StreetProperty streetProperty = (StreetProperty) propertyTile.getProperty();
-		int cost = streetProperty.getTitleDeed().getHotelCost();
+		int cost = streetProperty.getHotelCost();
 		if (cost > balance) {
 			throw new MonopolyException(PacketType.ERR_NOT_ENOUGH_BALANCE);
 		}

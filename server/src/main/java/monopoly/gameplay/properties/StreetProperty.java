@@ -1,5 +1,7 @@
 package monopoly.gameplay.properties;
 
+import java.util.List;
+
 import lombok.Getter;
 import monopoly.MonopolyException;
 import monopoly.network.packet.important.PacketType;
@@ -12,11 +14,19 @@ import monopoly.network.packet.important.PacketType;
  */
 @Getter
 public class StreetProperty extends Property {
+	private final int houseCost;
+	private final int hotelCost;
+
 	private int houseCount;
 	private boolean hasHotel;
 
-	public StreetProperty(String color) {
-		super(color);
+	public StreetProperty(String title, int buyCost, int mortgageCost, List<Integer> rentPrices, String colorSet,
+			int houseCost, int hotelCost) {
+		super(title, buyCost, mortgageCost, rentPrices, colorSet);
+
+		this.houseCost = houseCost;
+		this.hotelCost = hotelCost;
+
 		houseCount = 0;
 		hasHotel = false;
 	}
@@ -31,14 +41,12 @@ public class StreetProperty extends Property {
 //		int propertyCountWithColor = getOwner().getPropertyCountWithColor(getColorSet());
 
 		if (houseCount > 0) {
-			return getTitleDeed().getRentTierPrice(houseCount + 1);
+			return getRentTierPrice(houseCount + 1);
 		}
-
 		if (hasHotel) {
-			return getTitleDeed().getRentTierPrice(6);
+			return getRentTierPrice(6);
 		}
-
-		return getTitleDeed().getRentTierPrice(0);
+		return getRentTierPrice(0);
 	}
 
 	public void buildHouse() throws MonopolyException {
@@ -58,9 +66,5 @@ public class StreetProperty extends Property {
 		} else {
 			throw new MonopolyException(PacketType.ERR_NOT_ALL_HOUSES_BUILT);
 		}
-	}
-
-	public StreetTitleDeedData getTitleDeed() {
-		return (StreetTitleDeedData) getTile().getTitleDeed();
 	}
 }

@@ -148,7 +148,7 @@ public class Game {
 		}
 
 		PropertyTile propertyTile = (PropertyTile) tile;
-		int buyCost = propertyTile.getProperty().getTitleDeed().getBuyCost();
+		int buyCost = propertyTile.getProperty().getBuyCost();
 
 		if (propertyTile.getProperty().isOwned()) {
 			throw new MonopolyException();

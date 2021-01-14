@@ -2,7 +2,6 @@ package monopoly.gameplay.tiles;
 
 import lombok.Getter;
 import monopoly.gameplay.GamePlayer;
-import monopoly.gameplay.properties.TitleDeedData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 
 /**
@@ -15,8 +14,8 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 public class GoTile extends Tile {
 	private static final int MONEY_GAIN = 200;
 
-	public GoTile(TitleDeedData titleDeed, String name, String description, TileType type, int index) {
-		super(titleDeed, name, description, type, index);
+	public GoTile(String name, String description, TileType type, int index) {
+		super(name, description, type, index);
 	}
 
 	@Override

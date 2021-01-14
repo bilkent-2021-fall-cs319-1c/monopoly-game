@@ -1,6 +1,9 @@
 package monopoly.gameplay.properties;
 
+import java.util.List;
+
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import monopoly.gameplay.GamePlayer;
 import monopoly.gameplay.tiles.PropertyTile;
@@ -13,19 +16,20 @@ import monopoly.network.packet.important.packet_data.gameplay.property.PropertyP
  * @version Dec 16, 2020
  */
 @Getter
+@RequiredArgsConstructor
 public abstract class Property implements Auctionable, Tradeable {
+	private final String title;
+	private final int buyCost;
+	private final int mortgageCost;
+	private final List<Integer> rentPrices;
+	private final String colorSet;
+
 	@Setter
-	private GamePlayer owner;
-	private TitleDeedData titleDeed;
-	private String colorSet;
-	private boolean mortgaged;
 	private PropertyTile tile;
 
-	Property(String colorSet) {
-		owner = null;
-		this.colorSet = colorSet;
-		mortgaged = false;
-	}
+	@Setter
+	private GamePlayer owner;
+	private boolean mortgaged;
 
 	public void mortgage() {
 		mortgaged = !mortgaged;
@@ -48,14 +52,8 @@ public abstract class Property implements Auctionable, Tradeable {
 			give(to);
 	}
 
-	public void setTile(PropertyTile tile) {
-		this.tile = tile;
-		tile.setProperty(this);
-	}
-
-	public void setTitleDeed(TitleDeedData titleDeed) {
-		this.titleDeed = titleDeed;
-		titleDeed.setProperty(this);
+	public int getRentTierPrice(int tier) {
+		return rentPrices.get(tier);
 	}
 
 	public PropertyPacketData getAsPacket() {

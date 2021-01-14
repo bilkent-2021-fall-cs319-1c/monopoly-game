@@ -25,7 +25,7 @@ public class TilePacketData implements PacketData {
 	private String title;
 	private String description;
 	/**
-	 * The type of the tile which is one of the 10 tile types
+	 * The type of the tile
 	 */
 	private TileType type;
 	/**

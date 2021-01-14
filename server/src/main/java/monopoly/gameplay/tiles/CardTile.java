@@ -1,7 +1,6 @@
 package monopoly.gameplay.tiles;
 
 import monopoly.gameplay.GamePlayer;
-import monopoly.gameplay.properties.TitleDeedData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 
 /**
@@ -11,8 +10,8 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
  * @version Dec 15, 2020
  */
 public class CardTile extends Tile {
-	public CardTile(TitleDeedData titleDeed, String name, String description, TileType type, int index) {
-		super(titleDeed, name, description, type, index);
+	public CardTile(String name, String description, TileType type, int index) {
+		super(name, description, type, index);
 	}
 
 	@Override

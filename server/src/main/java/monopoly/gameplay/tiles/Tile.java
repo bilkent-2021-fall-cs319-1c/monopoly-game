@@ -3,9 +3,9 @@ package monopoly.gameplay.tiles;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import monopoly.gameplay.properties.TitleDeedData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
+import monopoly.network.packet.important.packet_data.gameplay.property.TitleDeedPacketData;
 
 /**
  * Tile parent class
@@ -16,13 +16,12 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Tile implements Actionable {
-	private TitleDeedData titleDeed;
-	private String name;
-	private String description;
-	private TileType type;
-	private int index;
+	private final String name;
+	private final String description;
+	private final TileType type;
+	private final int index;
 
 	public TilePacketData getAsPacket() {
-		return new TilePacketData(titleDeed.getAsPacket(), name, description, type, index);
+		return new TilePacketData(new TitleDeedPacketData(name, 0, 0, null), name, description, type, index);
 	}
 }
