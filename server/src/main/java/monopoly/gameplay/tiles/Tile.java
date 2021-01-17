@@ -3,6 +3,7 @@ package monopoly.gameplay.tiles;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import monopoly.gameplay.Actionable;
 import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 import monopoly.network.packet.important.packet_data.gameplay.property.TitleDeedPacketData;

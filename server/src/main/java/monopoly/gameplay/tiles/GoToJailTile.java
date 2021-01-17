@@ -16,6 +16,7 @@ public class GoToJailTile extends Tile {
 
 	@Override
 	public void doAction(GamePlayer player) {
-		player.goToJail();
+		// TODO player.goToJail();
+		player.changeBalance(-200);
 	}
 }

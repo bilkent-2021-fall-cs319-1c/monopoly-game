@@ -5,24 +5,20 @@ import java.util.List;
 /**
  * Utility property class
  *
- * @author Alper Sari
- * @version Dec 16, 2020
+ * @author Alper Sari, Ziya Mukhtarov
+ * @version Jan 17, 2021
  */
-
 public class NonStreetProperty extends Property {
-	public NonStreetProperty(String title, int buyCost, int mortgageCost, List<Integer> rentPrices, String colorSet) {
+	public NonStreetProperty(String title, int buyCost, int mortgageCost, List<Integer> rentPrices, ColorSet colorSet) {
 		super(title, buyCost, mortgageCost, rentPrices, colorSet);
 	}
 
 	@Override
 	public int getRentCost() {
-		int ownedColorsetProperties = 0;
-
-		for (int i = 0; i < getOwner().getProperties().size(); i++) {
-			if (getOwner().getProperties().get(i).getTile().getType() == getTile().getType())
-				ownedColorsetProperties++;
+		if (!isOwned() || isMortgaged()) {
+			return 0;
 		}
 
-		return getTile().getProperty().getRentTierPrice(ownedColorsetProperties);
+		return getTile().getProperty().getRentTierPrice(getColorSet().countPropertiesOwnedBy(getOwner()));
 	}
 }

@@ -36,8 +36,8 @@ public class PropertyTile extends Tile {
 
 		if (!player.equals(owner)) {
 			if (balance >= rent) {
-				player.setBalance(balance - rent);
-				owner.setBalance(owner.getBalance() + rent);
+				player.changeBalance(-rent);
+				owner.changeBalance(rent);
 			} else {
 				game.bankrupt(player);
 			}
@@ -48,10 +48,9 @@ public class PropertyTile extends Tile {
 	public TilePacketData getAsPacket() {
 		if (getType() == TileType.STREET) {
 			StreetProperty street = (StreetProperty) property;
-			return new TilePacketData(
-					new StreetTitleDeedPacketData(getName(), street.getBuyCost(), street.getMortgageCost(),
-							street.getRentPrices(), street.getHouseCost(), street.getHotelCost(), street.getColorSet()),
-					getName(), getDescription(), getType(), getIndex());
+			return new TilePacketData(new StreetTitleDeedPacketData(getName(), street.getBuyCost(),
+					street.getMortgageCost(), street.getRentPrices(), street.getHouseCost(), street.getHotelCost(),
+					street.getColorSet().getName()), getName(), getDescription(), getType(), getIndex());
 		}
 
 		return new TilePacketData(new TitleDeedPacketData(getName(), property.getBuyCost(), property.getMortgageCost(),

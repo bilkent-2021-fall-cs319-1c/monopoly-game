@@ -20,6 +20,6 @@ public class GoTile extends Tile {
 
 	@Override
 	public void doAction(GamePlayer player) {
-		player.setBalance(player.getBalance() + MONEY_GAIN);
+		player.changeBalance(MONEY_GAIN);
 	}
 }

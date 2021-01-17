@@ -1,6 +1,4 @@
-package monopoly.gameplay.properties;
-
-import monopoly.gameplay.GamePlayer;
+package monopoly.gameplay;
 
 /**
  * Auction interface

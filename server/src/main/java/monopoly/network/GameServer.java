@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import lombok.Setter;
 import monopoly.Model;
 import monopoly.MonopolyException;
+import monopoly.gameplay.Auction;
 import monopoly.gameplay.Game;
 import monopoly.gameplay.GamePlayer;
-import monopoly.gameplay.properties.Auction;
 import monopoly.gameplay.tiles.PropertyTile;
 import monopoly.lobby.Lobby;
 import monopoly.lobby.User;
@@ -28,8 +28,8 @@ import monopoly.network.packet.realtime.RealTimeNetworkPacket;
 /**
  * Game Server class for server-side operations
  *
- * @author Alper Sarı, Javid Baghirov
- * @version Nov 29, 2020
+ * @author Alper Sarı, Javid Baghirov, Ziya Mukhtarov
+ * @version Jan 17, 2021
  */
 public class GameServer extends Server {
 	private static Logger logger = LoggerFactory.getLogger(GameServer.class);

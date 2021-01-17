@@ -1,13 +1,16 @@
 package monopoly.gameplay;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import monopoly.gameplay.properties.ColorSet;
 import monopoly.gameplay.properties.NonStreetProperty;
 import monopoly.gameplay.properties.Property;
 import monopoly.gameplay.properties.StreetProperty;
@@ -23,10 +26,10 @@ import monopoly.network.packet.important.packet_data.gameplay.BoardPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 
 /**
- * The board class with an arraylist of tiles
+ * The board class that holds tiles
  *
- * @author Alper Sari
- * @version Dec 15, 2020
+ * @author Alper Sari, Ziya Mukhtarov
+ * @version Jan 17, 2021
  */
 public class Board {
 	private List<Tile> tiles;
@@ -57,6 +60,10 @@ public class Board {
 	 * Inserts the board tiles in the correct order
 	 */
 	private void initialize() {
+		ColorSet railroadColorSet = new ColorSet("RAILROAD");
+		ColorSet utilityColorSet = new ColorSet("UTILITY");
+		Map<String, ColorSet> streetColorSets = new HashMap<>();
+
 		JSONTokener tokener = new JSONTokener(Board.class.getResourceAsStream("monopoly_board.json"));
 		JSONArray gameData = new JSONArray(tokener);
 		tiles = new ArrayList<>();
@@ -76,8 +83,9 @@ public class Board {
 				// TODO Find and write mortgage prices to the JSON file
 				int mortgagePrice = 0;
 
+				ColorSet colorSet = streetColorSets.computeIfAbsent(color, ColorSet::new);
 				Property property = new StreetProperty(name, buyPrice, mortgagePrice, getRentPrices(tileJSONData),
-						color, buildPrice, buildPrice);
+						colorSet, buildPrice, buildPrice);
 				tile = new PropertyTile(name, description, tileType, i, property);
 
 			} else if (tileType == TileType.RAILROAD) {
@@ -85,14 +93,14 @@ public class Board {
 				int mortgagePrice = 0;
 
 				Property property = new NonStreetProperty(name, buyPrice, mortgagePrice, getRentPrices(tileJSONData),
-						"RAILROAD");
+						railroadColorSet);
 				tile = new PropertyTile(name, description, tileType, i, property);
 
 			} else if (tileType == TileType.UTILITY) {
 				int buyPrice = tileJSONData.getInt("cost");
 				int mortgagePrice = 0;
 
-				Property property = new NonStreetProperty(name, buyPrice, mortgagePrice, null, "UTILITY");
+				Property property = new NonStreetProperty(name, buyPrice, mortgagePrice, null, utilityColorSet);
 				tile = new PropertyTile(name, description, tileType, i, property);
 
 			} else {

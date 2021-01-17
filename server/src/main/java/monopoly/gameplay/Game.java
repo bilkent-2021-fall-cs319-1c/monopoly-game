@@ -6,7 +6,6 @@ import java.util.List;
 
 import lombok.Getter;
 import monopoly.MonopolyException;
-import monopoly.gameplay.properties.Auction;
 import monopoly.gameplay.properties.Property;
 import monopoly.gameplay.properties.StreetProperty;
 import monopoly.gameplay.properties.Trade;
@@ -21,8 +20,8 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 /**
  * The main game class with all the gameplay functionalities
  * 
- * @author Javid Baghirov
- * @version Dec 12, 2020
+ * @author Javid Baghirov, Ziya Mukhtarov
+ * @version Jan 17, 2021
  */
 public class Game {
 	private Dice dice;
@@ -118,20 +117,7 @@ public class Game {
 				completeTurn();
 			}
 		} else {
-			// TODO maybe tile.doAction() is enough?
-			int balance = player.getBalance();
-			int amount;
-
-			if (tile.getType() == TileType.GO_TO_JAIL || tile.getType() == TileType.TAX) {
-				amount = 200;
-			} else
-				amount = -200;
-
-			if (balance >= amount) {
-				player.setBalance(balance - amount);
-			} else {
-				bankrupt(player);
-			}
+			tile.doAction(player);
 			completeTurn();
 		}
 	}
@@ -157,7 +143,7 @@ public class Game {
 		}
 
 		propertyTile.getProperty().setOwner(player);
-		player.setBalance(player.getBalance() - buyCost);
+		player.changeBalance(-buyCost);
 
 		sendPropertyBoughtToPlayers((PropertyTile) player.getTile(), player);
 		completeTurn();
@@ -179,7 +165,7 @@ public class Game {
 		}
 
 		streetProperty.buildHouse();
-		player.setBalance(player.getBalance() - cost);
+		player.changeBalance(-cost);
 		sendHouseBuiltToPlayers();
 		completeTurn();
 	}
@@ -200,7 +186,7 @@ public class Game {
 		}
 
 		streetProperty.buildHotel();
-		player.setBalance(player.getBalance() - cost);
+		player.changeBalance(-cost);
 		sendHotelBuiltToPlayers();
 		completeTurn();
 	}

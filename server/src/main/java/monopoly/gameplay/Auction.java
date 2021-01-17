@@ -1,4 +1,4 @@
-package monopoly.gameplay.properties;
+package monopoly.gameplay;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,8 +6,7 @@ import java.util.List;
 
 import lombok.Getter;
 import monopoly.MonopolyException;
-import monopoly.gameplay.Game;
-import monopoly.gameplay.GamePlayer;
+import monopoly.gameplay.properties.Property;
 import monopoly.gameplay.tiles.PropertyTile;
 import monopoly.network.GameServer;
 import monopoly.network.packet.important.PacketType;
@@ -15,8 +14,8 @@ import monopoly.network.packet.important.PacketType;
 /**
  * Auction functionality class
  *
- * @author Alper Sari, Javid Baghirov
- * @version Dec 20, 2020
+ * @author Alper Sari, Javid Baghirov, Ziya Mukhtarov
+ * @version Jan 17, 2021
  */
 @Getter
 public class Auction {
@@ -53,9 +52,11 @@ public class Auction {
 
 		currentBid += increaseAmount;
 		lastBidder = player;
-
 		sendBidUpdateToPlayers(player, currentBid);
-		moveToNextBidder();
+
+		if (!checkAndCompleteAuction()) {
+			moveToNextBidder();
+		}
 	}
 
 	public void skip(GamePlayer player) throws MonopolyException {
@@ -111,7 +112,7 @@ public class Auction {
 
 		if (status == 1) {
 			// lastbidder won the auction
-			lastBidder.setBalance(lastBidder.getBalance() - currentBid);
+			lastBidder.changeBalance(-currentBid);
 			item.give(lastBidder);
 		}
 

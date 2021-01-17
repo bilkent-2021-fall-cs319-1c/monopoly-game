@@ -1,7 +1,6 @@
 package monopoly.gameplay.tiles;
 
 import lombok.Getter;
-import lombok.Setter;
 import monopoly.gameplay.GamePlayer;
 import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
 
@@ -12,7 +11,6 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
  * @version Dec 15, 2020
  */
 @Getter
-@Setter
 public class TaxTile extends Tile {
 	private int amount;
 
@@ -23,6 +21,6 @@ public class TaxTile extends Tile {
 
 	@Override
 	public void doAction(GamePlayer player) {
-		player.setBalance(player.getBalance() - amount);
+		player.changeBalance(-amount);
 	}
 }

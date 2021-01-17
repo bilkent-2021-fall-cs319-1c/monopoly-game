@@ -16,7 +16,7 @@ public class CardTile extends Tile {
 
 	@Override
 	public void doAction(GamePlayer player) {
-		// TODO Auto-generated method stub
-
+		// TODO proper implementation
+		player.changeBalance(200);
 	}
 }

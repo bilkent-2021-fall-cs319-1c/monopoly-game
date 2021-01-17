@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import monopoly.MonopolyException;
-import monopoly.gameplay.properties.Auction;
 import monopoly.gameplay.properties.Property;
 import monopoly.gameplay.tiles.Tile;
 import monopoly.lobby.User;
@@ -17,8 +16,8 @@ import monopoly.network.packet.important.packet_data.gameplay.property.PropertyP
 /**
  * A game player
  * 
- * @author Javid Baghirov
- * @version Dec 13, 2020
+ * @author Javid Baghirov, Ziya Mukhtarov
+ * @version Jan 17, 2021
  */
 @Getter
 public class GamePlayer extends User {
@@ -71,20 +70,6 @@ public class GamePlayer extends User {
 		game.buyProperty(this);
 	}
 
-	public int getPropertyCountWithColor(String colorSet) {
-		int[] counter = { 0 };
-
-		if (properties != null) {
-			properties.parallelStream().forEach(property -> {
-				if (property.getColorSet().equals(colorSet)) {
-					counter[0]++;
-				}
-			});
-		}
-
-		return counter[0];
-	}
-
 	public void buildHouse() throws MonopolyException {
 		game.buildHouse(this);
 	}
@@ -118,6 +103,10 @@ public class GamePlayer extends User {
 	public void setBalance(int balance) {
 		this.balance = balance;
 		game.sendBalanceChangeToPlayers(this);
+	}
+
+	public void changeBalance(int amount) {
+		setBalance(balance + amount);
 	}
 
 	@Override

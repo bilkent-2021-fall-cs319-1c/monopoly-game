@@ -1,8 +1,8 @@
 package monopoly.gameplay.cards;
 
 import lombok.Getter;
+import monopoly.gameplay.Actionable;
 import monopoly.gameplay.GamePlayer;
-import monopoly.gameplay.tiles.Actionable;
 
 @Getter
 public class Card implements Actionable {
