@@ -6,8 +6,6 @@ import java.util.List;
 
 import lombok.Getter;
 import monopoly.MonopolyException;
-import monopoly.gameplay.properties.Property;
-import monopoly.gameplay.tiles.PropertyTile;
 import monopoly.network.GameServer;
 import monopoly.network.packet.important.PacketType;
 
@@ -29,7 +27,7 @@ public class Auction {
 	private GamePlayer lastBidder;
 	private List<GamePlayer> satisfiedPlayers;
 
-	public Auction(Game game, Property item) {
+	public Auction(Game game, Auctionable item) {
 		this.game = game;
 		this.item = item;
 
@@ -38,7 +36,7 @@ public class Auction {
 		lastBidder = null;
 		satisfiedPlayers = Collections.synchronizedList(new ArrayList<GamePlayer>());
 
-		sendAuctionInitiatedToPlayers(item.getTile());
+		sendAuctionInitiatedToPlayers();
 		sendAuctionTurnToPlayers();
 	}
 
@@ -113,7 +111,7 @@ public class Auction {
 		if (status == 1) {
 			// lastbidder won the auction
 			lastBidder.changeBalance(-currentBid);
-			item.give(lastBidder);
+			item.setOwner(lastBidder);
 		}
 
 		game.finishAuction();
@@ -125,9 +123,9 @@ public class Auction {
 		return game.getPlayersByTurn().get(bidderIndex);
 	}
 
-	private void sendAuctionInitiatedToPlayers(PropertyTile tile) {
+	private void sendAuctionInitiatedToPlayers() {
 		game.getPlayersByTurn().parallelStream()
-				.forEach(player -> GameServer.getInstance().sendAuctionInitiatedNotification(tile, player));
+				.forEach(player -> GameServer.getInstance().sendAuctionInitiatedNotification(item, player));
 	}
 
 	private void sendAuctionTurnToPlayers() {

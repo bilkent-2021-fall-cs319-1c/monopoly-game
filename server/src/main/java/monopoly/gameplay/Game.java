@@ -8,7 +8,6 @@ import lombok.Getter;
 import monopoly.MonopolyException;
 import monopoly.gameplay.properties.Property;
 import monopoly.gameplay.properties.StreetProperty;
-import monopoly.gameplay.properties.Trade;
 import monopoly.gameplay.tiles.PropertyTile;
 import monopoly.gameplay.tiles.Tile;
 import monopoly.lobby.User;
@@ -21,7 +20,7 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
  * The main game class with all the gameplay functionalities
  * 
  * @author Javid Baghirov, Ziya Mukhtarov
- * @version Jan 17, 2021
+ * @version Jan 19, 2021
  */
 public class Game {
 	private Dice dice;
@@ -90,6 +89,11 @@ public class Game {
 		moveCurrentPlayerToken(dice.getResult());
 	}
 
+	public void sendToJail(GamePlayer player) {
+		board.moveToJail(player);
+		player.setInJail(true);
+	}
+
 	/**
 	 * Moves the token of current player
 	 * 
@@ -97,10 +101,6 @@ public class Game {
 	 */
 	private void moveCurrentPlayerToken(int steps) {
 		board.move(getCurrentPlayer(), steps);
-
-		// Notify everyone about the token move
-		sendTokenMoveToPlayers(getCurrentPlayer());
-
 		decideOnAction(getCurrentPlayer());
 	}
 
@@ -112,14 +112,13 @@ public class Game {
 
 			if (propertyTile.getProperty().getOwner() == null) {
 				GameServer.getInstance().sendBuyOrAuctionNotification(player);
-			} else {
-				tile.doAction(player);
-				completeTurn();
+				return;
 			}
-		} else {
-			tile.doAction(player);
-			completeTurn();
 		}
+
+		// tile is not a PropertyTile, or it is owned by someone
+		tile.doAction(player);
+		completeTurn();
 	}
 
 	public void buyProperty(GamePlayer player) throws MonopolyException {
@@ -216,8 +215,18 @@ public class Game {
 		completeTurn();
 	}
 
-	public void trade(GamePlayer playerFrom, GamePlayer playerTo) {
-		// TODO implement trading
+	public void initiateTrade(GamePlayer player1, GamePlayer player2) throws MonopolyException {
+		if (trade != null) {
+			throw new MonopolyException();
+		}
+		trade = new Trade(player1, player2);
+	}
+
+	public void finishTrade() throws MonopolyException {
+		if (trade == null) {
+			throw new MonopolyException();
+		}
+		trade = null;
 	}
 
 	public void completeTurn() {

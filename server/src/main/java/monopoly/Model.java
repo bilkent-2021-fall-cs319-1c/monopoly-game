@@ -19,10 +19,8 @@ import monopoly.network.GameServer;
  */
 public class Model implements GameStartListener {
 	private EntitiesWithId<Lobby> lobbies;
-	private EntitiesWithId<User> users;
-
-	// TODO Make it functional
 	private List<Lobby> waitingLobbies;
+	private EntitiesWithId<User> users;
 
 	/**
 	 * Creates a model object

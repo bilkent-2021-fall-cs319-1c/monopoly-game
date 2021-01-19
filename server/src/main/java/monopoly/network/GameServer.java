@@ -10,8 +10,10 @@ import lombok.Setter;
 import monopoly.Model;
 import monopoly.MonopolyException;
 import monopoly.gameplay.Auction;
+import monopoly.gameplay.Auctionable;
 import monopoly.gameplay.Game;
 import monopoly.gameplay.GamePlayer;
+import monopoly.gameplay.Tradeable;
 import monopoly.gameplay.tiles.PropertyTile;
 import monopoly.lobby.Lobby;
 import monopoly.lobby.User;
@@ -29,7 +31,7 @@ import monopoly.network.packet.realtime.RealTimeNetworkPacket;
  * Game Server class for server-side operations
  *
  * @author Alper Sarı, Javid Baghirov, Ziya Mukhtarov
- * @version Jan 17, 2021
+ * @version Jan 19, 2021
  */
 public class GameServer extends Server {
 	private static Logger logger = LoggerFactory.getLogger(GameServer.class);
@@ -388,8 +390,8 @@ public class GameServer extends Server {
 				playerBuying.getAsPlayerPacket()), playerToNotify.getId());
 	}
 
-	public void sendAuctionInitiatedNotification(PropertyTile tile, GamePlayer playerToNotify) {
-		sendImportantPacket(new ImportantNetworkPacket(PacketType.AUCTION_INITIATED, tile.getAsPacket()),
+	public void sendAuctionInitiatedNotification(Auctionable item, GamePlayer playerToNotify) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.AUCTION_INITIATED, item.getAsPacket()),
 				playerToNotify.getId());
 	}
 
@@ -408,16 +410,42 @@ public class GameServer extends Server {
 				playerToNotify.getId());
 	}
 
-	public void sendAuctionCompleteNotification(GamePlayer player) {
-		sendImportantPacket(new ImportantNetworkPacket(PacketType.AUCTION_COMPLETE), player.getId());
-	}
-
 	public void sendCurrentBidNotification(GamePlayer player) {
 		Auction auction = model.getGameOfPlayer(player.getId()).getAuction();
 
 		sendImportantPacket(
 				new ImportantNetworkPacket(PacketType.CURRENT_BID, new IntegerPacketData(auction.getCurrentBid())),
 				player.getId());
+	}
+
+	public void sendAuctionCompleteNotification(GamePlayer player) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.AUCTION_COMPLETE), player.getId());
+	}
+
+	public void sendTradeInitiatedNotification(GamePlayer player1, GamePlayer player2, GamePlayer playerToNotify) {
+		sendImportantPacket(
+				new ImportantNetworkPacket(PacketType.TRADE_INITIATED, player1.getAsPacket(), player2.getAsPacket()),
+				playerToNotify.getId());
+	}
+
+	public void sendTradeAcceptedNotification(GamePlayer playerAccepting, GamePlayer playerToNotify) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.TRADE_INITIATED, playerAccepting.getAsPacket()),
+				playerToNotify.getId());
+	}
+
+	public void sendAddedToTradeNotification(GamePlayer playerAddingItem, Tradeable item, GamePlayer playerToNotify) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.ADDED_TO_TRADE, playerAddingItem.getAsPacket(),
+				item.getAsPacket()), playerToNotify.getId());
+	}
+
+	public void sendRemovedFromTradeNotification(GamePlayer playerRemovingItem, Tradeable item,
+			GamePlayer playerToNotify) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.REMOVED_FROM_TRADE, playerRemovingItem.getAsPacket(),
+				item.getAsPacket()), playerToNotify.getId());
+	}
+
+	public void sendTradeCompleteNotification(GamePlayer player) {
+		sendImportantPacket(new ImportantNetworkPacket(PacketType.TRADE_COMPLETE), player.getId());
 	}
 
 	public void sendHouseBuiltNotification(GamePlayer player) {
@@ -442,57 +470,60 @@ public class GameServer extends Server {
 	public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
 		logger.debug("From {} received {}", connectionID, packet);
 
-		// Take action depending on the received packet type
-		if (packet.getType() == PacketType.CONNECT) {
+		switch (packet.getType()) {
+		case CONNECT:
 			handleConnect(connectionID);
-
-		} else if (packet.getType() == PacketType.GET_LOBBY_COUNT) {
+			break;
+		case GET_LOBBY_COUNT:
 			handleGetLobbyCount(connectionID);
-
-		} else if (packet.getType() == PacketType.GET_LOBBIES) {
+			break;
+		case GET_LOBBIES:
 			handleGetLobbies(connectionID, packet);
-
-		} else if (packet.getType() == PacketType.CREATE_LOBBY) {
+			break;
+		case CREATE_LOBBY:
 			handleCreate(connectionID, packet);
-
-		} else if (packet.getType() == PacketType.JOIN_LOBBY) {
+			break;
+		case JOIN_LOBBY:
 			handleJoin(connectionID, packet);
-
-		} else if (packet.getType() == PacketType.GET_USERS_IN_LOBBY) {
+			break;
+		case GET_USERS_IN_LOBBY:
 			handleGetUsers(connectionID);
-
-		} else if (packet.getType() == PacketType.LEAVE_LOBBY) {
+			break;
+		case LEAVE_LOBBY:
 			handleLeave(connectionID);
-
-		} else if (packet.getType() == PacketType.SET_READY) {
+			break;
+		case SET_READY:
 			handleReady(connectionID, packet);
-
-		} else if (packet.getType() == PacketType.GET_GAME_DATA) {
+			break;
+		case GET_GAME_DATA:
 			handleGetGameData(connectionID);
-
-		} else if (packet.getType() == PacketType.ROLL_DICE) {
+			break;
+		case ROLL_DICE:
 			handleDiceRoll(connectionID);
-
-		} else if (packet.getType() == PacketType.BUY_PROPERTY) {
+			break;
+		case BUY_PROPERTY:
 			handleBuyProperty(connectionID);
-
-		} else if (packet.getType() == PacketType.BUILD_HOUSE) {
+			break;
+		case BUILD_HOUSE:
 			handleBuildHouse(connectionID);
-
-		} else if (packet.getType() == PacketType.BUILD_HOTEL) {
+			break;
+		case BUILD_HOTEL:
 			handleBuildHotel(connectionID);
-
-		} else if (packet.getType() == PacketType.INITIATE_AUCTION) {
+			break;
+		case INITIATE_AUCTION:
 			handleInitiateAuction(connectionID);
-
-		} else if (packet.getType() == PacketType.INCREASE_BID) {
+			break;
+		case INCREASE_BID:
 			handleIncreaseBid(connectionID, packet);
-
-		} else if (packet.getType() == PacketType.SKIP_BID) {
+			break;
+		case SKIP_BID:
 			handleSkipBid(connectionID);
-
-		} else if (packet.getType() == PacketType.INITIATE_TRADE) {
+			break;
+		case INITIATE_TRADE:
 			handleInitiateTrade(connectionID);
+			break;
+		default:
+			break;
 		}
 	}
 }

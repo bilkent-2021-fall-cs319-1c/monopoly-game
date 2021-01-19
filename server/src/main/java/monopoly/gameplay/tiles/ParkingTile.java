@@ -10,7 +10,6 @@ public class ParkingTile extends Tile {
 
 	@Override
 	public void doAction(GamePlayer player) {
-		// TODO proper implementation
-		player.changeBalance(200);
+		// Do nothing
 	}
 }

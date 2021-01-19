@@ -29,7 +29,7 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
  * The board class that holds tiles
  *
  * @author Alper Sari, Ziya Mukhtarov
- * @version Jan 17, 2021
+ * @version Jan 19, 2021
  */
 public class Board {
 	private List<Tile> tiles;
@@ -45,15 +45,24 @@ public class Board {
 	 * @param steps  amount of steps
 	 */
 	public void move(GamePlayer player, int steps) {
-		if (!player.isInJail() || player.isRolledDouble()) {
-			for (int i = 0; i < steps; i++) {
-				int currentTokenIndex = player.getTile().getIndex();
-				player.setTile(tiles.get((currentTokenIndex + 1) % tiles.size()));
+		Tile current = player.getTile();
+		for (int i = 0; i < steps; i++) {
+			int currentIndex = current.getIndex();
+			current = tiles.get((currentIndex + 1) % tiles.size());
 
-				if (player.getTile().getType() == TileType.GO)
-					player.getTile().doAction(player);
-			}
+			if (current.getType() == TileType.GO)
+				current.doAction(player);
 		}
+		player.setTile(current);
+	}
+
+	/**
+	 * Moves the player to a jail tile
+	 *
+	 * @param player player to be moved
+	 */
+	public void moveToJail(GamePlayer player) {
+		player.setTile(getJailTile());
 	}
 
 	/**
@@ -78,10 +87,9 @@ public class Board {
 
 			if (tileType == TileType.STREET) {
 				int buyPrice = tileJSONData.getInt("cost");
+				int mortgagePrice = buyPrice / 2;
 				int buildPrice = tileJSONData.getInt("house");
 				String color = tileJSONData.getString("color");
-				// TODO Find and write mortgage prices to the JSON file
-				int mortgagePrice = 0;
 
 				ColorSet colorSet = streetColorSets.computeIfAbsent(color, ColorSet::new);
 				Property property = new StreetProperty(name, buyPrice, mortgagePrice, getRentPrices(tileJSONData),
@@ -90,7 +98,7 @@ public class Board {
 
 			} else if (tileType == TileType.RAILROAD) {
 				int buyPrice = tileJSONData.getInt("cost");
-				int mortgagePrice = 0;
+				int mortgagePrice = buyPrice / 2;
 
 				Property property = new NonStreetProperty(name, buyPrice, mortgagePrice, getRentPrices(tileJSONData),
 						railroadColorSet);
@@ -98,7 +106,7 @@ public class Board {
 
 			} else if (tileType == TileType.UTILITY) {
 				int buyPrice = tileJSONData.getInt("cost");
-				int mortgagePrice = 0;
+				int mortgagePrice = buyPrice / 2;
 
 				Property property = new NonStreetProperty(name, buyPrice, mortgagePrice, null, utilityColorSet);
 				tile = new PropertyTile(name, description, tileType, i, property);
@@ -144,9 +152,9 @@ public class Board {
 	}
 
 	/**
-	 * @return A tile with {@link TileType}.JAIL
+	 * @return A tile with {@link TileType}.JAIL, or null if none could be found
 	 */
-	public Tile getJailTile() {
+	private Tile getJailTile() {
 		return tiles.stream().filter(tile -> tile.getType() == TileType.JAIL).findAny().orElse(null);
 	}
 

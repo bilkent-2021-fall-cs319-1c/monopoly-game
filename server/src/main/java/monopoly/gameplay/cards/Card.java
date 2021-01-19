@@ -3,6 +3,7 @@ package monopoly.gameplay.cards;
 import lombok.Getter;
 import monopoly.gameplay.Actionable;
 import monopoly.gameplay.GamePlayer;
+import monopoly.network.packet.important.packet_data.PacketData;
 
 @Getter
 public class Card implements Actionable {
@@ -23,7 +24,11 @@ public class Card implements Actionable {
 
 	@Override
 	public void doAction(GamePlayer player) {
-		// TODO each card subclass will have its own action
 		throw new UnsupportedOperationException();
+	}
+
+	public PacketData getAsPacket() {
+		// TODO
+		return null;
 	}
 }

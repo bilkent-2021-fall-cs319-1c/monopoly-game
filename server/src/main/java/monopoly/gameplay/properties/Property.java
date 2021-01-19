@@ -7,6 +7,7 @@ import lombok.Setter;
 import monopoly.MonopolyException;
 import monopoly.gameplay.Auctionable;
 import monopoly.gameplay.GamePlayer;
+import monopoly.gameplay.Tradeable;
 import monopoly.gameplay.tiles.PropertyTile;
 import monopoly.network.packet.important.PacketType;
 import monopoly.network.packet.important.packet_data.gameplay.property.PropertyPacketData;
@@ -27,8 +28,6 @@ public abstract class Property implements Auctionable, Tradeable {
 
 	@Setter
 	private PropertyTile tile;
-
-	@Setter
 	private GamePlayer owner;
 	private boolean mortgaged;
 
@@ -66,16 +65,9 @@ public abstract class Property implements Auctionable, Tradeable {
 		return owner != null;
 	}
 
-	@Override
-	public void give(GamePlayer player) {
-		owner = player;
-		player.getGame().sendPropertyBoughtToPlayers(tile, player);
-	}
-
-	@Override
-	public void trade(GamePlayer from, GamePlayer to) {
-		if (from.equals(owner))
-			give(to);
+	public void setOwner(GamePlayer owner) {
+		this.owner = owner;
+		owner.getGame().sendPropertyBoughtToPlayers(tile, owner);
 	}
 
 	public int getRentTierPrice(int tier) {

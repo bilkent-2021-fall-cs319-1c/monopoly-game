@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import monopoly.MonopolyException;
 import monopoly.gameplay.properties.Property;
 import monopoly.gameplay.tiles.Tile;
@@ -27,9 +28,9 @@ public class GamePlayer extends User {
 
 	private int balance;
 	private Tile tile;
+	@Setter
 	private boolean inJail;
 	private List<Property> properties;
-	private boolean rolledDouble;
 	private boolean micOpen;
 	private boolean camOpen;
 
@@ -53,17 +54,11 @@ public class GamePlayer extends User {
 		game.rollDice(this);
 	}
 
-	// TODO Should be moved to Board or Game?
-	public void goToJail() {
-		if (!isInJail()) {
-			tile = game.getBoard().getJailTile();
-			inJail = true;
-		}
-	}
-
 	public void setTile(Tile tile) {
 		this.tile = tile;
 		inJail = false;
+
+		game.sendTokenMoveToPlayers(this);
 	}
 
 	public void buyProperty() throws MonopolyException {
