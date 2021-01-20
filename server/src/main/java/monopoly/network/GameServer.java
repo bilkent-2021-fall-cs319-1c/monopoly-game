@@ -21,8 +21,11 @@ import monopoly.network.packet.important.ImportantNetworkPacket;
 import monopoly.network.packet.important.PacketType;
 import monopoly.network.packet.important.packet_data.BooleanPacketData;
 import monopoly.network.packet.important.packet_data.IntegerPacketData;
+import monopoly.network.packet.important.packet_data.PacketData;
 import monopoly.network.packet.important.packet_data.StringPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
+import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.PropertyPacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyListPacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
 import monopoly.network.packet.realtime.RealTimeNetworkPacket;
@@ -232,7 +235,7 @@ public class GameServer extends Server {
 		}
 	}
 
-	public void handleBuyProperty(int connectionID) {
+	private void handleBuyProperty(int connectionID) {
 		GamePlayer player = model.getUserByID(connectionID).asPlayer();
 
 		try {
@@ -242,7 +245,7 @@ public class GameServer extends Server {
 		}
 	}
 
-	public void handleBuildHouse(int connectionID) {
+	private void handleBuildHouse(int connectionID) {
 		GamePlayer player = model.getUserByID(connectionID).asPlayer();
 
 		try {
@@ -252,7 +255,7 @@ public class GameServer extends Server {
 		}
 	}
 
-	public void handleBuildHotel(int connectionID) {
+	private void handleBuildHotel(int connectionID) {
 		GamePlayer player = model.getUserByID(connectionID).asPlayer();
 
 		try {
@@ -262,7 +265,7 @@ public class GameServer extends Server {
 		}
 	}
 
-	public void handleInitiateAuction(int connectionID) {
+	private void handleInitiateAuction(int connectionID) {
 		GamePlayer player = model.getUserByID(connectionID).asPlayer();
 
 		try {
@@ -272,7 +275,7 @@ public class GameServer extends Server {
 		}
 	}
 
-	public void handleIncreaseBid(int connectionID, ImportantNetworkPacket packet) {
+	private void handleIncreaseBid(int connectionID, ImportantNetworkPacket packet) {
 		int bidAmount = ((IntegerPacketData) packet.getData().get(0)).getData();
 		GamePlayer player = model.getUserByID(connectionID).asPlayer();
 
@@ -283,7 +286,7 @@ public class GameServer extends Server {
 		}
 	}
 
-	public void handleSkipBid(int connectionID) {
+	private void handleSkipBid(int connectionID) {
 		GamePlayer player = model.getUserByID(connectionID).asPlayer();
 
 		try {
@@ -293,8 +296,74 @@ public class GameServer extends Server {
 		}
 	}
 
-	public void handleInitiateTrade(int connectionID) {
-		// TODO implement trading
+	private void handleInitiateTrade(int connectionID, ImportantNetworkPacket packet) {
+		GamePlayer player1 = model.getUserByID(connectionID).asPlayer();
+		GamePlayer player2 = model
+				.getUserByID(((PlayerPacketData) packet.getData().get(0)).getUserData().getConnectionId()).asPlayer();
+
+		try {
+			player1.initiateTrade(player2);
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
+		}
+	}
+
+	private void handleAddToTrade(int connectionID, ImportantNetworkPacket packet) {
+		GamePlayer player = model.getUserByID(connectionID).asPlayer();
+
+		try {
+			Tradeable item = resolveTradeable(packet.getData().get(0), player.getGame());
+			player.addToTrade(item);
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
+		}
+	}
+
+	private void handleRemoveFromTrade(int connectionID, ImportantNetworkPacket packet) {
+		GamePlayer player = model.getUserByID(connectionID).asPlayer();
+
+		try {
+			Tradeable item = resolveTradeable(packet.getData().get(0), player.getGame());
+			player.removeFromTrade(item);
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
+		}
+	}
+
+	private Tradeable resolveTradeable(PacketData data, Game game) throws MonopolyException {
+		if (data instanceof PropertyPacketData) {
+			PropertyPacketData propertyData = (PropertyPacketData) data;
+			int tileIndex = propertyData.getTileData().getIndex();
+			try {
+				PropertyTile tile = (PropertyTile) game.getBoard().getTile(tileIndex);
+				return tile.getProperty();
+			} catch (ClassCastException e) {
+				throw new MonopolyException();
+			}
+		}
+		// TODO GetOutOfJailCard can also be traded
+
+		return null;
+	}
+
+	private void handleAcceptTrade(int connectionID) {
+		GamePlayer player = model.getUserByID(connectionID).asPlayer();
+
+		try {
+			player.agreeToTrade();
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
+		}
+	}
+
+	private void handleRejectTrade(int connectionID) {
+		GamePlayer player = model.getUserByID(connectionID).asPlayer();
+
+		try {
+			player.rejectTrade();
+		} catch (MonopolyException e) {
+			sendImportantPacket(e.getAsPacket(), connectionID);
+		}
 	}
 
 	/**
@@ -520,7 +589,19 @@ public class GameServer extends Server {
 			handleSkipBid(connectionID);
 			break;
 		case INITIATE_TRADE:
-			handleInitiateTrade(connectionID);
+			handleInitiateTrade(connectionID, packet);
+			break;
+		case ADD_TO_TRADE:
+			handleAddToTrade(connectionID, packet);
+			break;
+		case REMOVE_FROM_TRADE:
+			handleRemoveFromTrade(connectionID, packet);
+			break;
+		case ACCEPT_TRADE:
+			handleAcceptTrade(connectionID);
+			break;
+		case REJECT_TRADE:
+			handleRejectTrade(connectionID);
 			break;
 		default:
 			break;

@@ -95,6 +95,34 @@ public class GamePlayer extends User {
 		auction.skip(this);
 	}
 
+	public void initiateTrade(GamePlayer player2) throws MonopolyException {
+		game.initiateTrade(this, player2);
+	}
+
+	public void addToTrade(Tradeable item) throws MonopolyException {
+		getCurrentTrade().addItem(this, item);
+	}
+
+	public void removeFromTrade(Tradeable item) throws MonopolyException {
+		getCurrentTrade().removeItem(this, item);
+	}
+
+	public void agreeToTrade() throws MonopolyException {
+		getCurrentTrade().agree(this);
+	}
+
+	public void rejectTrade() throws MonopolyException {
+		getCurrentTrade().reject(this);
+	}
+
+	private Trade getCurrentTrade() throws MonopolyException {
+		Trade trade = game.getTrade();
+		if (trade == null) {
+			throw new MonopolyException();
+		}
+		return trade;
+	}
+
 	public void setBalance(int balance) {
 		this.balance = balance;
 		game.sendBalanceChangeToPlayers(this);

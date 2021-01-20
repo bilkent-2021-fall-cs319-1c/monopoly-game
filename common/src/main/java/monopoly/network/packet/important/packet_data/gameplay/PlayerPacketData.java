@@ -16,7 +16,6 @@ import monopoly.network.packet.important.packet_data.gameplay.property.TilePacke
  * @author Javid Baghirov
  * @version Dec 18, 2020
  */
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

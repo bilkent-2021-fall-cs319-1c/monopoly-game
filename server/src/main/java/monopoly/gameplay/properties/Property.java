@@ -75,6 +75,7 @@ public abstract class Property implements Auctionable, Tradeable {
 	}
 
 	public PropertyPacketData getAsPacket() {
-		return new PropertyPacketData(tile.getAsPacket(), owner.getAsPlayerPacket(), mortgaged);
+		return new PropertyPacketData(tile.getAsPacket(), (owner == null ? null : owner.getAsPlayerPacket()),
+				mortgaged);
 	}
 }

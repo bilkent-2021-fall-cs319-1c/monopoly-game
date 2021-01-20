@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import monopoly.MonopolyException;
 import monopoly.gameplay.properties.ColorSet;
 import monopoly.gameplay.properties.NonStreetProperty;
 import monopoly.gameplay.properties.Property;
@@ -160,6 +161,14 @@ public class Board {
 
 	public Tile getStartTile() {
 		return tiles.get(0);
+	}
+
+	public Tile getTile(int index) throws MonopolyException {
+		try {
+			return tiles.get(index);
+		} catch (IndexOutOfBoundsException e) {
+			throw new MonopolyException(e);
+		}
 	}
 
 	public BoardPacketData getAsPacket() {

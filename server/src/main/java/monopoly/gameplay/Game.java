@@ -215,11 +215,15 @@ public class Game {
 		completeTurn();
 	}
 
-	public void initiateTrade(GamePlayer player1, GamePlayer player2) throws MonopolyException {
+	public void initiateTrade(GamePlayer initiatingPlayer, GamePlayer targetedPlayer) throws MonopolyException {
 		if (trade != null) {
 			throw new MonopolyException();
 		}
-		trade = new Trade(player1, player2);
+		if (!isPlayerTurn(initiatingPlayer)) {
+			throw new MonopolyException(PacketType.ERR_NOT_PLAYER_TURN);
+		}
+
+		trade = new Trade(initiatingPlayer, targetedPlayer);
 	}
 
 	public void finishTrade() throws MonopolyException {

@@ -115,6 +115,18 @@ public class Trade {
 		checkAndCompleteTrade();
 	}
 
+	public void reject(GamePlayer player) throws MonopolyException {
+		if (completed) {
+			throw new MonopolyException();
+		}
+		if (!player.equals(player1) && !player.equals(player2)) {
+			throw new MonopolyException();
+		}
+
+		player1.getGame().finishTrade();
+		sendTradeCompleteToPlayers();
+	}
+
 	private boolean checkAndCompleteTrade() throws MonopolyException {
 		if (!agreePlayer1 || !agreePlayer2)
 			return false;

@@ -28,6 +28,14 @@ public class MonopolyException extends Exception {
 		this(PacketType.ERR_UNKNOWN);
 	}
 
+	/**
+	 * Wraps another exception, and creates a new MonopolyException of unknown type
+	 */
+	public MonopolyException(Throwable t) {
+		super(t);
+		this.errorType = PacketType.ERR_UNKNOWN;
+	}
+
 	public ImportantNetworkPacket getAsPacket() {
 		return new ImportantNetworkPacket(errorType);
 	}
