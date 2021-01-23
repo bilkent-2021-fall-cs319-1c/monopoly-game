@@ -44,6 +44,6 @@
 	<CornerTile type="GO_TO_JAIL" tileIndex="30"
 		fx:id="gotoJail"
 		MigPane.cc="grow, cell 2 0, width 0::13%, height 0::13%" />
-	<CornerTile type="GO" tileIndex="0" fx:id="go"
-		MigPane.cc="grow, cell 2 3, width 0::13%, height 0::13%" />
+	<CornerTile pickOnBounds="false" type="GO" tileIndex="0"
+		fx:id="go" MigPane.cc="grow, cell 2 3, width 0::13%, height 0::13%" />
 </fx:root>

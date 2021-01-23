@@ -29,7 +29,7 @@ import monopoly.ui.controller.gameplay.board.Token;
 import monopoly.ui.controller.gameplay.titledeed.DeedCard;
 import monopoly.ui.controller.gameplay.titledeed.RailroadTitleDeedPane;
 import monopoly.ui.controller.gameplay.titledeed.StreetTitleDeedPane;
-import monopoly.ui.controller.gameplay.titledeed.UtilitiesTileDeedPane;
+import monopoly.ui.controller.gameplay.titledeed.UtilityTitleDeedPane;
 
 public class GameplayDataManager {
 	private static final Color[] playerColors = { Color.web("#ff4646"), Color.web("#7579e7"), Color.web("#ffdf5e"),
@@ -210,7 +210,7 @@ public class GameplayDataManager {
 		if (tileType == TileType.RAILROAD) {
 			deedCard = new RailroadTitleDeedPane(tilePacketData.getTitleDeed());
 		} else if (tileType == TileType.UTILITY) {
-			deedCard = new UtilitiesTileDeedPane(tilePacketData.getTitleDeed());
+			deedCard = new UtilityTitleDeedPane(tilePacketData.getTitleDeed());
 		} else {
 			deedCard = new StreetTitleDeedPane((StreetTitleDeedPacketData) tilePacketData.getTitleDeed());
 		}
@@ -230,7 +230,7 @@ public class GameplayDataManager {
 		if (tileType == TileType.RAILROAD) {
 			deedCard = new RailroadTitleDeedPane(tilePacketData.getTitleDeed());
 		} else if (tileType == TileType.UTILITY) {
-			deedCard = new UtilitiesTileDeedPane(tilePacketData.getTitleDeed());
+			deedCard = new UtilityTitleDeedPane(tilePacketData.getTitleDeed());
 		} else {
 			deedCard = new StreetTitleDeedPane((StreetTitleDeedPacketData) tilePacketData.getTitleDeed());
 		}

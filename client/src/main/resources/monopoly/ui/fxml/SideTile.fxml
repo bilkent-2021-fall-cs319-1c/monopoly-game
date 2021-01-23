@@ -18,7 +18,8 @@
 	xmlns:fx="http://javafx.com/fxml" type="MigPane"
 	layout="wrap, gap 0 0, fill, hidemode 3" cols="0[fill, grow]0"
 	rows="0[0:20%, fill][0:20%, fill][0:, grow, fill][0:15%, center]0"
-	style="-fx-border-color: black; -fx-border-width: 2px 1px 2px 1px; -fx-background-color: rgb(215, 255, 201);">
+	style="-fx-border-color: black; -fx-border-width: 2px 1px 2px 1px; -fx-background-color: rgb(215, 255, 201);"
+	onMouseEntered="#mouseEntered" onMouseExited="#mouseExited">
 
 	<MigPane fx:id="topWrapper"
 		style="-fx-border-color: black; -fx-border-width: 0px 0px 2px 0px;"

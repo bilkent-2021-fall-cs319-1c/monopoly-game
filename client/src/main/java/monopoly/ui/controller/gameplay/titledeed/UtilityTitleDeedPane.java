@@ -18,7 +18,7 @@ import monopoly.ui.UIUtil;
  * @author Ege Kaan Gürkan
  * @version 17/12/2020
  */
-public class UtilitiesTileDeedPane extends MigPane implements DeedCard {
+public class UtilityTitleDeedPane extends MigPane implements DeedCard {
 	@FXML
 	private ImageView image;
 	@FXML
@@ -34,11 +34,11 @@ public class UtilitiesTileDeedPane extends MigPane implements DeedCard {
 	@Getter
 	private int buyCost;
 
-	public UtilitiesTileDeedPane(TitleDeedPacketData deedData) {
+	public UtilityTitleDeedPane(TitleDeedPacketData deedData) {
 		this.name = deedData.getTitle();
 		buyCost = deedData.getBuyPrice();
 
-		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/UtilitiesTileDeedPane.fxml"));
+		FXMLLoader loader = new FXMLLoader(UIUtil.class.getResource("fxml/UtilityTitleDeedPane.fxml"));
 		loader.setController(this);
 		loader.setRoot(this);
 		try {

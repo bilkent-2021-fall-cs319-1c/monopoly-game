@@ -23,6 +23,7 @@ public class Token extends Circle {
 		super(radius, color);
 		setStroke(Color.BLACK);
 		setOpacity(0.9);
+		setMouseTransparent(true);
 
 		currentTile = null;
 		board = null;

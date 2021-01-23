@@ -13,12 +13,12 @@
 <StackPane xmlns="http://javafx.com/javafx/15.0.1"
 	xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
 	fx:controller="monopoly.ui.controller.gameplay.GameplayController">
-	
+
 	<stylesheets>
 		<UIUtil fx:constant="COMMON_CSS" />
 		<UIUtil fx:constant="GAMEPLAY_CSS" />
 	</stylesheets>
-	
+
 	<!-- Main Gameplay View -->
 	<MigPane layout="fill" rows="0[grow, fill] [:5%:5%]2%"
 		cols="[:24%:24%, fill, grow]1%[center]1%[:24%:24%, fill, grow]">
@@ -48,7 +48,8 @@
 
 		<!-- Rotation Icons and Dice -->
 		<MigPane MigPane.cc="skip 1, grow" layout=""
-			cols="10[]push[15%, fill]push[]10" rows="10[fill]2%" styleClass="wrapper">
+			cols="10[]push[15%, fill]push[]10" rows="10[fill]2%"
+			styleClass="wrapper">
 			<ImageView pickOnBounds="true"
 				onMouseClicked="#rotateBoardCW" fx:id="rotateCWIcon">
 				<image>
@@ -73,6 +74,9 @@
 			</image>
 		</ImageView>
 	</MigPane>
+
+	<!-- Holds Panes that pops up when a side tile is hovered -->
+	<Pane pickOnBounds="false" fx:id="tileInfoContainer" />
 
 	<!-- Chat Window -->
 	<MigPane style="-fx-background-color: #FFF" layout="flowy"

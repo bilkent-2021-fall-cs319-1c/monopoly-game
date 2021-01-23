@@ -40,6 +40,8 @@ public class GameplayController implements MonopolyUIController {
 	@FXML
 	private StackPane stackPane;
 	@FXML
+	private Pane tileInfoContainer;
+	@FXML
 	private MigPane playersLeft;
 	@FXML
 	private MigPane playersRight;
@@ -109,7 +111,7 @@ public class GameplayController implements MonopolyUIController {
 
 		gameData = app.getNetworkManager().getGameData(this);
 		addPlayers(gameData.getPlayerPanes());
-		board.buildBoard(gameData);
+		board.buildBoard(gameData, tileInfoContainer);
 
 		dice.setApp(app);
 

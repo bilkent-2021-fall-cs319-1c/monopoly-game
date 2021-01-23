@@ -36,7 +36,7 @@ public class TradePane extends MigPane {
 	@FXML
 	private Text playerOneMoneyText;
 	@FXML
-	private ComboBox playerOneComboBox;
+	private ComboBox<String> playerOneComboBox;
 	@FXML
 	private MigPane playerOneAssetsWrapper;
 
@@ -84,10 +84,6 @@ public class TradePane extends MigPane {
 		}
 
 		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));
-	}
-
-	private void addToPOne() {
-		System.out.println("asdasd");
 	}
 
 	private void adjustSize() {

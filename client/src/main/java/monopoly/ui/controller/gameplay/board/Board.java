@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 import lombok.Getter;
 import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.ui.UIUtil;
@@ -65,8 +66,8 @@ public class Board extends MigPane {
 		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));
 	}
 
-	public void buildBoard(GameplayDataManager gameData) {
-		buildTiles(gameData.getBoardData().getTiles());
+	public void buildBoard(GameplayDataManager gameData, Pane tileInfoContainer) {
+		buildTiles(gameData.getBoardData().getTiles(), tileInfoContainer);
 		addTiles();
 
 		// Create Player Tokens
@@ -85,7 +86,7 @@ public class Board extends MigPane {
 		}
 	}
 
-	private void buildTiles(List<TilePacketData> tileDataList) {
+	private void buildTiles(List<TilePacketData> tileDataList, Pane tileInfoContainer) {
 		for (int i = 0; i < tileDataList.size(); i++) {
 			TilePacketData tileData = tileDataList.get(i);
 
@@ -98,7 +99,7 @@ public class Board extends MigPane {
 			} else if (i == 30) {
 				tiles.add(gotoJail);
 			} else {
-				tiles.add(new SideTile(tileData));
+				tiles.add(new SideTile(tileData, tileInfoContainer));
 			}
 		}
 	}
