@@ -252,7 +252,7 @@ public class GameplayController implements MonopolyUIController {
 	}
 
 	public void setDiceDisable(boolean disable) {
-		dice.setDisable(disable);
+		Platform.runLater(() -> dice.setDisable(disable));
 	}
 
 	public void showPopup(Pane popup) {

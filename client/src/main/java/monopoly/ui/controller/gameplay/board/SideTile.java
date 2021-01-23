@@ -92,25 +92,29 @@ public class SideTile extends MigPane implements Tile {
 		tileTitle.setText(tileTitleString);
 		tileValue.setText(tileValueString);
 
-		if (tileType == TileType.RAILROAD) {
+		switch (tileType) {
+		case RAILROAD:
 			topWrapper.setVisible(false);
 			setComponentConstraints(tokens, "spany 2");
 			setTileIcon(UIUtil.TRAIN);
-
-		} else if (tileType == TileType.UTILITY) {
+			break;
+		case UTILITY:
 			topWrapper.setVisible(false);
 			setComponentConstraints(tokens, "spany 2");
 			setTileIcon("ELECTRIC\nCOMPANY".equals(tileTitleString) ? UIUtil.LIGHTBULB : UIUtil.FAUCET);
-
-		} else if (tileType == TileType.TAX) {
+			break;
+		case TAX:
 			topWrapper.setVisible(false);
 			setComponentConstraints(tokens, "spany 2");
-
-		} else if (tileType == TileType.CHANCE || tileType == TileType.COMMUNITY_CHEST) {
+			break;
+		case CHANCE:
+		case COMMUNITY_CHEST:
 			topWrapper.setVisible(false);
 			tileValueWrapper.setVisible(false);
 			setComponentConstraints(tokens, "spany 3");
 			setTileIcon(tileType == TileType.CHANCE ? UIUtil.QUESTION_MARK : UIUtil.CHEST);
+			break;
+		default:
 		}
 
 		layoutBoundsProperty().addListener((observable, oldVal, newVal) -> Platform.runLater(this::adjustSize));

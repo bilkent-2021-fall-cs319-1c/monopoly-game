@@ -16,6 +16,7 @@ import monopoly.network.packet.important.packet_data.gameplay.BoardPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerListPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.PropertyPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.StreetTitleDeedPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TileType;
@@ -221,9 +222,11 @@ public class GameplayDataManager {
 		}).start();
 	}
 
-	public void auctionStarted(TilePacketData tilePacketData) {
-		DeedCard deedCard;
+	public void auctionStarted(PropertyPacketData propertyPacketData) {
+		TilePacketData tilePacketData = propertyPacketData.getTileData();
 		TileType tileType = tilePacketData.getType();
+
+		DeedCard deedCard;
 		if (tileType == TileType.RAILROAD) {
 			deedCard = new RailroadTitleDeedPane(tilePacketData.getTitleDeed());
 		} else if (tileType == TileType.UTILITY) {

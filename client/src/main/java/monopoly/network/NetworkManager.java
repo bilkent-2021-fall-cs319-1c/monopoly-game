@@ -21,6 +21,7 @@ import monopoly.network.packet.important.packet_data.gameplay.BoardPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.DicePacketData;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerListPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.PlayerPacketData;
+import monopoly.network.packet.important.packet_data.gameplay.property.PropertyPacketData;
 import monopoly.network.packet.important.packet_data.gameplay.property.TilePacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyListPacketData;
 import monopoly.network.packet.important.packet_data.lobby.LobbyPacketData;
@@ -348,63 +349,66 @@ public class NetworkManager {
 		public void receivedImportantPacket(int connectionID, ImportantNetworkPacket packet) {
 			PacketType type = packet.getType();
 			logger.debug("Received: {}", packet);
-			System.out.println(packet);
 
 			if (packet.isErrorPacket()) {
-				new Thread(() -> notifyAllErrorListeners(responsePacket)).start();
+				responsePacket = packet;
+				new Thread(() -> notifyAllErrorListeners(packet)).start();
+				return;
+			}
+			if (type == waitingForResponseType && responsePacket == null) {
+				responsePacket = packet;
+				return;
 			}
 
-			if ((type == waitingForResponseType && responsePacket == null) || packet.isErrorPacket()) {
-				responsePacket = packet;
-			} else {
-				if (type == PacketType.PLAYER_JOIN) {
-					handleUserJoin((UserPacketData) packet.getData().get(0));
-
-				} else if (type == PacketType.PLAYER_LEFT) {
-					handleUserLeft((UserPacketData) packet.getData().get(0));
-
-				} else if (type == PacketType.PLAYER_READY) {
-					handleUserReadyChange((UserPacketData) packet.getData().get(0));
-
-				} else if (type == PacketType.GAME_START) {
-					handleGameStart();
-
-				} else if (type == PacketType.PLAYER_TURN) {
-					handlePlayerTurn((PlayerPacketData) packet.getData().get(0));
-
-				} else if (type == PacketType.DICE_RESULT) {
-					handleDiceRoll((DicePacketData) packet.getData().get(0));
-
-				} else if (type == PacketType.TOKEN_MOVED) {
-					handleTokenMove((PlayerPacketData) packet.getData().get(0),
-							(TilePacketData) packet.getData().get(1));
-
-				} else if (type == PacketType.ACT_BUY_OR_AUCTION) {
-					handleBuyOrAuctionOption((TilePacketData) packet.getData().get(0));
-
-				} else if (type == PacketType.PROPERTY_BOUGHT) {
-					handlePropertyBought((TilePacketData) packet.getData().get(0),
-							(PlayerPacketData) packet.getData().get(1));
-
-				} else if (type == PacketType.AUCTION_INITIATED) {
-					handleAuctionStart((TilePacketData) packet.getData().get(0));
-
-				} else if (type == PacketType.AUCTION_TURN) {
-					handleAuctionTurnChange((PlayerPacketData) packet.getData().get(0));
-
-				} else if (type == PacketType.BID_INCREASED) {
-					handleAuctionBidIncrease((PlayerPacketData) packet.getData().get(0),
-							(IntegerPacketData) packet.getData().get(1));
-
-				} else if (type == PacketType.BID_SKIPPED) {
-					handleAuctionBidSkip((PlayerPacketData) packet.getData().get(0));
-
-				} else if (type == PacketType.AUCTION_COMPLETE) {
-					handleAuctionComplete();
-
-				} else if (type == PacketType.PLAYER_BALANCE) {
-					handleBalanceChange((PlayerPacketData) packet.getData().get(0));
-				}
+			switch (type) {
+			case PLAYER_JOIN:
+				handleUserJoin((UserPacketData) packet.getData().get(0));
+				break;
+			case PLAYER_LEFT:
+				handleUserLeft((UserPacketData) packet.getData().get(0));
+				break;
+			case PLAYER_READY:
+				handleUserReadyChange((UserPacketData) packet.getData().get(0));
+				break;
+			case GAME_START:
+				handleGameStart();
+				break;
+			case PLAYER_TURN:
+				handlePlayerTurn((PlayerPacketData) packet.getData().get(0));
+				break;
+			case DICE_RESULT:
+				handleDiceRoll((DicePacketData) packet.getData().get(0));
+				break;
+			case TOKEN_MOVED:
+				handleTokenMove((PlayerPacketData) packet.getData().get(0), (TilePacketData) packet.getData().get(1));
+				break;
+			case ACT_BUY_OR_AUCTION:
+				handleBuyOrAuctionOption((TilePacketData) packet.getData().get(0));
+				break;
+			case PROPERTY_BOUGHT:
+				handlePropertyBought((TilePacketData) packet.getData().get(0),
+						(PlayerPacketData) packet.getData().get(1));
+				break;
+			case AUCTION_INITIATED:
+				handleAuctionStart((PropertyPacketData) packet.getData().get(0));
+				break;
+			case AUCTION_TURN:
+				handleAuctionTurnChange((PlayerPacketData) packet.getData().get(0));
+				break;
+			case BID_INCREASED:
+				handleAuctionBidIncrease((PlayerPacketData) packet.getData().get(0),
+						(IntegerPacketData) packet.getData().get(1));
+				break;
+			case BID_SKIPPED:
+				handleAuctionBidSkip((PlayerPacketData) packet.getData().get(0));
+				break;
+			case AUCTION_COMPLETE:
+				handleAuctionComplete();
+				break;
+			case PLAYER_BALANCE:
+				handleBalanceChange((PlayerPacketData) packet.getData().get(0));
+				break;
+			default:
 			}
 		}
 
@@ -546,7 +550,7 @@ public class NetworkManager {
 		/**
 		 * Handles auction starting
 		 */
-		private void handleAuctionStart(TilePacketData tilePacketData) {
+		private void handleAuctionStart(PropertyPacketData tilePacketData) {
 			Object uiController = app.getMainController();
 			if (uiController instanceof GameplayController) {
 				GameplayController gameplayController = (GameplayController) uiController;
